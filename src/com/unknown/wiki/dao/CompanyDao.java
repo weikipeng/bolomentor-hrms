@@ -14,9 +14,11 @@ import net.sf.json.JSONObject;
 
 import com.unknown.wiki.bean.Company;
 import com.unknown.wiki.constant.Constant_Column;
+import com.unknown.wiki.constant.Constant_SQL;
+import com.unknown.wiki.constant.Constant_Servlet;
 import com.unknown.wiki.constant.Constant_Table;
 
-public class CompanyDao implements Constant_Column{
+public class CompanyDao implements Constant_Column,Constant_SQL,Constant_Table{
 	
 	/**插入公司*/
 	public static Company insertCompany(DataBaseDao dataBaseDao,Map<String, String> parameters){
@@ -115,34 +117,96 @@ public class CompanyDao implements Constant_Column{
 		return result;
 	}
 	
+//	/**查询公司*/
+//	public static ArrayList<Company> queryCompany(DataBaseDao dataBaseDao,Map<String, String> parameters){
+//		ArrayList<Company> result = new ArrayList<Company>();
+//		if(dataBaseDao != null){
+//			Connection connection = dataBaseDao.getConnection();
+//			
+//			StringBuffer sb = new StringBuffer();
+//			sb.append("select * from ");
+//			sb.append(Constant_Table.TABLE_COMPANY);
+//			Iterator<Entry<String, String>> iterator = parameters.entrySet().iterator();
+//			int count = 0;
+//			while (iterator.hasNext()) {
+//				Entry<String, String> entry = iterator.next();
+//				if(count != 0){
+//					sb.append(" and ");
+//				}else{
+//					sb.append(" where ");
+//				}
+//				sb.append(entry.getKey());
+//				sb.append("= '");
+//				sb.append(entry.getValue());
+//				sb.append("'");
+//				count++;
+//			}
+////			if(count>0){
+////				sb.deleteCharAt(sb.length()-1);
+////			}
+//			sb.append(";");
+//			
+//			System.out.println("执行的sql语句为			" +	sb.toString());
+//			
+//			try {
+//				PreparedStatement preparedStatement = connection.prepareStatement(sb.toString());
+//				ResultSet resultSet = preparedStatement.executeQuery();
+//				while(resultSet.next()){
+//					result.add(formatCompany(resultSet));
+//				}
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return result;
+//	}
+	
+	
 	/**查询公司*/
-	public static ArrayList<Company> queryCompany(DataBaseDao dataBaseDao,Map<String, String> parameters){
+	public static ArrayList<Company> queryCompany(DataBaseDao dataBaseDao,JSONObject userObject,JSONObject parameters){
 		ArrayList<Company> result = new ArrayList<Company>();
 		if(dataBaseDao != null){
 			Connection connection = dataBaseDao.getConnection();
 			
+			String userId = userObject.optString(COLUMN_ID);
+			String role	  = userObject.optString(COLUMN_ROLE);
+			
+			
 			StringBuffer sb = new StringBuffer();
-			sb.append("select * from ");
-			sb.append(Constant_Table.TABLE_COMPANY);
-			Iterator<Entry<String, String>> iterator = parameters.entrySet().iterator();
+			sb.append(SQL_QUERY);
+			sb.append(TABLE_COMPANY);
+			Iterator<String> iterator = parameters.keys();
 			int count = 0;
 			while (iterator.hasNext()) {
-				Entry<String, String> entry = iterator.next();
+				String key = iterator.next();
 				if(count != 0){
-					sb.append(" and ");
+					sb.append(SQL_AND);
 				}else{
-					sb.append(" where ");
+					sb.append(SQL_WHERE);
 				}
-				sb.append(entry.getKey());
-				sb.append("= '");
-				sb.append(entry.getValue());
-				sb.append("'");
+				sb.append(key);
+				sb.append(SQL_EQ);
+				sb.append(SQL_SINGLE_QUOTES);
+				sb.append(parameters.getString(key));
+				sb.append(SQL_SINGLE_QUOTES);
 				count++;
 			}
-//			if(count>0){
-//				sb.deleteCharAt(sb.length()-1);
-//			}
-			sb.append(";");
+			
+			if(!Constant_Servlet.ROLE_ADMIN.equals(role)){
+				if(sb.indexOf(SQL_WHERE)>0){
+					sb.append(SQL_AND);
+				}else{
+					sb.append(SQL_WHERE);
+				}
+				
+				sb.append(COLUMN_CREATEUSERID);
+				sb.append(SQL_EQ);
+				sb.append(SQL_SINGLE_QUOTES);
+				sb.append(userId);
+				sb.append(SQL_SINGLE_QUOTES);
+			}
+			
+			sb.append(SQL_SEMICOLON);
 			
 			System.out.println("执行的sql语句为			" +	sb.toString());
 			
@@ -251,20 +315,27 @@ public class CompanyDao implements Constant_Column{
 //		parameters.put("id", "15");
 //		boolean result = CompanyDao.deleteCompany(dataBaseDao, parameters);
 		
+		JSONObject userObject = new JSONObject();
+		userObject.put(COLUMN_ID, "9527");
+		userObject.put(COLUMN_ROLE, 127);
 		
+		JSONObject json = new JSONObject();
+//		json.put(COLUMN_ID, null);
+//		json.put(COLUMN_ENGLISHNAME, "Tecent");
 		//查询
-		/*ArrayList<Company> arrayList = CompanyDao.queryCompany(dataBaseDao, parameters);
+		ArrayList<Company> arrayList = CompanyDao.queryCompany(dataBaseDao,userObject,json);
 		int size = arrayList.size();
 		for(int i = 0;i<size;i++){
 			System.out.println(arrayList.get(i).toJsonString());
-		}*/
+		}
 		
 		
-		//修改
-		parameters.put(Constant_Column.COLUMN_ID, "10");
-		HashMap<String, String> values = new HashMap<String, String>();
-		values.put(Constant_Column.COLUMN_ADDRESS, "维创新地址");
-		boolean result = CompanyDao.updateCompany(dataBaseDao, parameters, values);
+		
+//		//修改
+//		parameters.put(Constant_Column.COLUMN_ID, "10");
+//		HashMap<String, String> values = new HashMap<String, String>();
+//		values.put(Constant_Column.COLUMN_ADDRESS, "维创新地址");
+//		boolean result = CompanyDao.updateCompany(dataBaseDao, parameters, values);
 	}
 
 	

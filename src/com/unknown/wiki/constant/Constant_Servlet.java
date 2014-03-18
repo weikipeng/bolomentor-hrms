@@ -3,6 +3,7 @@ package com.unknown.wiki.constant;
 public interface  Constant_Servlet {
 	public final String ACTION = "action";
 	public final String DATA = "data";
+	public final String ACTION_DATA = "action_data";
 	
 	public final String ACTION_ADD = "add";
 	public final String ACTION_DELETE = "delete";
@@ -15,4 +16,8 @@ public interface  Constant_Servlet {
 
 	public final String RESULT_SUCCESS= "success";
 	public final String RESULT_FAILED= "failed";
+	public final String ROLE_ADMIN= "127";
+	
+	public final int RESULT_CODE_FAILED = 404;
+	public final int RESULT_CODE_SUCCESS = 200;
 }

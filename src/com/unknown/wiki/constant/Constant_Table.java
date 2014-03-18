@@ -1,9 +1,6 @@
 package com.unknown.wiki.constant;
 
-public final class Constant_Table {
-	private Constant_Table(){
-		
-	}
+public interface Constant_Table {
 	public static final String TABLE_COMPANY = "company";
 	public static final String TABLE_HR = "hr";
 	public static final String TABLE_CONTACT = "contact";

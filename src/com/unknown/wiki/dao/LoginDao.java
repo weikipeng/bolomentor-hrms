@@ -3,12 +3,13 @@ package com.unknown.wiki.dao;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.Map.Entry;
+import java.util.Map;
+
+import net.sf.json.JSONObject;
 
 import com.mysql.jdbc.PreparedStatement;
-import com.unknown.wiki.bean.Job;
 import com.unknown.wiki.bean.W_User;
+import com.unknown.wiki.constant.Constant_Column;
 import com.unknown.wiki.constant.Constant_Table;
 
 public class LoginDao {
@@ -90,4 +91,25 @@ public class LoginDao {
 		
 		return user;
 	}
+	
+	public static final boolean isLogin(Map<String,String[]> requestMap){
+		boolean result = false;
+//		JSONObject userObject = requestMap.containsKey(Constant_Table.TABLE_USER) ? JSONObject.fromObject(requestMap.get(Constant_Table.TABLE_USER)[0]):null;
+		JSONObject userObject = getUserObject(requestMap);
+		if(userObject != null){
+			int userId = userObject.optInt(Constant_Column.COLUMN_ID); 
+			int role = userObject.optInt(Constant_Column.COLUMN_ROLE); 
+			
+			if(userId  >0 || role >0){
+				result = true;
+			}
+		}
+		
+		return result;
+	}
+	
+	public static final JSONObject getUserObject(Map<String,String[]> requestMap){
+		return requestMap.containsKey(Constant_Table.TABLE_USER) ? JSONObject.fromObject(requestMap.get(Constant_Table.TABLE_USER)[0]):null;
+	}
+	
 }

@@ -30,6 +30,7 @@ import com.unknown.wiki.dao.CompanyDao;
 import com.unknown.wiki.dao.ContactDao;
 import com.unknown.wiki.dao.DataBaseDao;
 import com.unknown.wiki.dao.HRDao;
+import com.unknown.wiki.dao.LoginDao;
 import com.unknown.wiki.w_enum.ContactInfoType;
 import com.unknown.wiki.w_enum.ContactType;
 
@@ -132,40 +133,60 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet{
 		}
 //		Map<String,String[]> requestMap = request.getParameterMap();
 		
-		DataBaseDao dataBaseDao = new DataBaseDao();
-		String action = requestMap.containsKey(ACTION) ? requestMap.get(ACTION)[0]:null;
 //		JSONObject parameters = requestMap.containsKey(DATA) ? JSONObject.fromObject(requestMap.get(DATA)[0]):null;
+		JSONObject resultObject = null;
+		boolean isLogin = LoginDao.isLogin(requestMap);
+		if(isLogin){
+			resultObject = doActions(requestMap);
+		}else{
+			resultObject = new JSONObject();
+			resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+			resultObject.put(KEY_MESSAGE, "请登录！");			
+		}
+		
+		printWriter.write(resultObject.toString());
+
+		printWriter.flush();
+		printWriter.close();
+	}
+
+	private JSONObject doActions(Map<String, String[]> requestMap) {
+		DataBaseDao dataBaseDao = new DataBaseDao();
+		JSONObject resultObject = new JSONObject();
+		String action = requestMap.containsKey(ACTION) ? requestMap.get(ACTION)[0]:null;
 		System.out.println("action ------"+action+"------");
+		JSONObject parameters = requestMap.containsKey(ACTION_DATA) ? JSONObject.fromObject(requestMap.get(ACTION_DATA)[0]):new JSONObject();
+		
 		if(ACTION_ADD.equals(action)){
 //			Company company = CompanyDao.insertCompany(dataBaseDao, parameters);
 			Company company = null;
-			JSONObject jsonObject = new JSONObject();
+			
 			if(company!=null){
 //				resp.setContentType("application/json; charset=utf-8");
 //				resp.setHeader("pragma", "no-cache");
 //				resp.setHeader("cache-control", "no-cache");
 
 //				printWriter.write(company.toJsonString());
-				jsonObject.put(KEY_RESULT, RESULT_SUCCESS);
-				jsonObject.put(KEY_MESSAGE, "添加公司成功！");
+				resultObject.put(KEY_RESULT, RESULT_SUCCESS);
+				resultObject.put(KEY_MESSAGE, "添加公司成功！");
 			}else{
-				jsonObject.put(KEY_RESULT, RESULT_FAILED);
-				jsonObject.put(KEY_MESSAGE, "添加公司失败！");
+				resultObject.put(KEY_RESULT, RESULT_FAILED);
+				resultObject.put(KEY_MESSAGE, "添加公司失败！");
 			}
 
-			printWriter.write(jsonObject.toString());
+			
 			
 //			new String(request.getParameter("username").getBytes("ISO-8859-1"),"utf-8");
 			
 		}else if(ACTION_DELETE.equals(action)){
 			boolean isSuccess = CompanyDao.deleteCompany(dataBaseDao, parameters);
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put(KEY_RESULT, isSuccess?RESULT_SUCCESS:RESULT_FAILED);
-			jsonObject.put(KEY_MESSAGE, isSuccess?"删除公司成功！":"删除公司失败！");
-			printWriter.write(jsonObject.toString());
+			resultObject.put(KEY_RESULT, isSuccess?RESULT_SUCCESS:RESULT_FAILED);
+			resultObject.put(KEY_MESSAGE, isSuccess?"删除公司成功！":"删除公司失败！");
+			
 		}else if(ACTION_QUERY.equals(action)){
+			JSONObject userObject = LoginDao.getUserObject(requestMap);
 			JSONArray jsonArray = new JSONArray();
-			ArrayList<Company> arrayList = CompanyDao.queryCompany(dataBaseDao, parameters);
+			ArrayList<Company> arrayList = CompanyDao.queryCompany(dataBaseDao,userObject,parameters);
 			int size = arrayList.size();
 			HashMap<String , String> hrMeters = new HashMap<String, String>();
 			HashMap<String , String> contactMeters = new HashMap<String, String>();
@@ -181,7 +202,9 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet{
 				
 				jsonArray.add(company.toJsonString());
 			}
-			printWriter.write(jsonArray.toString());
+			resultObject.put(Constant_Table.TABLE_COMPANY, jsonArray);
+			resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
+			resultObject.put(KEY_MESSAGE,RESULT_SUCCESS);
 		}else if(ACTION_UPDATE.equals(action)){
 //			boolean isSuccess = CompanyDao.updateCompany(dataBaseDao, parameters);
 //			JSONObject jsonObject = new JSONObject();
@@ -211,18 +234,16 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet{
 					if(isSuccess){
 						isSuccess = CompanyDao.updateCompany(dataBaseDao, companyObject);
 					}
-					JSONObject jsonObject = new JSONObject();
-					jsonObject.put(KEY_RESULT, isSuccess?RESULT_SUCCESS:RESULT_FAILED);
-					jsonObject.put(KEY_MESSAGE, isSuccess?"更新公司信息成功！":"更新公司信息失败！");
-					printWriter.write(jsonObject.toString());
+					resultObject.put(KEY_RESULT, isSuccess?RESULT_SUCCESS:RESULT_FAILED);
+					resultObject.put(KEY_MESSAGE, isSuccess?"更新公司信息成功！":"更新公司信息失败！");
+					
 				}
 			}
 		}
 		
 		dataBaseDao.close();
-
-		printWriter.flush();
-		printWriter.close();
+		
+		return resultObject;
 	}
 
 }

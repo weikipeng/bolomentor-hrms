@@ -21,50 +21,50 @@ public class CompanyJobDao implements Constant_Column{
 	/**查询或插入公司工作*/
 	public static CompanyJob queryOrInsertCompanyJob(DataBaseDao dataBaseDao,Map<String, String> parameters){
 		CompanyJob companyJob = null;
-		if(dataBaseDao != null){
-			HashMap<String, String> queryMap = new HashMap<String, String>();
-			if(parameters.containsKey(COLUMN_COMPANYNAME)){
-				Company company = null;
-				queryMap.put(COLUMN_NAME, parameters.get(COLUMN_COMPANYNAME));
-				ArrayList<Company> companyList = CompanyDao.queryCompany(dataBaseDao, queryMap);
-				if(companyList.size()>0){
-					company = companyList.get(0);
-				}
-				if(company == null){
-					return insertCompanyJobUnknown(dataBaseDao, parameters);
-				}
-				
-				parameters.remove(COLUMN_COMPANYNAME);
-				parameters.put(COLUMN_COMPANYID,String.valueOf(company.getId()));
-				
-			}else if(!parameters.containsKey(COLUMN_COMPANYID)){
-				return null;
-			}
-			
-			if(parameters.containsKey(COLUMN_JOBNAME)){
-				Job job = null;
-				queryMap.put(COLUMN_NAME, parameters.get(COLUMN_JOBNAME));
-				ArrayList<Job> jobList = JobDao.queryJob(dataBaseDao, queryMap);
-				if(jobList.size()>0){
-					job = jobList.get(0);
-				}
-				
-				if(job == null){
-					return insertCompanyJobUnknown(dataBaseDao, parameters);
-				}
-				parameters.remove(COLUMN_JOBNAME);
-				parameters.put(COLUMN_JOBID,String.valueOf(job.getId()));
-			}else if(!parameters.containsKey(COLUMN_JOBID)){
-				return null;
-			}
-			
-			ArrayList<CompanyJob> companyJobList = queryCompanyJob(dataBaseDao, parameters);
-			if(companyJobList.size()>0){
-				companyJob = companyJobList.get(0);
-			}else{
-				return insertCompanyJob(dataBaseDao, parameters);
-			}
-		}
+//		if(dataBaseDao != null){
+//			HashMap<String, String> queryMap = new HashMap<String, String>();
+//			if(parameters.containsKey(COLUMN_COMPANYNAME)){
+//				Company company = null;
+//				queryMap.put(COLUMN_NAME, parameters.get(COLUMN_COMPANYNAME));
+//				ArrayList<Company> companyList = CompanyDao.queryCompany(dataBaseDao, queryMap);
+//				if(companyList.size()>0){
+//					company = companyList.get(0);
+//				}
+//				if(company == null){
+//					return insertCompanyJobUnknown(dataBaseDao, parameters);
+//				}
+//				
+//				parameters.remove(COLUMN_COMPANYNAME);
+//				parameters.put(COLUMN_COMPANYID,String.valueOf(company.getId()));
+//				
+//			}else if(!parameters.containsKey(COLUMN_COMPANYID)){
+//				return null;
+//			}
+//			
+//			if(parameters.containsKey(COLUMN_JOBNAME)){
+//				Job job = null;
+//				queryMap.put(COLUMN_NAME, parameters.get(COLUMN_JOBNAME));
+//				ArrayList<Job> jobList = JobDao.queryJob(dataBaseDao, queryMap);
+//				if(jobList.size()>0){
+//					job = jobList.get(0);
+//				}
+//				
+//				if(job == null){
+//					return insertCompanyJobUnknown(dataBaseDao, parameters);
+//				}
+//				parameters.remove(COLUMN_JOBNAME);
+//				parameters.put(COLUMN_JOBID,String.valueOf(job.getId()));
+//			}else if(!parameters.containsKey(COLUMN_JOBID)){
+//				return null;
+//			}
+//			
+//			ArrayList<CompanyJob> companyJobList = queryCompanyJob(dataBaseDao, parameters);
+//			if(companyJobList.size()>0){
+//				companyJob = companyJobList.get(0);
+//			}else{
+//				return insertCompanyJob(dataBaseDao, parameters);
+//			}
+//		}
 		return companyJob;
 	}
 	
@@ -125,64 +125,64 @@ public class CompanyJobDao implements Constant_Column{
 	
 	public static CompanyJob insertCompanyJobUnknown(DataBaseDao dataBaseDao,Map<String, String> parameters){
 		CompanyJob companyJob = null;
-		if(dataBaseDao != null){
-			long companyId = -1;
-			HashMap<String, String> queryMap = new HashMap<String, String>();
-			if(parameters.containsKey(COLUMN_COMPANYNAME)){
-				queryMap.put(COLUMN_NAME, parameters.get(COLUMN_COMPANYNAME));
-				ArrayList<Company> companyList = CompanyDao.queryCompany(dataBaseDao, queryMap);
-				Company company = null;
-				if(companyList.size()>0){
-					company = companyList.get(0);
-				}else{
-					company = CompanyDao.insertCompany(dataBaseDao, queryMap);
-				}
-				
-				if(company == null){
-					return null;
-				}
-				
-				parameters.remove(COLUMN_COMPANYNAME);
-				parameters.put(COLUMN_COMPANYID, String.valueOf(company.getId()));
-			}else{
-				if(parameters.containsKey(COLUMN_COMPANYID)){
-					companyId = Long.parseLong(parameters.get(COLUMN_COMPANYID));
-					//是否应该判断存不存在？
-				}else{
-					return null;
-				}
-			}
-			
-			
-			int jobId = -1;
-			if(parameters.containsKey(COLUMN_JOBNAME)){
-				Job job = null;
-//				HashMap<String, String> queryMap = new HashMap<String, String>();
-				queryMap.put(COLUMN_NAME, parameters.get(COLUMN_JOBNAME));
-				ArrayList<Job> jobList = JobDao.queryJob(dataBaseDao, queryMap);
-				if(jobList.size()>0){
-					job = jobList.get(0);
-				}else{
-					job = JobDao.insertJob(dataBaseDao, queryMap);
-				}
-				
-				if(job == null){
-					return null;
-				}
-				
-				jobId = job.getId();
-				parameters.remove(COLUMN_JOBNAME);
-				parameters.put(COLUMN_JOBID, String.valueOf(jobId));
-			}else{
-				if(parameters.containsKey(COLUMN_JOBID)){
-					jobId = Integer.parseInt(parameters.get(COLUMN_JOBID));
-				}else{
-					return null;
-				}
-			}
-			
-			return insertCompanyJob(dataBaseDao, parameters);
-		}
+//		if(dataBaseDao != null){
+//			long companyId = -1;
+//			HashMap<String, String> queryMap = new HashMap<String, String>();
+//			if(parameters.containsKey(COLUMN_COMPANYNAME)){
+//				queryMap.put(COLUMN_NAME, parameters.get(COLUMN_COMPANYNAME));
+//				ArrayList<Company> companyList = CompanyDao.queryCompany(dataBaseDao, queryMap);
+//				Company company = null;
+//				if(companyList.size()>0){
+//					company = companyList.get(0);
+//				}else{
+//					company = CompanyDao.insertCompany(dataBaseDao, queryMap);
+//				}
+//				
+//				if(company == null){
+//					return null;
+//				}
+//				
+//				parameters.remove(COLUMN_COMPANYNAME);
+//				parameters.put(COLUMN_COMPANYID, String.valueOf(company.getId()));
+//			}else{
+//				if(parameters.containsKey(COLUMN_COMPANYID)){
+//					companyId = Long.parseLong(parameters.get(COLUMN_COMPANYID));
+//					//是否应该判断存不存在？
+//				}else{
+//					return null;
+//				}
+//			}
+//			
+//			
+//			int jobId = -1;
+//			if(parameters.containsKey(COLUMN_JOBNAME)){
+//				Job job = null;
+////				HashMap<String, String> queryMap = new HashMap<String, String>();
+//				queryMap.put(COLUMN_NAME, parameters.get(COLUMN_JOBNAME));
+//				ArrayList<Job> jobList = JobDao.queryJob(dataBaseDao, queryMap);
+//				if(jobList.size()>0){
+//					job = jobList.get(0);
+//				}else{
+//					job = JobDao.insertJob(dataBaseDao, queryMap);
+//				}
+//				
+//				if(job == null){
+//					return null;
+//				}
+//				
+//				jobId = job.getId();
+//				parameters.remove(COLUMN_JOBNAME);
+//				parameters.put(COLUMN_JOBID, String.valueOf(jobId));
+//			}else{
+//				if(parameters.containsKey(COLUMN_JOBID)){
+//					jobId = Integer.parseInt(parameters.get(COLUMN_JOBID));
+//				}else{
+//					return null;
+//				}
+//			}
+//			
+//			return insertCompanyJob(dataBaseDao, parameters);
+//		}
 		return companyJob;
 	}
 	
