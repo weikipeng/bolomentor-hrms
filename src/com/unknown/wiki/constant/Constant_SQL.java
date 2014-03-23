@@ -2,21 +2,27 @@ package com.unknown.wiki.constant;
 //import com
 public interface Constant_SQL{
 	
-	public final String SQL_INSERTPROJECT = "insert into ";
+	public final String SQL_INSERT = "insert into ";
+	
+	public final String SQL_SET = " set ";
 
 	public final String SQL_QUERY = "select * from ";
 	
-	public final String SQL_INSERT_COMPANY = "insert into " + Constant_Table.TABLE_COMPANY + " set ";
+//	public final String SQL_INSERT_COMPANY = "insert into " + Constant_Table.TABLE_COMPANY + " set ";
 
 	public final String SQL_AND = " and ";
 
 	public final String SQL_WHERE = " where ";
 
 	public final String SQL_EQ = " = ";
+
+	public final String SQL_QUESTIONMARK = "?";
 	
 	public final String SQL_SINGLE_QUOTES = "'";
 	
 	public final String SQL_SEMICOLON = ";";
+	
+	public final String SQL_COMMA = ",";
 	
 	
 //	while (iterator.hasNext()) {

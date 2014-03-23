@@ -69,7 +69,7 @@ public interface Constant_Column {
 //	public static final String COLUMN_COMPANYID = "companyId";
 	public static final String COLUMN_COMPANYNAME = "companyName";
 	public static final String COLUMN_HRNAME = "HRName";
-	public static final String COLUMN_HRId = "HRId";
+	public static final String COLUMN_HRID = "HRId";
 	public static final String COLUMN_JOBID = "jobId";
 	public static final String COLUMN_JOBNAME = "jobName";
 	public static final String COLUMN_BELONGUSERID = "belongUserId";
@@ -83,4 +83,11 @@ public interface Constant_Column {
 	public static final String COLUMN_USERNAME = "username";
 	public static final String COLUMN_PASSWORD = "password";
 	public static final String COLUMN_ROLE = "role";
+	public static final String COLUMN_NICKNAME = "nickName";
+	public static final String COLUMN_AVATAR = "avatar";
+	
+	//Record
+	public static final String COLUMN_DATE = "date";
+	public static final String COLUMN_CONTENT = "content";
+	
 }

@@ -16,9 +16,10 @@ import com.unknown.wiki.bean.Company;
 import com.unknown.wiki.bean.CompanyJob;
 import com.unknown.wiki.bean.Project;
 import com.unknown.wiki.constant.Constant_Column;
+import com.unknown.wiki.constant.Constant_SQL;
 import com.unknown.wiki.constant.Constant_Table;
 
-public class ProjectDao implements Constant_Column{
+public class ProjectDao implements Constant_Column,Constant_SQL{
 	/**插入Project*/
 	public static Project insertProjectUnknown(DataBaseDao dataBaseDao,Map<String, String> parameters){
 		Project project = null;
@@ -73,7 +74,7 @@ public class ProjectDao implements Constant_Column{
 				sb.append("',");
 			}
 			sb.deleteCharAt(sb.length()-1);
-			sb.append(";");
+			sb.append(SQL_SEMICOLON);
 			
 			System.out.println("执行的sql语句为			" +	sb.toString());
 			
@@ -90,7 +91,7 @@ public class ProjectDao implements Constant_Column{
 						sb = new StringBuffer();
 						sb.append("select * from ");
 						sb.append(Constant_Table.TABLE_PROJECT);
-						sb.append(" where ");
+						sb.append(SQL_WHERE);
 						sb.append(COLUMN_ID);
 						sb.append(" = ");
 						sb.append(id);
@@ -118,22 +119,22 @@ public class ProjectDao implements Constant_Column{
 			StringBuffer sb = new StringBuffer();
 			sb.append("delete from ");
 			sb.append(Constant_Table.TABLE_PROJECT);
-			sb.append(" where ");
+			sb.append(SQL_WHERE);
 			Iterator<Entry<String, String>> iterator = parameters.entrySet().iterator();
 			int count = 0;
 			while (iterator.hasNext()) {
 				Entry<String, String> entry = iterator.next();
 
 				if(count != 0){
-					sb.append(" and ");
+					sb.append(SQL_AND);
 				}
 				sb.append(entry.getKey());
 				sb.append("= '");
 				sb.append(entry.getValue());
-				sb.append("'");
+				sb.append(SQL_SINGLE_QUOTES);
 				count ++;
 			}
-			sb.append(";");
+			sb.append(SQL_SEMICOLON);
 			
 			System.out.println("执行的sql语句为			" +	sb.toString());
 			try {
@@ -164,17 +165,17 @@ public class ProjectDao implements Constant_Column{
 			while (iterator.hasNext()) {
 				Entry<String, String> entry = iterator.next();
 				if(count != 0){
-					sb.append(" and ");
+					sb.append(SQL_AND);
 				}else{
-					sb.append(" where ");
+					sb.append(SQL_WHERE);
 				}
 				sb.append(entry.getKey());
 				sb.append("= '");
 				sb.append(entry.getValue());
-				sb.append("'");
+				sb.append(SQL_SINGLE_QUOTES);
 				count++;
 			}
-			sb.append(";");
+			sb.append(SQL_SEMICOLON);
 			
 			System.out.println("执行的sql语句为			" +	sb.toString());
 			
@@ -217,19 +218,19 @@ public class ProjectDao implements Constant_Column{
 			while(iterator.hasNext()){
 				Entry<String, String> entry = iterator.next();
 				if(count > 0){
-					sb.append(" and ");
+					sb.append(SQL_AND);
 				}else{
-					sb.append(" where ");
+					sb.append(SQL_WHERE);
 				}
 
 				sb.append(entry.getKey());
 				sb.append("= '");
 				sb.append(entry.getValue());
-				sb.append("'");
+				sb.append(SQL_SINGLE_QUOTES);
 				count ++;
 			}
 			
-			sb.append(";");
+			sb.append(SQL_SEMICOLON);
 			
 			System.out.println("执行的sql语句为			" +	sb.toString());
 			

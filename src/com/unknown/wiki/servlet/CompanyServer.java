@@ -1,8 +1,6 @@
 package com.unknown.wiki.servlet;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,9 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-
-import sun.swing.MenuItemLayoutHelper.ColumnAlignment;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -31,14 +26,14 @@ import com.unknown.wiki.dao.ContactDao;
 import com.unknown.wiki.dao.DataBaseDao;
 import com.unknown.wiki.dao.HRDao;
 import com.unknown.wiki.dao.LoginDao;
-import com.unknown.wiki.w_enum.ContactInfoType;
+import com.unknown.wiki.dao.RecordDao;
 import com.unknown.wiki.w_enum.ContactType;
 
 /**
  * Servlet implementation class CompanyServer
  */
 @WebServlet(description = "company server", urlPatterns = { "/company" })
-public class CompanyServer extends HttpServlet implements Constant_Servlet{
+public class CompanyServer extends HttpServlet implements Constant_Servlet,Constant_Table,Constant_Column{
 	private static final long serialVersionUID = 1L;
        
     /**
@@ -144,6 +139,8 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet{
 			resultObject.put(KEY_MESSAGE, "请登录！");			
 		}
 		
+		System.out.println("返回------>"+resultObject.toString());
+		
 		printWriter.write(resultObject.toString());
 
 		printWriter.flush();
@@ -206,10 +203,75 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet{
 			resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
 			resultObject.put(KEY_MESSAGE,RESULT_SUCCESS);
 		}else if(ACTION_UPDATE.equals(action)){
-//			boolean isSuccess = CompanyDao.updateCompany(dataBaseDao, parameters);
-//			JSONObject jsonObject = new JSONObject();
-//			jsonObject.put(KEY_RESULT, isSuccess?RESULT_SUCCESS:RESULT_FAILED);
-//			jsonObject.put(KEY_MESSAGE, isSuccess?"删除公司成功！":"删除公司失败！");
+			JSONObject userObject = LoginDao.getUserObject(requestMap);
+			JSONArray jsonArray = new JSONArray();
+			
+			JSONObject queryObject = new JSONObject();
+			
+			JSONObject companyObject = parameters.getJSONObject(TABLE_COMPANY);
+			
+			if(companyObject != null){
+				queryObject.put(COLUMN_ID, companyObject.optLong(COLUMN_ID, -1));
+				ArrayList<Company> arrayList = CompanyDao.queryCompany(dataBaseDao,userObject,queryObject);
+				if(arrayList.size()>0){
+					if(companyObject.containsKey(TABLE_HR)){
+						JSONArray hrArray = companyObject.getJSONArray(TABLE_HR);
+						companyObject.remove(TABLE_HR);
+						
+						for(int i=0;i<hrArray.size();i++){
+							HRDao.InsertOrUpdateHR(dataBaseDao, hrArray.optJSONObject(i));
+						}
+						
+						System.out.println("											");
+						System.out.println("hrArray------"+hrArray.toString());
+					}
+					
+					if(companyObject.containsKey(TABLE_RECORD)){
+						JSONArray recordArray = companyObject.getJSONArray(TABLE_RECORD);
+						companyObject.remove(TABLE_RECORD);
+						for(int i=0;i<recordArray.size();i++){
+							RecordDao.insertOrUpdateRecord(dataBaseDao, recordArray.optJSONObject(i));
+						}
+					}
+					
+					if(companyObject.containsKey(TABLE_RECORDPLAN)){
+						JSONArray recordPlanArray = companyObject.getJSONArray(TABLE_RECORDPLAN);
+						companyObject.remove(TABLE_RECORDPLAN);
+						for(int i=0;i<recordPlanArray.size();i++){
+							RecordDao.insertOrUpdateRecord(dataBaseDao, recordPlanArray.optJSONObject(i));
+						}
+					}
+					
+					
+//					boolean result = CompanyDao.updateCompany(dataBaseDao, companyObject);
+				}else{
+					resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+					resultObject.put(KEY_MESSAGE,"没有存在该客户的信息");
+				}
+			}else{
+				resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+				resultObject.put(KEY_MESSAGE,"传入参数错误！");
+			}
+			
+			
+//			int size = arrayList.size();
+//			HashMap<String , String> hrMeters = new HashMap<String, String>();
+//			HashMap<String , String> contactMeters = new HashMap<String, String>();
+//			for(int i=0;i<size;i++){
+//				Company company = arrayList.get(i);
+//				hrMeters.clear();
+//				contactMeters.clear();
+//				hrMeters.put(Constant_Column.COLUMN_COMPANYID, String.valueOf(company.getId()));
+//				company.setHrList(HRDao.queryHR(dataBaseDao, hrMeters));
+//				contactMeters.put(Constant_Column.COLUMN_TYPE, String.valueOf(ContactType.COMPANY.ordinal()));
+//				contactMeters.put(Constant_Column.COLUMN_TYPEID, String.valueOf(company.getId()));
+//				company.setContactList(ContactDao.queryContact(dataBaseDao, contactMeters));
+//				
+//				jsonArray.add(company.toJsonString());
+//			}
+//			resultObject.put(Constant_Table.TABLE_COMPANY, jsonArray);
+//			resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
+//			resultObject.put(KEY_MESSAGE,RESULT_SUCCESS);
 		}else if(null ==action || "".equals(action)){
 			System.out.println("------执行新接口------");
 			JSONObject dataObject = requestMap.containsKey(DATA) ? JSONObject.fromObject(requestMap.get(DATA)[0]):null;
@@ -229,7 +291,7 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet{
 					String telephone = companyObject.optString(Constant_Column.COLUMN_TELEPHONE);
 					boolean isSuccess = false;
 					if(telephone!=null){
-						isSuccess = ContactDao.insertOrUpdateContact(dataBaseDao,companyObject);
+						isSuccess = ContactDao.insertOrUpdateContactOld(dataBaseDao,companyObject);
 					}
 					if(isSuccess){
 						isSuccess = CompanyDao.updateCompany(dataBaseDao, companyObject);

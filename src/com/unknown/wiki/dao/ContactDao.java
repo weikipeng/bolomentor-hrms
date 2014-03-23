@@ -14,15 +14,16 @@ import net.sf.json.JSONObject;
 
 import com.unknown.wiki.bean.Contact;
 import com.unknown.wiki.constant.Constant_Column;
+import com.unknown.wiki.constant.Constant_SQL;
 import com.unknown.wiki.constant.Constant_Servlet;
 import com.unknown.wiki.constant.Constant_Table;
 import com.unknown.wiki.w_enum.ContactInfoType;
 import com.unknown.wiki.w_enum.ContactType;
 
-public class ContactDao implements Constant_Column,Constant_Servlet{
+public class ContactDao implements Constant_Column,Constant_Servlet,Constant_SQL{
 
 	
-	/**插入Contact*/
+	/**插入联系方式*/
 	public static Contact insertContact(DataBaseDao dataBaseDao,Map<String, String> parameters){
 		Contact Contact = null;
 		if(dataBaseDao != null){
@@ -42,7 +43,7 @@ public class ContactDao implements Constant_Column,Constant_Servlet{
 				sb.append("',");
 			}
 			sb.deleteCharAt(sb.length()-1);
-			sb.append(";");
+			sb.append(SQL_SEMICOLON);
 			
 			System.out.println("执行的sql语句为			" +	sb.toString());
 			
@@ -59,7 +60,7 @@ public class ContactDao implements Constant_Column,Constant_Servlet{
 						sb = new StringBuffer();
 						sb.append("select * from ");
 						sb.append(Constant_Table.TABLE_CONTACT);
-						sb.append(" where ");
+						sb.append(SQL_WHERE);
 						sb.append(COLUMN_ID);
 						sb.append(" = ");
 						sb.append(id);
@@ -77,7 +78,7 @@ public class ContactDao implements Constant_Column,Constant_Servlet{
 		return Contact;
 	}
 	
-	/**删除公司*/
+	/**删除联系方式*/
 	public static boolean deleteContact(DataBaseDao dataBaseDao,Map<String, String> parameters){
 		boolean result = false;
 		if(dataBaseDao != null){
@@ -87,22 +88,22 @@ public class ContactDao implements Constant_Column,Constant_Servlet{
 			StringBuffer sb = new StringBuffer();
 			sb.append("delete from ");
 			sb.append(Constant_Table.TABLE_CONTACT);
-			sb.append(" where ");
+			sb.append(SQL_WHERE);
 			Iterator<Entry<String, String>> iterator = parameters.entrySet().iterator();
 			int count = 0;
 			while (iterator.hasNext()) {
 				Entry<String, String> entry = iterator.next();
 
 				if(count != 0){
-					sb.append(" and ");
+					sb.append(SQL_AND);
 				}
 				sb.append(entry.getKey());
 				sb.append("= '");
 				sb.append(entry.getValue());
-				sb.append("'");
+				sb.append(SQL_SINGLE_QUOTES);
 				count ++;
 			}
-			sb.append(";");
+			sb.append(SQL_SEMICOLON);
 			
 			System.out.println("执行的sql语句为			" +	sb.toString());
 			try {
@@ -119,7 +120,7 @@ public class ContactDao implements Constant_Column,Constant_Servlet{
 		return result;
 	}
 	
-	/**查询公司*/
+	/**查询联系方式*/
 	public static ArrayList<Contact> queryContact(DataBaseDao dataBaseDao,Map<String, String> parameters){
 		ArrayList<Contact> result = new ArrayList<Contact>();
 		if(dataBaseDao != null){
@@ -133,20 +134,20 @@ public class ContactDao implements Constant_Column,Constant_Servlet{
 			while (iterator.hasNext()) {
 				Entry<String, String> entry = iterator.next();
 				if(count != 0){
-					sb.append(" and ");
+					sb.append(SQL_AND);
 				}else{
-					sb.append(" where ");
+					sb.append(SQL_WHERE);
 				}
 				sb.append(entry.getKey());
 				sb.append("= '");
 				sb.append(entry.getValue());
-				sb.append("'");
+				sb.append(SQL_SINGLE_QUOTES);
 				count++;
 			}
 //			if(count>0){
 //				sb.deleteCharAt(sb.length()-1);
 //			}
-			sb.append(";");
+			sb.append(SQL_SEMICOLON);
 			
 			System.out.println("执行的sql语句为			" +	sb.toString());
 			
@@ -163,7 +164,7 @@ public class ContactDao implements Constant_Column,Constant_Servlet{
 		return result;
 	}
 	
-	/**更新公司*/
+	/**更新联系方式*/
 	public static boolean updateContact(DataBaseDao dataBaseDao,Map<String, String> parameters,Map<String, String> values){
 		boolean isSuccess = false;
 		if(dataBaseDao != null){
@@ -189,19 +190,19 @@ public class ContactDao implements Constant_Column,Constant_Servlet{
 			while(iterator.hasNext()){
 				Entry<String, String> entry = iterator.next();
 				if(count > 0){
-					sb.append(" and ");
+					sb.append(SQL_AND);
 				}else{
-					sb.append(" where ");
+					sb.append(SQL_WHERE);
 				}
 
 				sb.append(entry.getKey());
 				sb.append("= '");
 				sb.append(entry.getValue());
-				sb.append("'");
+				sb.append(SQL_SINGLE_QUOTES);
 				count ++;
 			}
 			
-			sb.append(";");
+			sb.append(SQL_SEMICOLON);
 			
 			System.out.println("执行的sql语句为			" +	sb.toString());
 			
@@ -265,7 +266,7 @@ public class ContactDao implements Constant_Column,Constant_Servlet{
 		boolean result = ContactDao.updateContact(dataBaseDao, parameters, values);*/
 	}
 
-	public static boolean insertOrUpdateContact(DataBaseDao dataBaseDao,JSONObject companyObject) {
+	public static boolean insertOrUpdateContactOld(DataBaseDao dataBaseDao,JSONObject companyObject) {
 		boolean isSuccess = false;
 		if(dataBaseDao != null){
 			String companyId = companyObject.optString(COLUMN_ID);
@@ -299,6 +300,46 @@ public class ContactDao implements Constant_Column,Constant_Servlet{
 				contact = insertContact(dataBaseDao, values);
 				return contact == null;
 			}
+		}
+		return isSuccess;
+	}
+	
+	public static boolean insertOrUpdateContact(DataBaseDao dataBaseDao,JSONObject contactObject) {
+		boolean isSuccess = false;
+		if(dataBaseDao != null){
+			long id = -1;
+			
+			HashMap<String, String> queryMap = new HashMap<String, String>();
+			HashMap<String, String> values = new HashMap<String, String>();
+			
+			if(contactObject.containsKey(COLUMN_ID)){
+				id = contactObject.getLong(COLUMN_ID);
+				contactObject.remove(COLUMN_ID);
+			}
+
+			queryMap.put(COLUMN_ID, String.valueOf(id));
+			
+			Contact contact = null;
+			
+			Iterator<String> iterator = contactObject.keys();
+			while(iterator.hasNext()){
+				String key = iterator.next();
+				values.put(key, contactObject.optString(key));
+			}
+
+			if(id <0){
+				contact = insertContact(dataBaseDao, values);
+			}else{
+				ArrayList<Contact> contactList = queryContact(dataBaseDao, queryMap);
+				if(contactList.size() <=0){
+					contact = insertContact(dataBaseDao, values);
+				}else{
+					contact = contactList.get(0);
+					isSuccess = updateContact(dataBaseDao, queryMap, values);
+				}
+			}
+			
+			isSuccess = contact!=null;
 		}
 		return isSuccess;
 	}

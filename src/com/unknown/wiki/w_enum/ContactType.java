@@ -3,7 +3,8 @@ package com.unknown.wiki.w_enum;
 public enum ContactType {
 	COMPANY("公司"),
 	HR("HR"),
-	PERSON("个人");
+	PERSON("个人"),
+	USER("用户");
 
 	
 	private ContactType(String desc) {

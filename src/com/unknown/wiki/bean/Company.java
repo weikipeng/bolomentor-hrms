@@ -3,11 +3,12 @@ package com.unknown.wiki.bean;
 import java.util.ArrayList;
 
 import com.unknown.wiki.constant.Constant_Column;
+import com.unknown.wiki.constant.Constant_Table;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-public class Company implements Constant_Column{
+public class Company implements Constant_Column,Constant_Table{
 	private long id;
 	private String name;
 	private String EnglishName;
@@ -22,12 +23,11 @@ public class Company implements Constant_Column{
 	private String introduction;
 	private ArrayList<HR> hrList;
 	private ArrayList<Contact> contactList;
+	private ArrayList<Record> recordList;
 
 	public long getId() {
 		return id;
 	}
-
-
 
 	public void setId(long id) {
 		this.id = id;
@@ -205,6 +205,7 @@ public class Company implements Constant_Column{
 		jsonObject.put(COLUMN_NUMBER, number);
 		jsonObject.put(COLUMN_ISLISTING, isListing);
 		jsonObject.put(COLUMN_INTRODUCTION, introduction);
+		
 		if(hrList!=null){
 			int size = hrList.size();
 			if(size > 0){
@@ -229,6 +230,26 @@ public class Company implements Constant_Column{
 			}
 		}
 		
+		if(recordList!=null){
+			int size = recordList.size();
+			if(size > 0){
+				JSONArray jsonArray = new JSONArray();
+				for(int i=0;i<size;i++){
+					jsonArray.add(recordList.get(i).toJsonString());
+				}
+				
+				jsonObject.put(TABLE_RECORD, jsonArray);
+			}
+		}
+		
 		return jsonObject.toString();
+	}
+
+	public ArrayList<Record> getRecordList() {
+		return recordList;
+	}
+
+	public void setRecordList(ArrayList<Record> recordList) {
+		this.recordList = recordList;
 	}
 }

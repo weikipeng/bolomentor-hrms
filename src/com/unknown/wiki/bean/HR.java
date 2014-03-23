@@ -1,7 +1,10 @@
 package com.unknown.wiki.bean;
 
+import java.util.ArrayList;
+
 import com.unknown.wiki.constant.Constant_Column;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 public class HR implements Constant_Column{
@@ -12,6 +15,7 @@ public class HR implements Constant_Column{
 	private String gender;
 	private String occupation;
 	private int isWorking;
+	private ArrayList<Contact> contactList;
 
 	public long getId() {
 		return id;
@@ -76,11 +80,24 @@ public class HR implements Constant_Column{
 	public String toJsonString() {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put(COLUMN_ID, id);
+		jsonObject.put(COLUMN_COMPANYID, companyId);
 		jsonObject.put(COLUMN_NAME, name);
 		jsonObject.put(COLUMN_ENGLISHNAME, EnglishName);
 		jsonObject.put(COLUMN_GENDER, gender);
 		jsonObject.put(COLUMN_OCCUPATION, occupation);
 		jsonObject.put(COLUMN_ISWORKING, isWorking);
+		
+		if(contactList!=null){
+			int size = contactList.size();
+			if(size > 0){
+				JSONArray jsonArray = new JSONArray();
+				for(int i=0;i<size;i++){
+					jsonArray.add(contactList.get(i).toJsonString());
+				}
+				
+				jsonObject.put(COLUMN_CONTACT, jsonArray);
+			}
+		}
 		return jsonObject.toString();
 	}
 
@@ -92,6 +109,16 @@ public class HR implements Constant_Column{
 
 	public void setCompanyId(long companyId) {
 		this.companyId = companyId;
+	}
+
+
+	public ArrayList<Contact> getContactList() {
+		return contactList;
+	}
+
+
+	public void setContactList(ArrayList<Contact> contactList) {
+		this.contactList = contactList;
 	}
 	
 	
