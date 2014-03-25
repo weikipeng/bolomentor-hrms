@@ -53,8 +53,8 @@ public class ContactServer extends HttpServlet implements Constant_Servlet{
 		String action = request.getParameter(ACTION);
 		
 		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("pragma", "no-cache");
-		response.setHeader("cache-control", "no-cache");
+//		response.setHeader("pragma", "no-cache");
+//		response.setHeader("cache-control", "no-cache");
 		PrintWriter printWriter = response.getWriter();
 		
 		HashMap<String, String> parameters = new HashMap<String, String>();

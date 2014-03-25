@@ -144,7 +144,7 @@ public class LoginServer extends HttpServlet implements Constant_Column,Constant
 		
 		out.print(jsonObject);
 		
-//		System.out.println(jsonObject);
+		System.out.println(jsonObject);
 		
 //		out.println("<!DOCTYPE html>");
 //		out.println("<html>");

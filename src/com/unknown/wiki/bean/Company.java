@@ -10,6 +10,7 @@ import net.sf.json.JSONObject;
 
 public class Company implements Constant_Column,Constant_Table{
 	private long id;
+	private int createUserId;
 	private String name;
 	private String EnglishName;
 	private String province;
@@ -24,6 +25,7 @@ public class Company implements Constant_Column,Constant_Table{
 	private ArrayList<HR> hrList;
 	private ArrayList<Contact> contactList;
 	private ArrayList<Record> recordList;
+	private ArrayList<Record> recordPlanList;
 
 	public long getId() {
 		return id;
@@ -194,6 +196,7 @@ public class Company implements Constant_Column,Constant_Table{
 	public String toJsonString() {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put(COLUMN_ID, id);
+		jsonObject.put(COLUMN_CREATEUSERID, createUserId);
 		jsonObject.put(COLUMN_NAME, name);
 		jsonObject.put(COLUMN_ENGLISHNAME, EnglishName);
 		jsonObject.put(COLUMN_PROVINCE, province);
@@ -242,6 +245,18 @@ public class Company implements Constant_Column,Constant_Table{
 			}
 		}
 		
+		if(getRecordPlanList()!=null){
+			int size = getRecordPlanList().size();
+			if(size > 0){
+				JSONArray jsonArray = new JSONArray();
+				for(int i=0;i<size;i++){
+					jsonArray.add(getRecordPlanList().get(i).toJsonString());
+				}
+				
+				jsonObject.put(TABLE_RECORDPLAN, jsonArray);
+			}
+		}
+		
 		return jsonObject.toString();
 	}
 
@@ -251,5 +266,21 @@ public class Company implements Constant_Column,Constant_Table{
 
 	public void setRecordList(ArrayList<Record> recordList) {
 		this.recordList = recordList;
+	}
+
+	public ArrayList<Record> getRecordPlanList() {
+		return recordPlanList;
+	}
+
+	public void setRecordPlanList(ArrayList<Record> recordPlanList) {
+		this.recordPlanList = recordPlanList;
+	}
+
+	public int getCreateUserId() {
+		return createUserId;
+	}
+
+	public void setCreateUserId(int createUserId) {
+		this.createUserId = createUserId;
 	}
 }

@@ -62,7 +62,7 @@ public class ProjectDao implements Constant_Column,Constant_SQL{
 			
 			//插入
 			StringBuffer sb = new StringBuffer();
-			sb.append("insert into ");
+			sb.append(SQL_INSERT);
 			sb.append(Constant_Table.TABLE_PROJECT);
 			sb.append(" set ");
 			Iterator<Entry<String, String>> iterator = parameters.entrySet().iterator();

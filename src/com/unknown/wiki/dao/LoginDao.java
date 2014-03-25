@@ -1,19 +1,25 @@
 package com.unknown.wiki.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.sf.json.JSONObject;
 
-import com.mysql.jdbc.PreparedStatement;
-import com.unknown.wiki.bean.Company;
+import com.unknown.wiki.bean.Contact;
+import com.unknown.wiki.bean.HR;
 import com.unknown.wiki.bean.W_User;
 import com.unknown.wiki.constant.Constant_Column;
 import com.unknown.wiki.constant.Constant_SQL;
 import com.unknown.wiki.constant.Constant_Servlet;
 import com.unknown.wiki.constant.Constant_Table;
+import com.unknown.wiki.w_enum.ContactType;
 
 public class LoginDao implements Constant_Column,Constant_Servlet,Constant_SQL,Constant_Table{
 	public static final W_User login(DataBaseDao dataBaseDao,String name ,String password){
@@ -24,7 +30,7 @@ public class LoginDao implements Constant_Column,Constant_Servlet,Constant_SQL,C
 //			
 //			//插入
 //			StringBuffer sb = new StringBuffer();
-//			sb.append("insert into ");
+//			sb.append(SQL_INSERT);
 //			sb.append(Constant_Table.TABLE_JOB);
 //			sb.append(" set ");
 //			Iterator<Entry<String, String>> iterator = parameters.entrySet().iterator();
@@ -105,22 +111,76 @@ public class LoginDao implements Constant_Column,Constant_Servlet,Constant_SQL,C
 		return user;
 	}
 	
-	public static final boolean isLogin(Map<String,String[]> requestMap){
-		boolean result = false;
+	public static final W_User isLogin(DataBaseDao dataBaseDao,Map<String,String[]> requestMap){
+		W_User user = null;
 //		JSONObject userObject = requestMap.containsKey(Constant_Table.TABLE_USER) ? JSONObject.fromObject(requestMap.get(Constant_Table.TABLE_USER)[0]):null;
-		JSONObject userObject = getUserObject(requestMap);
-		if(userObject != null){
-			int userId = userObject.optInt(Constant_Column.COLUMN_ID); 
-			int role = userObject.optInt(Constant_Column.COLUMN_ROLE); 
-			
-			if(userId  >0 || role >0){
-				result = true;
+		if(dataBaseDao!=null){
+			JSONObject userObject = getUserObject(requestMap);
+			if(userObject != null){
+				int userId = userObject.optInt(Constant_Column.COLUMN_ID); 
+//				int role = userObject.optInt(Constant_Column.COLUMN_ROLE); 
+				if(userId>0){
+					HashMap<String,String> queryMap = new HashMap<String, String>();
+					queryMap.put(COLUMN_ID, String.valueOf(userId));
+					ArrayList<W_User> userList = queryUser(dataBaseDao,queryMap);
+					
+					if(userList.size()>0){
+						user = userList.get(0);
+					}
+				}
 			}
 		}
 		
-		return result;
+		return user;
 	}
 	
+	private static ArrayList<W_User> queryUser(DataBaseDao dataBaseDao,HashMap<String, String> parameters) {
+		ArrayList<W_User> result = new ArrayList<W_User>();
+		if(dataBaseDao != null){
+			Connection connection = dataBaseDao.getConnection();
+			
+			StringBuffer sb = new StringBuffer();
+			sb.append(SQL_QUERY);
+			sb.append(Constant_Table.TABLE_USER);
+			Iterator<Entry<String, String>> iterator = parameters.entrySet().iterator();
+			int count = 0;
+			while (iterator.hasNext()) {
+				Entry<String, String> entry = iterator.next();
+				if(count != 0){
+					sb.append(SQL_AND);
+				}else{
+					sb.append(SQL_WHERE);
+				}
+				sb.append(entry.getKey());
+				sb.append(SQL_EQ);
+				sb.append(SQL_SINGLE_QUOTES);
+				sb.append(entry.getValue());
+				sb.append(SQL_SINGLE_QUOTES);
+				count++;
+			}
+			sb.append(SQL_SEMICOLON);
+			
+			System.out.println("执行的sql语句为			" +	sb.toString());
+			
+			try {
+				PreparedStatement preparedStatement = connection.prepareStatement(sb.toString());
+				ResultSet resultSet = preparedStatement.executeQuery();
+//				HashMap<String, String> contactMap = new HashMap<String, String>();
+//				contactMap.put(Constant_Column.COLUMN_TYPE, String.valueOf(ContactType.HR.ordinal()));
+				while(resultSet.next()){
+					W_User hr = formatUser(resultSet);
+					result.add(hr);
+//					contactMap.put(Constant_Column.COLUMN_TYPEID, String.valueOf(hr.getId()));
+//					ArrayList<Contact> contactList = ContactDao.queryContact(dataBaseDao, contactMap);
+//					hr.setContactList(contactList);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
 	public static final JSONObject getUserObject(Map<String,String[]> requestMap){
 		return requestMap.containsKey(Constant_Table.TABLE_USER) ? JSONObject.fromObject(requestMap.get(Constant_Table.TABLE_USER)[0]):null;
 	}
@@ -133,5 +193,32 @@ public class LoginDao implements Constant_Column,Constant_Servlet,Constant_SQL,C
 		user.setNickName(resultSet.getString(COLUMN_NICKNAME));
 		user.setAvatar(resultSet.getString(COLUMN_AVATAR));
 		return user;
+	}
+
+	public static ArrayList<W_User> queryUser(DataBaseDao dataBaseDao,W_User user) {
+		ArrayList<W_User> result = new ArrayList<W_User>();
+		
+		if(dataBaseDao != null&&user!=null&&user.getId()>0 &&ROLE_ADMIN_VALUE == user.getRole()){
+			Connection connection = dataBaseDao.getConnection();
+			
+			StringBuffer sb = new StringBuffer();
+			sb.append(SQL_QUERY);
+			sb.append(Constant_Table.TABLE_USER);
+			sb.append(SQL_SEMICOLON);
+			
+			System.out.println("执行的sql语句为			" +	sb.toString());
+			
+			try {
+				PreparedStatement preparedStatement = connection.prepareStatement(sb.toString());
+				ResultSet resultSet = preparedStatement.executeQuery();
+				while(resultSet.next()){
+					W_User hr = formatUser(resultSet);
+					result.add(hr);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
 	}
 }

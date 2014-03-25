@@ -19,7 +19,7 @@ import com.unknown.wiki.constant.Constant_Servlet;
 import com.unknown.wiki.constant.Constant_Table;
 import com.unknown.wiki.w_enum.RecordType;
 
-public class RecordDao implements Constant_Column,Constant_SQL,Constant_Table{
+public class RecordDao implements Constant_Column,Constant_SQL,Constant_Table,Constant_Servlet{
 	
 	/**插入记录*/
 	public static Record insertRecord(DataBaseDao dataBaseDao,Map<String, String> parameters){
@@ -196,7 +196,7 @@ public class RecordDao implements Constant_Column,Constant_SQL,Constant_Table{
 				count++;
 			}
 			
-			if(!Constant_Servlet.ROLE_ADMIN.equals(role)){
+			if(!ROLE_ADMIN.equals(role)){
 				if(sb.indexOf(SQL_WHERE)>0){
 					sb.append(SQL_AND);
 				}else{

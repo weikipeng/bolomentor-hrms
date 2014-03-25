@@ -32,7 +32,7 @@ public class HRDao implements Constant_Column,Constant_Servlet,Constant_Table,Co
 			
 			//插入
 			StringBuffer sb = new StringBuffer();
-			sb.append("insert into ");
+			sb.append(SQL_INSERT);
 			sb.append(Constant_Table.TABLE_HR);
 			sb.append(" set ");
 			Iterator<Entry<String, String>> iterator = parameters.entrySet().iterator();
@@ -278,7 +278,6 @@ public class HRDao implements Constant_Column,Constant_Servlet,Constant_Table,Co
 		return isSuccess;
 	}
 
-	
 	private static HR formatHR(ResultSet resultSet) throws SQLException {
 		HR hr = new HR();
 		hr.setId(resultSet.getLong(COLUMN_ID));

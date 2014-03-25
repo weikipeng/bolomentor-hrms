@@ -77,7 +77,7 @@ public class CompanyJobDao implements Constant_Column,Constant_SQL{
 			
 			//插入
 			StringBuffer sb = new StringBuffer();
-			sb.append("insert into ");
+			sb.append(SQL_INSERT);
 			sb.append(Constant_Table.TABLE_COMPANYJOB);
 			sb.append(" set ");
 			Iterator<Entry<String, String>> iterator = parameters.entrySet().iterator();
