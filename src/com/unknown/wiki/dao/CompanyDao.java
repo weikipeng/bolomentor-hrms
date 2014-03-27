@@ -402,7 +402,13 @@ public class CompanyDao implements Constant_Column,Constant_SQL,Constant_Table,C
 	private static Company formatCompany(ResultSet resultSet) throws SQLException {
 		Company company = new Company();
 		company.setId(resultSet.getLong(COLUMN_ID));
+		
 		company.setCreateUserId(resultSet.getInt(COLUMN_CREATEUSERID));
+		company.setCreateDate(resultSet.getString(COLUMN_CREATEDATE));
+		
+		company.setUpdateUserId(resultSet.getInt(COLUMN_UPDATEUSERID));
+		company.setUpdateDate(resultSet.getString(COLUMN_UPDATEDATE));
+		
 		company.setName(resultSet.getString(COLUMN_NAME));
 		company.setEnglishName(resultSet.getString(COLUMN_ENGLISHNAME));
 		company.setProvince(resultSet.getString(COLUMN_PROVINCE));

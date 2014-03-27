@@ -28,6 +28,7 @@ import com.unknown.wiki.dao.DataBaseDao;
 import com.unknown.wiki.dao.HRDao;
 import com.unknown.wiki.dao.LoginDao;
 import com.unknown.wiki.dao.RecordDao;
+import com.unknown.wiki.tool.TimeUtil;
 import com.unknown.wiki.w_enum.ContactType;
 import com.unknown.wiki.w_enum.RecordType;
 
@@ -194,7 +195,7 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet,Const
 					queryMap.put(COLUMN_NAME, name);
 				}
 				ArrayList<Company> companyList = CompanyDao.queryCompany(dataBaseDao,queryMap);
-				if(companyList.size()>0){
+				if(companyList.size()<=0){
 					JSONArray hrArray = null;
 					if(companyObject.containsKey(TABLE_HR)){
 						 hrArray = companyObject.getJSONArray(TABLE_HR);
@@ -208,22 +209,21 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet,Const
 						companyObject.remove(TABLE_CONTACT);
 					}
 					
-//					if(companyObject.containsKey(TABLE_RECORD)){
-//						JSONArray recordArray = companyObject.getJSONArray(TABLE_RECORD);
-//						companyObject.remove(TABLE_RECORD);
-//						for(int i=0;i<recordArray.size();i++){
-//							RecordDao.insertOrUpdateRecord(dataBaseDao, recordArray.optJSONObject(i));
-//						}
-//					}
+					JSONArray recordArray = null;
+					if(companyObject.containsKey(TABLE_RECORD)){
+						recordArray = companyObject.getJSONArray(TABLE_RECORD);
+						companyObject.remove(TABLE_RECORD);
+					}
 					
-//					if(companyObject.containsKey(TABLE_RECORDPLAN)){
-//						JSONArray recordPlanArray = companyObject.getJSONArray(TABLE_RECORDPLAN);
-//						companyObject.remove(TABLE_RECORDPLAN);
-//						for(int i=0;i<recordPlanArray.size();i++){
-//							RecordDao.insertOrUpdateRecord(dataBaseDao, recordPlanArray.optJSONObject(i));
-//						}
-//					}
+					JSONArray recordPlanArray = null;
+					if(companyObject.containsKey(TABLE_RECORDPLAN)){
+						recordPlanArray = companyObject.getJSONArray(TABLE_RECORDPLAN);
+						companyObject.remove(TABLE_RECORDPLAN);
+					}
 					
+					
+					companyObject.put(COLUMN_CREATEUSERID, user.getId());
+					companyObject.put(COLUMN_CREATEDATE, TimeUtil.getTimeStamp());
 					Company company = CompanyDao.insertCompanyJSONObject(dataBaseDao, companyObject);
 					if(company!=null){
 						//HR
@@ -233,6 +233,8 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet,Const
 								hrObject.put(COLUMN_COMPANYID, company.getId());
 								HRDao.InsertOrUpdateHR(dataBaseDao,hrObject);
 							}
+							System.out.println("											");
+							System.out.println("hrArray------"+hrArray.toString());
 						}
 						
 						//contact
@@ -247,9 +249,21 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet,Const
 							System.out.println("contactArray------"+contactArray.toString());
 						}
 						
-						System.out.println("											");
-						System.out.println("hrArray------"+hrArray.toString());
-
+						if(recordArray!=null){
+							for(int i=0;i<recordArray.size();i++){
+								JSONObject recordObject =  recordArray.optJSONObject(i);
+								recordObject.put(COLUMN_COMPANYID, company.getId());
+								RecordDao.insertOrUpdateRecord(dataBaseDao,recordObject);
+							}
+						}
+						
+						if(recordPlanArray!=null){
+							for(int i=0;i<recordPlanArray.size();i++){
+								JSONObject recordPlanObject = recordPlanArray.optJSONObject(i);
+								recordPlanObject.put(COLUMN_COMPANYID, company.getId());
+								RecordDao.insertOrUpdateRecord(dataBaseDao,recordPlanObject);
+							}
+						}
 						
 						resultObject.put(TABLE_COMPANY, company.toJsonString());
 						resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
@@ -357,6 +371,8 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet,Const
 			JSONObject queryObject = new JSONObject();
 			
 			JSONObject companyObject = parameters.getJSONObject(TABLE_COMPANY);
+			companyObject.put(COLUMN_UPDATEUSERID, user.getId());
+			companyObject.put(COLUMN_UPDATEDATE, TimeUtil.getTimeStamp());
 			
 			if(companyObject != null){
 				queryObject.put(COLUMN_ID, companyObject.optLong(COLUMN_ID, -1));

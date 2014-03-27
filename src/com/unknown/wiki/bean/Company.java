@@ -11,6 +11,9 @@ import net.sf.json.JSONObject;
 public class Company implements Constant_Column,Constant_Table{
 	private long id;
 	private int createUserId;
+	private String createDate;
+	private int updateUserId;
+	private String updateDate;
 	private String name;
 	private String EnglishName;
 	private String province;
@@ -19,6 +22,7 @@ public class Company implements Constant_Column,Constant_Table{
 	private String intent;
 	private int headHunter;
 	private String nature;
+	/**50以下；50-150；150-500；500-1000；1000-5000；5000-10000；10000以上*/
 	private String number;
 	private int isListing;
 	private String introduction;
@@ -197,6 +201,9 @@ public class Company implements Constant_Column,Constant_Table{
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put(COLUMN_ID, id);
 		jsonObject.put(COLUMN_CREATEUSERID, createUserId);
+		jsonObject.put(COLUMN_CREATEDATE, createDate);
+		jsonObject.put(COLUMN_UPDATEUSERID, updateUserId);
+		jsonObject.put(COLUMN_UPDATEDATE, updateDate);
 		jsonObject.put(COLUMN_NAME, name);
 		jsonObject.put(COLUMN_ENGLISHNAME, EnglishName);
 		jsonObject.put(COLUMN_PROVINCE, province);
@@ -282,5 +289,29 @@ public class Company implements Constant_Column,Constant_Table{
 
 	public void setCreateUserId(int createUserId) {
 		this.createUserId = createUserId;
+	}
+
+	public String getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(String createDate) {
+		this.createDate = createDate;
+	}
+
+	public String getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(String updateDate) {
+		this.updateDate = updateDate;
+	}
+
+	public int getUpdateUserId() {
+		return updateUserId;
+	}
+
+	public void setUpdateUserId(int updateUserId) {
+		this.updateUserId = updateUserId;
 	}
 }
