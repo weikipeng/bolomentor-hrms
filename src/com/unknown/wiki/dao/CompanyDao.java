@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import com.unknown.wiki.bean.Company;
@@ -18,6 +19,7 @@ import com.unknown.wiki.constant.Constant_Column;
 import com.unknown.wiki.constant.Constant_SQL;
 import com.unknown.wiki.constant.Constant_Servlet;
 import com.unknown.wiki.constant.Constant_Table;
+import com.unknown.wiki.w_enum.Visible;
 
 public class CompanyDao implements Constant_Column,Constant_SQL,Constant_Table,Constant_Servlet{
 	
@@ -56,7 +58,7 @@ public class CompanyDao implements Constant_Column,Constant_SQL,Constant_Table,C
 						
 						long id = resultSet.getLong(1);
 						sb = new StringBuffer();
-						sb.append("select * from ");
+						sb.append(SQL_QUERY);
 						sb.append(Constant_Table.TABLE_COMPANY);
 						sb.append(SQL_WHERE);
 						sb.append(COLUMN_ID);
@@ -113,7 +115,7 @@ public class CompanyDao implements Constant_Column,Constant_SQL,Constant_Table,C
 						
 						long id = resultSet.getLong(1);
 						sb = new StringBuffer();
-						sb.append("select * from ");
+						sb.append(SQL_QUERY);
 						sb.append(Constant_Table.TABLE_COMPANY);
 						sb.append(SQL_WHERE);
 						sb.append(COLUMN_ID);
@@ -133,30 +135,105 @@ public class CompanyDao implements Constant_Column,Constant_SQL,Constant_Table,C
 		return company;
 	}
 	
+//	/**删除公司*/
+//	public static boolean deleteCompany(DataBaseDao dataBaseDao,Map<String, String> parameters){
+//		boolean result = false;
+//		if(dataBaseDao != null){
+//			Connection connection = dataBaseDao.getConnection();
+//			
+//			//删除
+//			StringBuffer sb = new StringBuffer();
+//			sb.append("delete from ");
+//			sb.append(Constant_Table.TABLE_COMPANY);
+//			sb.append(SQL_WHERE);
+//			Iterator<Entry<String, String>> iterator = parameters.entrySet().iterator();
+//			int count = 0;
+//			while (iterator.hasNext()) {
+//				Entry<String, String> entry = iterator.next();
+//
+//				if(count != 0){
+//					sb.append(SQL_AND);
+//				}
+//				sb.append(entry.getKey());
+//				sb.append("= '");
+//				sb.append(entry.getValue());
+//				sb.append(SQL_SINGLE_QUOTES);
+//				count ++;
+//			}
+//			sb.append(SQL_SEMICOLON);
+//			
+//			System.out.println("执行的sql语句为			" +	sb.toString());
+//			try {
+//				PreparedStatement preparedStatement = connection.prepareStatement(sb.toString(),PreparedStatement.RETURN_GENERATED_KEYS);
+//				int deleteResult = preparedStatement.executeUpdate();
+//				System.out.println("deleteResult --- " + deleteResult);
+//				if(deleteResult>0){
+//					result = true;
+//				}
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return result;
+//	}
+	
 	/**删除公司*/
-	public static boolean deleteCompany(DataBaseDao dataBaseDao,Map<String, String> parameters){
+	public static boolean deleteCompanyJson(W_User user,DataBaseDao dataBaseDao,JSONObject companyObject){
 		boolean result = false;
 		if(dataBaseDao != null){
 			Connection connection = dataBaseDao.getConnection();
 			
 			//删除
 			StringBuffer sb = new StringBuffer();
-			sb.append("delete from ");
-			sb.append(Constant_Table.TABLE_COMPANY);
+			sb.append(SQL_UPDATE);
+			sb.append(TABLE_COMPANY);
+			sb.append(SQL_SET);
+			
+			sb.append(COLUMN_VISIBLE);
+			sb.append(SQL_EQ);
+			sb.append(Visible.INVISIBLE.ordinal());
+			
 			sb.append(SQL_WHERE);
-			Iterator<Entry<String, String>> iterator = parameters.entrySet().iterator();
+			Iterator<String> iterator = companyObject.keys();
 			int count = 0;
 			while (iterator.hasNext()) {
-				Entry<String, String> entry = iterator.next();
-
+				String key = iterator.next();
+				String value = companyObject.getString(key);
+				
 				if(count != 0){
 					sb.append(SQL_AND);
 				}
-				sb.append(entry.getKey());
-				sb.append("= '");
-				sb.append(entry.getValue());
-				sb.append(SQL_SINGLE_QUOTES);
 				count ++;
+				
+				if(value.trim().startsWith(SQL_LEFT_BRACKET)){
+					JSONArray valueArray = JSONArray.fromObject(value);
+					if(valueArray!=null){
+						int size = valueArray.size();
+						if(size > 0){
+							sb.append(key);
+							sb.append(SQL_IN);
+							sb.append(SQL_OPEN_PARENTHESIS);
+							
+							for(int j = 0;j<size;j++){
+								if(j!=0){
+									sb.append(SQL_COMMA);
+								}
+								sb.append(SQL_SINGLE_QUOTES);
+								sb.append(valueArray.getInt(j));
+								sb.append(SQL_SINGLE_QUOTES);
+							}
+							
+							sb.append(SQL_CLOSE_PARENTHESIS);
+						}
+					}
+				}else{
+					sb.append(key);
+					sb.append(SQL_EQ);
+					sb.append(SQL_SINGLE_QUOTES);
+					sb.append(companyObject.get(key));
+					sb.append(SQL_SINGLE_QUOTES);
+				}
+				
 			}
 			sb.append(SQL_SEMICOLON);
 			
@@ -425,6 +502,16 @@ public class CompanyDao implements Constant_Column,Constant_SQL,Constant_Table,C
 	}
 
 	public static void main(String[] args) {
+		DataBaseDao dataBaseDao = new DataBaseDao();
+		JSONArray idArray = new JSONArray();
+		for(int i=0;i<10;i++){
+			idArray.add(i);
+		}
+		JSONObject companyObject = new JSONObject();
+//		companyObject.put(COLUMN_ID,idArray);
+		companyObject.put(COLUMN_ID,1);
+		deleteCompanyJson(null,dataBaseDao,companyObject);
+		
 		
 //		DataBaseDao dataBaseDao = new DataBaseDao();
 //		HashMap<String, String> parameters = new HashMap<String,String>();

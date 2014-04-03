@@ -17,16 +17,25 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import com.unknown.wiki.bean.Company;
 import com.unknown.wiki.bean.Contact;
+import com.unknown.wiki.bean.W_User;
+import com.unknown.wiki.constant.Constant_Column;
 import com.unknown.wiki.constant.Constant_Servlet;
+import com.unknown.wiki.constant.Constant_Table;
+import com.unknown.wiki.dao.CompanyDao;
 import com.unknown.wiki.dao.ContactDao;
 import com.unknown.wiki.dao.DataBaseDao;
+import com.unknown.wiki.dao.HRDao;
+import com.unknown.wiki.dao.LoginDao;
+import com.unknown.wiki.dao.RecordDao;
+import com.unknown.wiki.tool.TimeUtil;
 
 /**
  * Servlet implementation class ContactServer
  */
 @WebServlet(description = "Contact server", urlPatterns = { "/contact" })
-public class ContactServer extends HttpServlet implements Constant_Servlet{
+public class ContactServer extends HttpServlet implements Constant_Servlet,Constant_Column,Constant_Table{
 	private static final long serialVersionUID = 1L;
        
     /**
@@ -47,14 +56,10 @@ public class ContactServer extends HttpServlet implements Constant_Servlet{
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
-		String action = request.getParameter(ACTION);
-		
 		response.setContentType("application/json;charset=utf-8");
-//		response.setHeader("pragma", "no-cache");
-//		response.setHeader("cache-control", "no-cache");
+		response.setHeader("Access-Control-Allow-Origin", "*");
 		PrintWriter printWriter = response.getWriter();
 		
 		HashMap<String, String> parameters = new HashMap<String, String>();
@@ -64,54 +69,69 @@ public class ContactServer extends HttpServlet implements Constant_Servlet{
 			Entry<String, String[]> entry = iterator.next();
 			String key = entry.getKey();
 			String[] value = entry.getValue();
-//				int len = value.length;
-//				for(int i=0;i<len;i++){
-//					System.out.println(key + " ---- " + new String(value[i].getBytes("ISO-8859-1"),"utf-8"));
-//				}
+				int len = value.length;
+				for(int i=0;i<len;i++){
+					System.out.println(key + " ---- " + value[i]);
+				}
 			if(!ACTION.equals(key)){
-				parameters.put(key, new String(value[0].getBytes("ISO-8859-1"),"utf-8"));
+				parameters.put(key, value[0]);
 			}
 		}
-		DataBaseDao dataBaseDao = new DataBaseDao();
+		JSONObject resultObject = null;
 		
-		if(ACTION_ADD.equals(action)){
-			Contact contact = ContactDao.insertContact(dataBaseDao, parameters);
-			if(contact!=null){
-//				resp.setContentType("application/json; charset=utf-8");
-//				resp.setHeader("pragma", "no-cache");
-//				resp.setHeader("cache-control", "no-cache");
+		resultObject = doActions(requestMap);
+		
+		System.out.println("返回------>"+resultObject.toString());
+		
+		printWriter.write(resultObject.toString());
 
-				printWriter.write(contact.toJsonString());
-			}
-			
-//			new String(request.getParameter("username").getBytes("ISO-8859-1"),"utf-8");
-			
-		}else if(ACTION_DELETE.equals(action)){
-			boolean isSuccess = ContactDao.deleteContact(dataBaseDao, parameters);
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put(KEY_RESULT, isSuccess?RESULT_SUCCESS:RESULT_FAILED);
-			jsonObject.put(KEY_MESSAGE, isSuccess?"删除联系方式成功！":"删除联系方式失败！");
-			printWriter.write(jsonObject.toString());
-		}else if(ACTION_QUERY.equals(action)){
-			JSONArray jsonArray = new JSONArray();
-			ArrayList<Contact> arrayList = ContactDao.queryContact(dataBaseDao, parameters);
-			int size = arrayList.size();
-			for(int i=0;i<size;i++){
-				Contact contact = arrayList.get(i);
-				jsonArray.add(contact.toJsonString());
-			}
-			printWriter.write(jsonArray.toString());
-		}else if(ACTION_UPDATE.equals(action)){
-//			boolean isSuccess = CompanyDao.updateCompany(dataBaseDao, parameters);
-//			JSONObject jsonObject = new JSONObject();
-//			jsonObject.put(KEY_RESULT, isSuccess?RESULT_SUCCESS:RESULT_FAILED);
-//			jsonObject.put(KEY_MESSAGE, isSuccess?"删除公司成功！":"删除公司失败！");
-		}
-		
-		dataBaseDao.close();
 		printWriter.flush();
 		printWriter.close();
+	}
 	
+	private JSONObject doActions(Map<String, String[]> requestMap) {
+		JSONObject resultObject = new JSONObject();
+		DataBaseDao dataBaseDao = new DataBaseDao();
+		W_User user = LoginDao.isLogin(dataBaseDao,requestMap);
+		if(user == null){
+			resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+			resultObject.put(KEY_MESSAGE, "请登录！");
+			return resultObject;
+		}
+		
+		String action = requestMap.containsKey(ACTION) ? requestMap.get(ACTION)[0]:null;
+		System.out.println("action ------"+action+"------");
+		JSONObject parameters = requestMap.containsKey(ACTION_DATA) ? JSONObject.fromObject(requestMap.get(ACTION_DATA)[0]):new JSONObject();
+		
+		if(ACTION_ADD.equals(action)){
+			
+		}else if(ACTION_DELETE.equals(action)){
+			deleteContact(dataBaseDao,user,parameters,resultObject);
+		}else if(ACTION_QUERY.equals(action)){
+			
+		}else if(ACTION_SINGLE.equals(action)){
+			
+		}else if(ACTION_UPDATE.equals(action)){
+			
+		}
+		dataBaseDao.close();
+		return resultObject;
+	}
+
+	private void deleteContact(DataBaseDao dataBaseDao, W_User user,JSONObject parameters, JSONObject resultObject) {
+		if(parameters != null){
+			boolean isSuccess = ContactDao.deleteContactJSON(user,dataBaseDao,parameters);
+			if(isSuccess){
+				resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
+				resultObject.put(KEY_MESSAGE,"删除联系方式成功！");
+			}else{
+				resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+				resultObject.put(KEY_MESSAGE,"删除联系方式失败！");
+			}
+		}else{
+			resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+			resultObject.put(KEY_MESSAGE,"传入参数错误！");
+		}
 	}
 
 }

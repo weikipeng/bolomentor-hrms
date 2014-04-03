@@ -89,5 +89,8 @@ public interface Constant_Column {
 	//Record
 	public static final String COLUMN_DATE = "date";
 	public static final String COLUMN_CONTENT = "content";
+
+	//删除
+	public static final String COLUMN_VISIBLE = "visible";
 	
 }

@@ -3,6 +3,8 @@ package com.unknown.wiki.constant;
 public interface Constant_SQL{
 	
 	public final String SQL_INSERT = "insert into ";
+
+	public final String SQL_UPDATE = "update ";
 	
 	public final String SQL_SET = " set ";
 
@@ -14,7 +16,18 @@ public interface Constant_SQL{
 
 	public final String SQL_WHERE = " where ";
 
+	public final String SQL_OPEN_BRACE = "{";
+	public final String SQL_CLOSE_BRACE = "}";
+
+	public final String SQL_LEFT_BRACKET = "[";
+	public final String SQL_RIGHT_BRACKET  = "]";
+	
+	public final String SQL_OPEN_PARENTHESIS = "(";
+	public final String SQL_CLOSE_PARENTHESIS = ")";
+
 	public final String SQL_EQ = " = ";
+
+	public final String SQL_IN = " in ";
 
 	public final String SQL_QUESTIONMARK = "?";
 	

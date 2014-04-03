@@ -57,7 +57,7 @@ public class LoginDao implements Constant_Column,Constant_Servlet,Constant_SQL,C
 //						
 //						long id = resultSet.getLong(1);
 //						sb = new StringBuffer();
-//						sb.append("select * from ");
+//						sb.append(SQL_QUERY);
 //						sb.append(Constant_Table.TABLE_JOB);
 //						sb.append(SQL_WHERE);
 //						sb.append(COLUMN_ID);

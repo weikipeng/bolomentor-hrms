@@ -10,17 +10,20 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import com.unknown.wiki.bean.Contact;
+import com.unknown.wiki.bean.W_User;
 import com.unknown.wiki.constant.Constant_Column;
 import com.unknown.wiki.constant.Constant_SQL;
 import com.unknown.wiki.constant.Constant_Servlet;
 import com.unknown.wiki.constant.Constant_Table;
 import com.unknown.wiki.w_enum.ContactInfoType;
 import com.unknown.wiki.w_enum.ContactType;
+import com.unknown.wiki.w_enum.Visible;
 
-public class ContactDao implements Constant_Column,Constant_Servlet,Constant_SQL{
+public class ContactDao implements Constant_Column,Constant_Servlet,Constant_SQL,Constant_Table{
 
 	
 	/**插入联系方式*/
@@ -58,7 +61,7 @@ public class ContactDao implements Constant_Column,Constant_Servlet,Constant_SQL
 						
 						long id = resultSet.getLong(1);
 						sb = new StringBuffer();
-						sb.append("select * from ");
+						sb.append(SQL_QUERY);
 						sb.append(Constant_Table.TABLE_CONTACT);
 						sb.append(SQL_WHERE);
 						sb.append(COLUMN_ID);
@@ -127,7 +130,7 @@ public class ContactDao implements Constant_Column,Constant_Servlet,Constant_SQL
 			Connection connection = dataBaseDao.getConnection();
 			
 			StringBuffer sb = new StringBuffer();
-			sb.append("select * from ");
+			sb.append(SQL_QUERY);
 			sb.append(Constant_Table.TABLE_CONTACT);
 			Iterator<Entry<String, String>> iterator = parameters.entrySet().iterator();
 			int count = 0;
@@ -139,7 +142,8 @@ public class ContactDao implements Constant_Column,Constant_Servlet,Constant_SQL
 					sb.append(SQL_WHERE);
 				}
 				sb.append(entry.getKey());
-				sb.append("= '");
+				sb.append(SQL_EQ);
+				sb.append(SQL_SINGLE_QUOTES);
 				sb.append(entry.getValue());
 				sb.append(SQL_SINGLE_QUOTES);
 				count++;
@@ -264,6 +268,15 @@ public class ContactDao implements Constant_Column,Constant_Servlet,Constant_SQL
 		HashMap<String, String> values = new HashMap<String, String>();
 		values.put(Constant_Column.COLUMN_INFO, "修改后的info");
 		boolean result = ContactDao.updateContact(dataBaseDao, parameters, values);*/
+		
+		JSONObject contactObject = new JSONObject();
+		contactObject.put(COLUMN_ID, "1");
+		
+		W_User user = new W_User();
+		user.setRole(127);
+		
+		
+		deleteContactJSON(user,dataBaseDao,contactObject);
 	}
 
 	public static boolean insertOrUpdateContactOld(DataBaseDao dataBaseDao,JSONObject companyObject) {
@@ -342,5 +355,80 @@ public class ContactDao implements Constant_Column,Constant_Servlet,Constant_SQL
 			isSuccess = contact!=null;
 		}
 		return isSuccess;
+	}
+
+	public static boolean deleteContactJSON(W_User user,DataBaseDao dataBaseDao, JSONObject contactObject) {
+		boolean result = false;
+		
+		if(dataBaseDao != null&&user!=null &&user.getRole()==127){
+			Connection connection = dataBaseDao.getConnection();
+			
+			//删除
+			StringBuffer sb = new StringBuffer();
+			sb.append(SQL_UPDATE);
+			sb.append(TABLE_CONTACT);
+			sb.append(SQL_SET);
+			
+			sb.append(COLUMN_VISIBLE);
+			sb.append(SQL_EQ);
+			sb.append(Visible.INVISIBLE.ordinal());
+			
+			sb.append(SQL_WHERE);
+			Iterator<String> iterator = contactObject.keys();
+			int count = 0;
+			while (iterator.hasNext()) {
+				String key = iterator.next();
+				String value = contactObject.getString(key);
+				
+				if(count != 0){
+					sb.append(SQL_AND);
+				}
+				count ++;
+				
+				if(value.trim().startsWith(SQL_LEFT_BRACKET)){
+					JSONArray valueArray = JSONArray.fromObject(value);
+					if(valueArray!=null){
+						int size = valueArray.size();
+						if(size > 0){
+							sb.append(key);
+							sb.append(SQL_IN);
+							sb.append(SQL_OPEN_PARENTHESIS);
+							
+							for(int j = 0;j<size;j++){
+								if(j!=0){
+									sb.append(SQL_COMMA);
+								}
+								sb.append(SQL_SINGLE_QUOTES);
+								sb.append(valueArray.getInt(j));
+								sb.append(SQL_SINGLE_QUOTES);
+							}
+							
+							sb.append(SQL_CLOSE_PARENTHESIS);
+						}
+					}
+				}else{
+					sb.append(key);
+					sb.append(SQL_EQ);
+					sb.append(SQL_SINGLE_QUOTES);
+					sb.append(contactObject.get(key));
+					sb.append(SQL_SINGLE_QUOTES);
+				}
+				
+			}
+			sb.append(SQL_SEMICOLON);
+			
+			System.out.println("执行的sql语句为			" +	sb.toString());
+			try {
+				PreparedStatement preparedStatement = connection.prepareStatement(sb.toString(),PreparedStatement.RETURN_GENERATED_KEYS);
+				int deleteResult = preparedStatement.executeUpdate();
+				System.out.println("deleteResult --- " + deleteResult);
+				if(deleteResult>0){
+					result = true;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
 	}
 }

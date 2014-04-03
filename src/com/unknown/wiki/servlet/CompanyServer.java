@@ -31,6 +31,7 @@ import com.unknown.wiki.dao.RecordDao;
 import com.unknown.wiki.tool.TimeUtil;
 import com.unknown.wiki.w_enum.ContactType;
 import com.unknown.wiki.w_enum.RecordType;
+import com.unknown.wiki.w_enum.Visible;
 
 /**
  * Servlet implementation class CompanyServer
@@ -159,211 +160,13 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet,Const
 		JSONObject parameters = requestMap.containsKey(ACTION_DATA) ? JSONObject.fromObject(requestMap.get(ACTION_DATA)[0]):new JSONObject();
 		
 		if(ACTION_ADD.equals(action)){
-////			Company company = CompanyDao.insertCompany(dataBaseDao, parameters);
-//			Company company = null;
-//			
-//			if(company!=null){
-////				resp.setContentType("application/json; charset=utf-8");
-////				resp.setHeader("pragma", "no-cache");
-////				resp.setHeader("cache-control", "no-cache");
-//
-////				printWriter.write(company.toJsonString());
-//				resultObject.put(KEY_RESULT, RESULT_SUCCESS);
-//				resultObject.put(KEY_MESSAGE, "添加公司成功！");
-//			}else{
-//				resultObject.put(KEY_RESULT, RESULT_FAILED);
-//				resultObject.put(KEY_MESSAGE, "添加公司失败！");
-//			}
-//
-//			
-//			
-////			new String(request.getParameter("username").getBytes("ISO-8859-1"),"utf-8");
-			
-
-//			JSONObject userObject = LoginDao.getUserObject(requestMap);
-//			JSONArray jsonArray = new JSONArray();
-			
-			JSONObject companyObject = parameters.getJSONObject(TABLE_COMPANY);
-			
-			if(companyObject != null){
-				HashMap<String, String> queryMap = new HashMap<String, String>();
-				String name = companyObject.optString(COLUMN_NAME, null);
-				if(name == null || name.length() <=0){
-					name = companyObject.optString(COLUMN_ENGLISHNAME,null);
-					queryMap.put(COLUMN_ENGLISHNAME, name);
-				}else{
-					queryMap.put(COLUMN_NAME, name);
-				}
-				ArrayList<Company> companyList = CompanyDao.queryCompany(dataBaseDao,queryMap);
-				if(companyList.size()<=0){
-					JSONArray hrArray = null;
-					if(companyObject.containsKey(TABLE_HR)){
-						 hrArray = companyObject.getJSONArray(TABLE_HR);
-						 companyObject.remove(TABLE_HR);
-					}
-					
-					
-					JSONArray contactArray = null;
-					if(companyObject.containsKey(TABLE_CONTACT)){
-						contactArray = companyObject.getJSONArray(TABLE_CONTACT);
-						companyObject.remove(TABLE_CONTACT);
-					}
-					
-					JSONArray recordArray = null;
-					if(companyObject.containsKey(TABLE_RECORD)){
-						recordArray = companyObject.getJSONArray(TABLE_RECORD);
-						companyObject.remove(TABLE_RECORD);
-					}
-					
-					JSONArray recordPlanArray = null;
-					if(companyObject.containsKey(TABLE_RECORDPLAN)){
-						recordPlanArray = companyObject.getJSONArray(TABLE_RECORDPLAN);
-						companyObject.remove(TABLE_RECORDPLAN);
-					}
-					
-					
-					companyObject.put(COLUMN_CREATEUSERID, user.getId());
-					companyObject.put(COLUMN_CREATEDATE, TimeUtil.getTimeStamp());
-					Company company = CompanyDao.insertCompanyJSONObject(dataBaseDao, companyObject);
-					if(company!=null){
-						//HR
-						if(hrArray!=null && hrArray.size() > 0){
-							for(int i=0;i<hrArray.size();i++){
-								JSONObject hrObject = hrArray.optJSONObject(i);
-								hrObject.put(COLUMN_COMPANYID, company.getId());
-								HRDao.InsertOrUpdateHR(dataBaseDao,hrObject);
-							}
-							System.out.println("											");
-							System.out.println("hrArray------"+hrArray.toString());
-						}
-						
-						//contact
-						if(contactArray!=null && contactArray.size()>0){
-							for(int i=0;i<contactArray.size();i++){
-								JSONObject contactObject = contactArray.optJSONObject(i);
-								contactObject.put(COLUMN_TYPEID, company.getId());
-								ContactDao.insertOrUpdateContact(dataBaseDao, contactObject);
-							}
-							
-							System.out.println("											");
-							System.out.println("contactArray------"+contactArray.toString());
-						}
-						
-						if(recordArray!=null){
-							for(int i=0;i<recordArray.size();i++){
-								JSONObject recordObject =  recordArray.optJSONObject(i);
-								recordObject.put(COLUMN_COMPANYID, company.getId());
-								RecordDao.insertOrUpdateRecord(dataBaseDao,recordObject);
-							}
-						}
-						
-						if(recordPlanArray!=null){
-							for(int i=0;i<recordPlanArray.size();i++){
-								JSONObject recordPlanObject = recordPlanArray.optJSONObject(i);
-								recordPlanObject.put(COLUMN_COMPANYID, company.getId());
-								RecordDao.insertOrUpdateRecord(dataBaseDao,recordPlanObject);
-							}
-						}
-						
-						resultObject.put(TABLE_COMPANY, company.toJsonString());
-						resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
-						resultObject.put(KEY_MESSAGE,RESULT_SUCCESS);
-					}else{
-						resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
-						resultObject.put(KEY_MESSAGE,"传入参数错误！");
-					}
-				}else{
-					resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
-					resultObject.put(KEY_MESSAGE,"已经存在该客户！");
-				}
-				
-				
-			}else{
-				resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
-				resultObject.put(KEY_MESSAGE,"传入参数错误！");
-			}
+			addCompany(dataBaseDao,user,parameters,resultObject);
 		}else if(ACTION_DELETE.equals(action)){
-//			boolean isSuccess = CompanyDao.deleteCompany(dataBaseDao, parameters);
-//			resultObject.put(KEY_RESULT, isSuccess?RESULT_SUCCESS:RESULT_FAILED);
-//			resultObject.put(KEY_MESSAGE, isSuccess?"删除公司成功！":"删除公司失败！");
-			
+			deleteCompany(dataBaseDao,user,parameters,resultObject);
 		}else if(ACTION_QUERY.equals(action)){
-//			JSONObject userObject = LoginDao.getUserObject(requestMap);
-			JSONArray jsonArray = new JSONArray();
-			ArrayList<Company> arrayList = CompanyDao.queryCompanyGrant(dataBaseDao,user,parameters);
-			int size = arrayList.size();
-			HashMap<String , String> hrMeters = new HashMap<String, String>();
-			HashMap<String , String> contactMeters = new HashMap<String, String>();
-			HashMap<String , String> recordMeters = new HashMap<String, String>();
-			for(int i=0;i<size;i++){
-				Company company = arrayList.get(i);
-				hrMeters.clear();
-				contactMeters.clear();
-				recordMeters.clear();
-				
-				//HR
-				hrMeters.put(COLUMN_COMPANYID, String.valueOf(company.getId()));
-				company.setHrList(HRDao.queryHR(dataBaseDao, hrMeters));
-				
-				//Contact
-				contactMeters.put(COLUMN_TYPE, String.valueOf(ContactType.COMPANY.ordinal()));
-				contactMeters.put(COLUMN_TYPEID, String.valueOf(company.getId()));
-				company.setContactList(ContactDao.queryContact(dataBaseDao, contactMeters));
-				
-				//Record
-				recordMeters.put(COLUMN_COMPANYID, String.valueOf(company.getId()));
-				recordMeters.put(COLUMN_TYPE, String.valueOf(RecordType.HISTORY.ordinal()));
-				company.setRecordList(RecordDao.queryRecord(dataBaseDao, recordMeters));
-
-				recordMeters.put(COLUMN_TYPE, String.valueOf(RecordType.PLAN.ordinal()));
-				company.setRecordPlanList(RecordDao.queryRecord(dataBaseDao, recordMeters));
-
-				if(ROLE_ADMIN_VALUE == user.getRole()){
-					System.out.println("												");
-					System.out.println("ROLE_ADMIN_VALUE												"+ROLE_ADMIN_VALUE);
-					System.out.println("user.getRole()												"+user.getRole());
-					ArrayList<W_User> userList = LoginDao.queryUser(dataBaseDao,user);
-					JSONArray userArray = new JSONArray();
-					if(userList.size()>0){
-						int tSize = userList.size();
-						for(int j=0;j<tSize;j++){
-							userArray.add(userList.get(j).toJsonObject());
-						}
-					}
-					resultObject.put(TABLE_USER,userArray);
-				}
-				
-				jsonArray.add(company.toJsonString());
-			}
-			resultObject.put(Constant_Table.TABLE_COMPANY, jsonArray);
-			resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
-			resultObject.put(KEY_MESSAGE,RESULT_SUCCESS);
+			queryCompany(dataBaseDao,user,parameters,resultObject);
 		}else if(ACTION_SINGLE.equals(action)){
-			JSONObject companyObject = parameters.getJSONObject(TABLE_COMPANY);
-			
-			if(companyObject != null){
-				HashMap<String, String> queryMap = new HashMap<String, String>();
-				String name = companyObject.optString(COLUMN_NAME, null);
-				if(name == null || name.length() <=0){
-					name = companyObject.optString(COLUMN_ENGLISHNAME,null);
-					queryMap.put(COLUMN_ENGLISHNAME, name);
-				}else{
-					queryMap.put(COLUMN_NAME, name);
-				}
-				
-				ArrayList<Company> companyList = CompanyDao.queryCompany(dataBaseDao,queryMap);
-				int size = companyList.size();
-				if(size >0){
-					resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
-					resultObject.put(KEY_MESSAGE,"该客户已经存在");
-				}else{
-					resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
-					resultObject.put(KEY_MESSAGE,RESULT_SUCCESS);
-				}
-			}else{
-				resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
-				resultObject.put(KEY_MESSAGE,"传入参数错误！");
-			}
+			singleCompany(dataBaseDao,user,parameters,resultObject);
 		}else if(ACTION_UPDATE.equals(action)){
 //			JSONObject userObject = LoginDao.getUserObject(requestMap);
 //			JSONArray jsonArray = new JSONArray();
@@ -472,4 +275,232 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet,Const
 		return resultObject;
 	}
 
+	private void singleCompany(DataBaseDao dataBaseDao, W_User user,JSONObject parameters, JSONObject resultObject) {
+		JSONObject companyObject = parameters.getJSONObject(TABLE_COMPANY);
+		
+		if(companyObject != null){
+			HashMap<String, String> queryMap = new HashMap<String, String>();
+			String name = companyObject.optString(COLUMN_NAME, null);
+			if(name == null || name.length() <=0){
+				name = companyObject.optString(COLUMN_ENGLISHNAME,null);
+				queryMap.put(COLUMN_ENGLISHNAME, name);
+			}else{
+				queryMap.put(COLUMN_NAME, name);
+			}
+			queryMap.put(COLUMN_VISIBLE, String.valueOf(Visible.VISIBLE.ordinal()));
+			
+			ArrayList<Company> companyList = CompanyDao.queryCompany(dataBaseDao,queryMap);
+			int size = companyList.size();
+			if(size >0){
+				resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+				resultObject.put(KEY_MESSAGE,"该客户已经存在");
+			}else{
+				resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
+				resultObject.put(KEY_MESSAGE,RESULT_SUCCESS);
+			}
+		}else{
+			resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+			resultObject.put(KEY_MESSAGE,"传入参数错误！");
+		}
+	}
+
+	private void queryCompany(DataBaseDao dataBaseDao, W_User user,JSONObject parameters, JSONObject resultObject) {
+//		JSONObject userObject = LoginDao.getUserObject(requestMap);
+		JSONArray jsonArray = new JSONArray();
+		ArrayList<Company> arrayList = CompanyDao.queryCompanyGrant(dataBaseDao,user,parameters);
+		int size = arrayList.size();
+		HashMap<String , String> hrMeters = new HashMap<String, String>();
+		HashMap<String , String> contactMeters = new HashMap<String, String>();
+		HashMap<String , String> recordMeters = new HashMap<String, String>();
+		for(int i=0;i<size;i++){
+			Company company = arrayList.get(i);
+			hrMeters.clear();
+			contactMeters.clear();
+			recordMeters.clear();
+			
+			//HR
+			hrMeters.put(COLUMN_COMPANYID, String.valueOf(company.getId()));
+			company.setHrList(HRDao.queryHR(dataBaseDao, hrMeters));
+			
+			//Contact
+			contactMeters.put(COLUMN_TYPE, String.valueOf(ContactType.COMPANY.ordinal()));
+			contactMeters.put(COLUMN_TYPEID, String.valueOf(company.getId()));
+			contactMeters.put(COLUMN_VISIBLE, String.valueOf(Visible.VISIBLE.ordinal()));
+			company.setContactList(ContactDao.queryContact(dataBaseDao, contactMeters));
+			
+			//Record
+			recordMeters.put(COLUMN_COMPANYID, String.valueOf(company.getId()));
+			recordMeters.put(COLUMN_TYPE, String.valueOf(RecordType.HISTORY.ordinal()));
+			company.setRecordList(RecordDao.queryRecord(dataBaseDao, recordMeters));
+
+			recordMeters.put(COLUMN_TYPE, String.valueOf(RecordType.PLAN.ordinal()));
+			company.setRecordPlanList(RecordDao.queryRecord(dataBaseDao, recordMeters));
+
+			if(ROLE_ADMIN_VALUE == user.getRole()){
+				System.out.println("												");
+				System.out.println("ROLE_ADMIN_VALUE												"+ROLE_ADMIN_VALUE);
+				System.out.println("user.getRole()												"+user.getRole());
+				ArrayList<W_User> userList = LoginDao.queryUser(dataBaseDao,user);
+				JSONArray userArray = new JSONArray();
+				if(userList.size()>0){
+					int tSize = userList.size();
+					for(int j=0;j<tSize;j++){
+						userArray.add(userList.get(j).toJsonObject());
+					}
+				}
+				resultObject.put(TABLE_USER,userArray);
+			}
+			
+			jsonArray.add(company.toJsonString());
+		}
+		resultObject.put(Constant_Table.TABLE_COMPANY, jsonArray);
+		resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
+		resultObject.put(KEY_MESSAGE,RESULT_SUCCESS);
+	}
+
+	private void deleteCompany(DataBaseDao dataBaseDao, W_User user,JSONObject parameters, JSONObject resultObject) {
+		JSONObject companyObject = parameters.getJSONObject(TABLE_COMPANY);
+		
+		if(companyObject != null){
+			boolean isSuccess = CompanyDao.deleteCompanyJson(user,dataBaseDao,companyObject);
+			if(isSuccess){
+				resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
+				resultObject.put(KEY_MESSAGE,"删除客户信息成功！");
+			}else{
+				resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+				resultObject.put(KEY_MESSAGE,"删除客户信息失败！");
+			}
+		}else{
+			resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+			resultObject.put(KEY_MESSAGE,"传入参数错误！");
+		}
+	}
+
+	private void addCompany(DataBaseDao dataBaseDao,W_User user,JSONObject parameters,JSONObject resultObject) {
+		
+////	Company company = CompanyDao.insertCompany(dataBaseDao, parameters);
+//	Company company = null;
+//	
+//	if(company!=null){
+////		resp.setContentType("application/json; charset=utf-8");
+////		resp.setHeader("pragma", "no-cache");
+////		resp.setHeader("cache-control", "no-cache");
+//
+////		printWriter.write(company.toJsonString());
+//		resultObject.put(KEY_RESULT, RESULT_SUCCESS);
+//		resultObject.put(KEY_MESSAGE, "添加公司成功！");
+//	}else{
+//		resultObject.put(KEY_RESULT, RESULT_FAILED);
+//		resultObject.put(KEY_MESSAGE, "添加公司失败！");
+//	}
+//
+//	
+//	
+////	new String(request.getParameter("username").getBytes("ISO-8859-1"),"utf-8");
+		
+		
+//	JSONObject userObject = LoginDao.getUserObject(requestMap);
+//	JSONArray jsonArray = new JSONArray();
+		
+		JSONObject companyObject = parameters.getJSONObject(TABLE_COMPANY);
+		
+		if(companyObject != null){
+			HashMap<String, String> queryMap = new HashMap<String, String>();
+			String name = companyObject.optString(COLUMN_NAME, null);
+			if(name == null || name.length() <=0){
+				name = companyObject.optString(COLUMN_ENGLISHNAME,null);
+				queryMap.put(COLUMN_ENGLISHNAME, name);
+			}else{
+				queryMap.put(COLUMN_NAME, name);
+			}
+			ArrayList<Company> companyList = CompanyDao.queryCompany(dataBaseDao,queryMap);
+			if(companyList.size()<=0){
+				JSONArray hrArray = null;
+				if(companyObject.containsKey(TABLE_HR)){
+					hrArray = companyObject.getJSONArray(TABLE_HR);
+					companyObject.remove(TABLE_HR);
+				}
+				
+				
+				JSONArray contactArray = null;
+				if(companyObject.containsKey(TABLE_CONTACT)){
+					contactArray = companyObject.getJSONArray(TABLE_CONTACT);
+					companyObject.remove(TABLE_CONTACT);
+				}
+				
+				JSONArray recordArray = null;
+				if(companyObject.containsKey(TABLE_RECORD)){
+					recordArray = companyObject.getJSONArray(TABLE_RECORD);
+					companyObject.remove(TABLE_RECORD);
+				}
+				
+				JSONArray recordPlanArray = null;
+				if(companyObject.containsKey(TABLE_RECORDPLAN)){
+					recordPlanArray = companyObject.getJSONArray(TABLE_RECORDPLAN);
+					companyObject.remove(TABLE_RECORDPLAN);
+				}
+				
+				
+				companyObject.put(COLUMN_CREATEUSERID, user.getId());
+				companyObject.put(COLUMN_CREATEDATE, TimeUtil.getTimeStamp());
+				Company company = CompanyDao.insertCompanyJSONObject(dataBaseDao, companyObject);
+				if(company!=null){
+					//HR
+					if(hrArray!=null && hrArray.size() > 0){
+						for(int i=0;i<hrArray.size();i++){
+							JSONObject hrObject = hrArray.optJSONObject(i);
+							hrObject.put(COLUMN_COMPANYID, company.getId());
+							HRDao.InsertOrUpdateHR(dataBaseDao,hrObject);
+						}
+						System.out.println("											");
+						System.out.println("hrArray------"+hrArray.toString());
+					}
+					
+					//contact
+					if(contactArray!=null && contactArray.size()>0){
+						for(int i=0;i<contactArray.size();i++){
+							JSONObject contactObject = contactArray.optJSONObject(i);
+							contactObject.put(COLUMN_TYPEID, company.getId());
+							ContactDao.insertOrUpdateContact(dataBaseDao, contactObject);
+						}
+						
+						System.out.println("											");
+						System.out.println("contactArray------"+contactArray.toString());
+					}
+					
+					if(recordArray!=null){
+						for(int i=0;i<recordArray.size();i++){
+							JSONObject recordObject =  recordArray.optJSONObject(i);
+							recordObject.put(COLUMN_COMPANYID, company.getId());
+							RecordDao.insertOrUpdateRecord(dataBaseDao,recordObject);
+						}
+					}
+					
+					if(recordPlanArray!=null){
+						for(int i=0;i<recordPlanArray.size();i++){
+							JSONObject recordPlanObject = recordPlanArray.optJSONObject(i);
+							recordPlanObject.put(COLUMN_COMPANYID, company.getId());
+							RecordDao.insertOrUpdateRecord(dataBaseDao,recordPlanObject);
+						}
+					}
+					
+					resultObject.put(TABLE_COMPANY, company.toJsonString());
+					resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
+					resultObject.put(KEY_MESSAGE,RESULT_SUCCESS);
+				}else{
+					resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+					resultObject.put(KEY_MESSAGE,"传入参数错误！");
+				}
+			}else{
+				resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+				resultObject.put(KEY_MESSAGE,"已经存在该客户！");
+			}
+			
+			
+		}else{
+			resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+			resultObject.put(KEY_MESSAGE,"传入参数错误！");
+		}
+		
+	}
 }
