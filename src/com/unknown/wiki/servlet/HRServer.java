@@ -18,9 +18,12 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import com.unknown.wiki.bean.HR;
+import com.unknown.wiki.bean.W_User;
 import com.unknown.wiki.constant.Constant_Servlet;
+import com.unknown.wiki.dao.ContactDao;
 import com.unknown.wiki.dao.HRDao;
 import com.unknown.wiki.dao.DataBaseDao;
+import com.unknown.wiki.dao.LoginDao;
 
 /**
  * Servlet implementation class HRServer
@@ -42,21 +45,16 @@ public class HRServer extends HttpServlet implements Constant_Servlet{
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		doPost(request, response);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
-		String action = request.getParameter(ACTION);
-		
 		response.setContentType("application/json;charset=utf-8");
-//		response.setHeader("pragma", "no-cache");
-//		response.setHeader("cache-control", "no-cache");
+		response.setHeader("Access-Control-Allow-Origin", "*");
 		PrintWriter printWriter = response.getWriter();
 		
 		HashMap<String, String> parameters = new HashMap<String, String>();
@@ -66,38 +64,69 @@ public class HRServer extends HttpServlet implements Constant_Servlet{
 			Entry<String, String[]> entry = iterator.next();
 			String key = entry.getKey();
 			String[] value = entry.getValue();
+				int len = value.length;
+				for(int i=0;i<len;i++){
+					System.out.println(key + " ---- " + value[i]);
+				}
 			if(!ACTION.equals(key)){
-				parameters.put(key, new String(value[0].getBytes("ISO-8859-1"),"utf-8"));
+				parameters.put(key, value[0]);
 			}
 		}
-		DataBaseDao dataBaseDao = new DataBaseDao();
+		JSONObject resultObject = null;
 		
-		if(ACTION_ADD.equals(action)){
-			HR HR = HRDao.insertHR(dataBaseDao, parameters);
-			if(HR!=null){
-				printWriter.write(HR.toJsonString());
-			}
-			
-		}else if(ACTION_DELETE.equals(action)){
-			boolean isSuccess = HRDao.deleteHR(dataBaseDao, parameters);
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put(KEY_RESULT, isSuccess?RESULT_SUCCESS:RESULT_FAILED);
-			jsonObject.put(KEY_MESSAGE, isSuccess?"删除HR成功！":"删除HR失败！");
-			printWriter.write(jsonObject.toString());
-		}else if(ACTION_QUERY.equals(action)){
-			JSONArray jsonArray = new JSONArray();
-			ArrayList<HR> arrayList = HRDao.queryHR(dataBaseDao, parameters);
-			int size = arrayList.size();
-			for(int i=0;i<size;i++){
-				jsonArray.add(arrayList.get(i).toJsonString());
-			}
-			printWriter.write(jsonArray.toString());
-		}else if(ACTION_UPDATE.equals(action)){
-		}
+		resultObject = doActions(requestMap);
 		
-		dataBaseDao.close();
+		System.out.println("返回------>"+resultObject.toString());
+		
+		printWriter.write(resultObject.toString());
+
 		printWriter.flush();
 		printWriter.close();
+	}
+	
+	private JSONObject doActions(Map<String, String[]> requestMap) {
+		JSONObject resultObject = new JSONObject();
+		DataBaseDao dataBaseDao = new DataBaseDao();
+		W_User user = LoginDao.isLogin(dataBaseDao,requestMap);
+		if(user == null){
+			resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+			resultObject.put(KEY_MESSAGE, "请登录！");
+			return resultObject;
+		}
+		
+		String action = requestMap.containsKey(ACTION) ? requestMap.get(ACTION)[0]:null;
+		System.out.println("action ------"+action+"------");
+		JSONObject parameters = requestMap.containsKey(ACTION_DATA) ? JSONObject.fromObject(requestMap.get(ACTION_DATA)[0]):new JSONObject();
+		
+		if(ACTION_ADD.equals(action)){
+			
+		}else if(ACTION_DELETE.equals(action)){
+			deleteHR(dataBaseDao,user,parameters,resultObject);
+		}else if(ACTION_QUERY.equals(action)){
+			
+		}else if(ACTION_SINGLE.equals(action)){
+			
+		}else if(ACTION_UPDATE.equals(action)){
+			
+		}
+		dataBaseDao.close();
+		return resultObject;
+	}
+
+	private void deleteHR(DataBaseDao dataBaseDao, W_User user,JSONObject parameters, JSONObject resultObject) {
+		if(parameters != null){
+			boolean isSuccess = HRDao.deleteHRJSON(user,dataBaseDao,parameters);
+			if(isSuccess){
+				resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
+				resultObject.put(KEY_MESSAGE,"删除HR成功！");
+			}else{
+				resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+				resultObject.put(KEY_MESSAGE,"删除HR失败！");
+			}
+		}else{
+			resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+			resultObject.put(KEY_MESSAGE,"传入参数错误！");
+		}
 	}
 
 }

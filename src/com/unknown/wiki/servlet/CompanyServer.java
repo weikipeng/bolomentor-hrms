@@ -173,7 +173,7 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet,Const
 			
 			JSONObject queryObject = new JSONObject();
 			
-			JSONObject companyObject = parameters.getJSONObject(TABLE_COMPANY);
+			JSONObject companyObject = parameters;
 			companyObject.put(COLUMN_UPDATEUSERID, user.getId());
 			companyObject.put(COLUMN_UPDATEDATE, TimeUtil.getTimeStamp());
 			
@@ -209,10 +209,23 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet,Const
 						}
 					}
 					
-					resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
-					resultObject.put(KEY_MESSAGE,RESULT_SUCCESS);
+					if(companyObject.containsKey(TABLE_CONTACT)){
+						JSONArray contactArray = companyObject.getJSONArray(TABLE_CONTACT);
+						companyObject.remove(TABLE_CONTACT);
+						for(int i=0;i<contactArray.size();i++){
+							ContactDao.insertOrUpdateContact(dataBaseDao, contactArray.optJSONObject(i));
+						}
+					}
 					
-//					boolean result = CompanyDao.updateCompany(dataBaseDao, companyObject);
+					boolean result = CompanyDao.updateCompanyJSON(dataBaseDao, companyObject);
+					if(result){
+						resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
+						resultObject.put(KEY_MESSAGE,RESULT_SUCCESS);
+					}else{
+						resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+						resultObject.put(KEY_MESSAGE,"更新客户信息失败");
+					}
+					
 				}else{
 					resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
 					resultObject.put(KEY_MESSAGE,"没有存在该客户的信息");
@@ -320,6 +333,7 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet,Const
 			
 			//HR
 			hrMeters.put(COLUMN_COMPANYID, String.valueOf(company.getId()));
+			hrMeters.put(COLUMN_VISIBLE, String.valueOf(Visible.VISIBLE.ordinal()));
 			company.setHrList(HRDao.queryHR(dataBaseDao, hrMeters));
 			
 			//Contact

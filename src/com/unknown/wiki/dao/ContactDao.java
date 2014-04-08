@@ -276,7 +276,8 @@ public class ContactDao implements Constant_Column,Constant_Servlet,Constant_SQL
 		user.setRole(127);
 		
 		
-		deleteContactJSON(user,dataBaseDao,contactObject);
+//		deleteContactJSON(user,dataBaseDao,contactObject);
+		deleteHRContact(user,dataBaseDao,1);
 	}
 
 	public static boolean insertOrUpdateContactOld(DataBaseDao dataBaseDao,JSONObject companyObject) {
@@ -431,4 +432,47 @@ public class ContactDao implements Constant_Column,Constant_Servlet,Constant_SQL
 		}
 		return result;
 	}
+	
+	public static boolean deleteHRContact(W_User user,DataBaseDao dataBaseDao, long id) {
+		boolean result = false;
+		
+		if(dataBaseDao != null&&user!=null &&user.getRole()==127){
+			Connection connection = dataBaseDao.getConnection();
+			
+			//删除
+			StringBuffer sb = new StringBuffer();
+			sb.append(SQL_UPDATE);
+			sb.append(TABLE_CONTACT);
+			sb.append(SQL_SET);
+			
+			sb.append(COLUMN_VISIBLE);
+			sb.append(SQL_EQ);
+			sb.append(Visible.INVISIBLE.ordinal());
+			
+			sb.append(SQL_WHERE);
+			sb.append(COLUMN_TYPE);
+			sb.append(SQL_EQ);
+			sb.append(String.valueOf(ContactType.HR.ordinal()));
+			sb.append(SQL_AND);
+			sb.append(COLUMN_TYPEID);
+			sb.append(SQL_EQ);
+			sb.append(String.valueOf(id));
+				
+			sb.append(SQL_SEMICOLON);
+			
+			System.out.println("执行的sql语句为			" +	sb.toString());
+			try {
+				PreparedStatement preparedStatement = connection.prepareStatement(sb.toString(),PreparedStatement.RETURN_GENERATED_KEYS);
+				int deleteResult = preparedStatement.executeUpdate();
+				System.out.println("deleteResult --- " + deleteResult);
+				if(deleteResult>0){
+					result = true;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
 }

@@ -555,28 +555,53 @@ public class CompanyDao implements Constant_Column,Constant_SQL,Constant_Table,C
 	}
 
 	
-	public static boolean updateCompany(DataBaseDao dataBaseDao,JSONObject companyObject) {
+//	public static boolean updateCompany(DataBaseDao dataBaseDao,JSONObject companyObject) {
+//		boolean isSuccess = false;
+//		if(dataBaseDao != null){
+//			System.out.println("updateCompany 新接口");
+//			HashMap<String,String> parameters = new HashMap<String, String>();
+//			HashMap<String,String> values = new HashMap<String, String>();
+//			
+//			parameters.put(COLUMN_ID, companyObject.optString(COLUMN_ID));
+//			
+//			values.put(COLUMN_NAME, companyObject.optString(COLUMN_NAME));
+//			values.put(COLUMN_ENGLISHNAME, companyObject.optString(COLUMN_ENGLISHNAME));
+//			values.put(COLUMN_PROVINCE, companyObject.optString(COLUMN_PROVINCE));
+//			values.put(COLUMN_CITY, companyObject.optString(COLUMN_CITY));
+//			values.put(COLUMN_ADDRESS, companyObject.optString(COLUMN_ADDRESS));
+//			values.put(COLUMN_INTENT, companyObject.optString(COLUMN_INTENT));
+//			values.put(COLUMN_HEADHUNTER, companyObject.optString(COLUMN_HEADHUNTER));
+//			values.put(COLUMN_NATURE, companyObject.optString(COLUMN_NATURE));
+//			values.put(COLUMN_NUMBER, companyObject.optString(COLUMN_NUMBER));
+//			values.put(COLUMN_ISLISTING, companyObject.optString(COLUMN_ISLISTING));
+//			values.put(COLUMN_INTRODUCTION, companyObject.optString(COLUMN_INTRODUCTION));
+//			
+//			return updateCompany(dataBaseDao,parameters,values);
+//		}
+//		return isSuccess;
+//	}
+	
+	public static boolean updateCompanyJSON(DataBaseDao dataBaseDao,JSONObject companyObject) {
 		boolean isSuccess = false;
 		if(dataBaseDao != null){
-			System.out.println("updateCompany 新接口");
-			HashMap<String,String> parameters = new HashMap<String, String>();
-			HashMap<String,String> values = new HashMap<String, String>();
+			System.out.println("updateCompany 新接口-------------------");
 			
-			parameters.put(COLUMN_ID, companyObject.optString(COLUMN_ID));
+			long id = companyObject.optLong(COLUMN_ID,-1);
+			companyObject.remove(COLUMN_ID);
+			if(id > 0){
+				HashMap<String,String> parameters = new HashMap<String, String>();
+				HashMap<String,String> values = new HashMap<String, String>();
+				
+				parameters.put(COLUMN_ID, String.valueOf(id));
+				
+				Iterator<String> keys = companyObject.keys();
+				while(keys.hasNext()){
+					String key = keys.next();
+					values.put(key, companyObject.optString(key));
+				}
+				return updateCompany(dataBaseDao,parameters,values);
+			}
 			
-			values.put(COLUMN_NAME, companyObject.optString(COLUMN_NAME));
-			values.put(COLUMN_ENGLISHNAME, companyObject.optString(COLUMN_ENGLISHNAME));
-			values.put(COLUMN_PROVINCE, companyObject.optString(COLUMN_PROVINCE));
-			values.put(COLUMN_CITY, companyObject.optString(COLUMN_CITY));
-			values.put(COLUMN_ADDRESS, companyObject.optString(COLUMN_ADDRESS));
-			values.put(COLUMN_INTENT, companyObject.optString(COLUMN_INTENT));
-			values.put(COLUMN_HEADHUNTER, companyObject.optString(COLUMN_HEADHUNTER));
-			values.put(COLUMN_NATURE, companyObject.optString(COLUMN_NATURE));
-			values.put(COLUMN_NUMBER, companyObject.optString(COLUMN_NUMBER));
-			values.put(COLUMN_ISLISTING, companyObject.optString(COLUMN_ISLISTING));
-			values.put(COLUMN_INTRODUCTION, companyObject.optString(COLUMN_INTRODUCTION));
-			
-			return updateCompany(dataBaseDao,parameters,values);
 		}
 		return isSuccess;
 	}

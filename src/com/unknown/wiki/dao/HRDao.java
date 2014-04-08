@@ -15,6 +15,7 @@ import net.sf.json.JSONObject;
 
 import com.unknown.wiki.bean.Contact;
 import com.unknown.wiki.bean.HR;
+import com.unknown.wiki.bean.W_User;
 import com.unknown.wiki.constant.Constant_Column;
 import com.unknown.wiki.constant.Constant_SQL;
 import com.unknown.wiki.constant.Constant_Servlet;
@@ -121,6 +122,86 @@ public class HRDao implements Constant_Column,Constant_Servlet,Constant_Table,Co
 		}
 		return result;
 	}
+	
+	public static boolean deleteHRJSON(W_User user, DataBaseDao dataBaseDao,JSONObject hrObject) {
+		boolean result = false;
+		
+		if(dataBaseDao != null&&user!=null &&user.getRole()==127){
+			Connection connection = dataBaseDao.getConnection();
+			
+			//删除
+			StringBuffer sb = new StringBuffer();
+			sb.append(SQL_UPDATE);
+			sb.append(TABLE_HR);
+			sb.append(SQL_SET);
+			
+			sb.append(COLUMN_VISIBLE);
+			sb.append(SQL_EQ);
+			sb.append(Visible.INVISIBLE.ordinal());
+			
+			sb.append(SQL_WHERE);
+			Iterator<String> iterator = hrObject.keys();
+			int count = 0;
+			while (iterator.hasNext()) {
+				String key = iterator.next();
+				String value = hrObject.getString(key);
+				
+				if(count != 0){
+					sb.append(SQL_AND);
+				}
+				count ++;
+				
+				if(value.trim().startsWith(SQL_LEFT_BRACKET)){
+					JSONArray valueArray = JSONArray.fromObject(value);
+					if(valueArray!=null){
+						int size = valueArray.size();
+						if(size > 0){
+							sb.append(key);
+							sb.append(SQL_IN);
+							sb.append(SQL_OPEN_PARENTHESIS);
+							
+							for(int j = 0;j<size;j++){
+								if(j!=0){
+									sb.append(SQL_COMMA);
+								}
+								sb.append(SQL_SINGLE_QUOTES);
+								sb.append(valueArray.getInt(j));
+								sb.append(SQL_SINGLE_QUOTES);
+							}
+							
+							sb.append(SQL_CLOSE_PARENTHESIS);
+						}
+					}
+				}else{
+					sb.append(key);
+					sb.append(SQL_EQ);
+					sb.append(SQL_SINGLE_QUOTES);
+					sb.append(hrObject.get(key));
+					sb.append(SQL_SINGLE_QUOTES);
+				}
+				
+			}
+			sb.append(SQL_SEMICOLON);
+			
+			System.out.println("执行的sql语句为			" +	sb.toString());
+			try {
+				PreparedStatement preparedStatement = connection.prepareStatement(sb.toString(),PreparedStatement.RETURN_GENERATED_KEYS);
+				int deleteResult = preparedStatement.executeUpdate();
+				System.out.println("deleteResult --- " + deleteResult);
+				if(deleteResult>0){
+					result = true;
+					long id = hrObject.optLong(COLUMN_ID,-1);
+					if(id>0){
+						ContactDao.deleteHRContact(user, dataBaseDao, id);
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
 	
 	/**查询公司*/
 	public static ArrayList<HR> queryHR(DataBaseDao dataBaseDao,Map<String, String> parameters){
@@ -236,6 +317,7 @@ public class HRDao implements Constant_Column,Constant_Servlet,Constant_Table,Co
 			
 			if(hrObject.containsKey(COLUMN_ID)){
 				id = hrObject.getLong(COLUMN_ID);
+				hrObject.remove(COLUMN_ID);
 			}
 			
 			queryMap.put(COLUMN_ID, String.valueOf(id));
@@ -262,6 +344,7 @@ public class HRDao implements Constant_Column,Constant_Servlet,Constant_Table,Co
 				if(hrList.size() <=0){
 					hr = insertHR(dataBaseDao, values);
 				}else{
+					hr = hrList.get(0);
 					isSuccess = updateHR(dataBaseDao, queryMap, values);
 				}
 			}
@@ -327,5 +410,16 @@ public class HRDao implements Constant_Column,Constant_Servlet,Constant_Table,Co
 		HashMap<String, String> values = new HashMap<String, String>();
 		values.put(Constant_Column.COLUMN_ENGLISHNAME, "修改后的英文名");
 		boolean result = HRDao.updateHR(dataBaseDao, parameters, values);*/
+		
+		
+		JSONObject contactObject = new JSONObject();
+		contactObject.put(COLUMN_ID, "1");
+		
+		W_User user = new W_User();
+		user.setRole(127);
+		
+		
+		deleteHRJSON(user,dataBaseDao,contactObject);
 	}
+
 }
