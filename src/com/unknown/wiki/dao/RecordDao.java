@@ -10,14 +10,17 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import com.unknown.wiki.bean.Record;
+import com.unknown.wiki.bean.W_User;
 import com.unknown.wiki.constant.Constant_Column;
 import com.unknown.wiki.constant.Constant_SQL;
 import com.unknown.wiki.constant.Constant_Servlet;
 import com.unknown.wiki.constant.Constant_Table;
 import com.unknown.wiki.w_enum.RecordType;
+import com.unknown.wiki.w_enum.Visible;
 
 public class RecordDao implements Constant_Column,Constant_SQL,Constant_Table,Constant_Servlet{
 	
@@ -102,6 +105,81 @@ public class RecordDao implements Constant_Column,Constant_SQL,Constant_Table,Co
 				sb.append(entry.getValue());
 				sb.append(SQL_SINGLE_QUOTES);
 				count ++;
+			}
+			sb.append(SQL_SEMICOLON);
+			
+			System.out.println("执行的sql语句为			" +	sb.toString());
+			try {
+				PreparedStatement preparedStatement = connection.prepareStatement(sb.toString(),PreparedStatement.RETURN_GENERATED_KEYS);
+				int deleteResult = preparedStatement.executeUpdate();
+				System.out.println("deleteResult --- " + deleteResult);
+				if(deleteResult>0){
+					result = true;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	public static boolean deleteRecordJSON(W_User user,DataBaseDao dataBaseDao, JSONObject recordObject) {
+		boolean result = false;
+		
+		if(dataBaseDao != null&&user!=null &&user.getRole()==127){
+			Connection connection = dataBaseDao.getConnection();
+			
+			//删除
+			StringBuffer sb = new StringBuffer();
+			sb.append(SQL_UPDATE);
+			sb.append(TABLE_RECORD);
+			sb.append(SQL_SET);
+			
+			sb.append(COLUMN_VISIBLE);
+			sb.append(SQL_EQ);
+			sb.append(Visible.INVISIBLE.ordinal());
+			
+			sb.append(SQL_WHERE);
+			Iterator<String> iterator = recordObject.keys();
+			int count = 0;
+			while (iterator.hasNext()) {
+				String key = iterator.next();
+				String value = recordObject.getString(key);
+				
+				if(count != 0){
+					sb.append(SQL_AND);
+				}
+				count ++;
+				
+				if(value.trim().startsWith(SQL_LEFT_BRACKET)){
+					JSONArray valueArray = JSONArray.fromObject(value);
+					if(valueArray!=null){
+						int size = valueArray.size();
+						if(size > 0){
+							sb.append(key);
+							sb.append(SQL_IN);
+							sb.append(SQL_OPEN_PARENTHESIS);
+							
+							for(int j = 0;j<size;j++){
+								if(j!=0){
+									sb.append(SQL_COMMA);
+								}
+								sb.append(SQL_SINGLE_QUOTES);
+								sb.append(valueArray.getInt(j));
+								sb.append(SQL_SINGLE_QUOTES);
+							}
+							
+							sb.append(SQL_CLOSE_PARENTHESIS);
+						}
+					}
+				}else{
+					sb.append(key);
+					sb.append(SQL_EQ);
+					sb.append(SQL_SINGLE_QUOTES);
+					sb.append(recordObject.get(key));
+					sb.append(SQL_SINGLE_QUOTES);
+				}
+				
 			}
 			sb.append(SQL_SEMICOLON);
 			
@@ -388,6 +466,7 @@ public class RecordDao implements Constant_Column,Constant_SQL,Constant_Table,Co
 			if(id <0){
 				record = insertRecord(dataBaseDao, values);
 			}else{
+				queryMap.put(COLUMN_ID, String.valueOf(id));
 				ArrayList<Record> recordList = queryRecord(dataBaseDao,queryMap);
 				if(recordList.size()>0){
 					record = recordList.get(0);
