@@ -84,6 +84,10 @@ public class CompanyDao implements Constant_Column,Constant_SQL,Constant_Table,C
 		if(dataBaseDao != null){
 			Connection connection = dataBaseDao.getConnection();
 			
+			if(companyObject.containsKey(COLUMN_ID)){
+				companyObject.remove(COLUMN_ID);
+			}
+			
 			//插入
 			StringBuffer sb = new StringBuffer();
 			sb.append(SQL_INSERT);

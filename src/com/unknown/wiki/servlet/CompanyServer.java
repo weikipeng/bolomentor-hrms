@@ -279,31 +279,8 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet,Const
 
 	private void addCompany(DataBaseDao dataBaseDao,W_User user,JSONObject parameters,JSONObject resultObject) {
 		
-////	Company company = CompanyDao.insertCompany(dataBaseDao, parameters);
-//	Company company = null;
-//	
-//	if(company!=null){
-////		resp.setContentType("application/json; charset=utf-8");
-////		resp.setHeader("pragma", "no-cache");
-////		resp.setHeader("cache-control", "no-cache");
-//
-////		printWriter.write(company.toJsonString());
-//		resultObject.put(KEY_RESULT, RESULT_SUCCESS);
-//		resultObject.put(KEY_MESSAGE, "添加公司成功！");
-//	}else{
-//		resultObject.put(KEY_RESULT, RESULT_FAILED);
-//		resultObject.put(KEY_MESSAGE, "添加公司失败！");
-//	}
-//
-//	
-//	
-////	new String(request.getParameter("username").getBytes("ISO-8859-1"),"utf-8");
-		
-		
-//	JSONObject userObject = LoginDao.getUserObject(requestMap);
-//	JSONArray jsonArray = new JSONArray();
-		
-		JSONObject companyObject = parameters.getJSONObject(TABLE_COMPANY);
+//		JSONObject companyObject = parameters.getJSONObject(TABLE_COMPANY);
+		JSONObject companyObject = parameters;
 		
 		if(companyObject != null){
 			HashMap<String, String> queryMap = new HashMap<String, String>();
@@ -343,7 +320,10 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet,Const
 				
 				
 				companyObject.put(COLUMN_CREATEUSERID, user.getId());
-				companyObject.put(COLUMN_CREATEDATE, TimeUtil.getTimeStamp());
+				companyObject.put(COLUMN_UPDATEUSERID, user.getId());
+				String timeStamp = TimeUtil.getTimeStamp();
+				companyObject.put(COLUMN_CREATEDATE, timeStamp);
+				companyObject.put(COLUMN_UPDATEDATE, timeStamp);
 				Company company = CompanyDao.insertCompanyJSONObject(dataBaseDao, companyObject);
 				if(company!=null){
 					//HR
