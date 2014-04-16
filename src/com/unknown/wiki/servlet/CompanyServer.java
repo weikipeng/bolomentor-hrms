@@ -8,7 +8,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -51,7 +54,21 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet,Const
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doPost(request, response);
+//		doPost(request, response);
+	}
+	
+	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, java.io.IOException {
+	    HttpServletRequest request = (HttpServletRequest) req;
+	    HttpServletResponse response = (HttpServletResponse) resp;
+
+	    // This should be added in response to both the preflight and the actual request
+	    response.addHeader("Access-Control-Allow-Origin", "*");
+
+	    if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+	        response.addHeader("Access-Control-Allow-Credentials", "true");
+	    }
+
+	    chain.doFilter(req, resp);
 	}
 
 	/**
@@ -65,7 +82,7 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet,Const
 //		response.setContentType("text/html;charset=utf-8");
 //		response.setHeader("pragma", "no-cache");
 //		response.setHeader("cache-control", "no-cache");
-		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.addHeader("Access-Control-Allow-Origin", "*");
 		PrintWriter printWriter = response.getWriter();
 		
 /*		HashMap<String, String> parameters = new HashMap<String, String>();

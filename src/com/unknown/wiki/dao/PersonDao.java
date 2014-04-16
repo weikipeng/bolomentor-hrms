@@ -10,6 +10,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.sf.json.JSONObject;
+
+import com.unknown.wiki.bean.Person;
 import com.unknown.wiki.bean.Person;
 import com.unknown.wiki.constant.Constant_Column;
 import com.unknown.wiki.constant.Constant_SQL;
@@ -73,6 +76,68 @@ public class PersonDao implements Constant_Column,Constant_SQL{
 		}
 		return person;
 	}
+	
+	public static Person insertPersonJSONObject(DataBaseDao dataBaseDao,JSONObject personObject) {
+
+		Person person = null;
+		if(dataBaseDao != null){
+			Connection connection = dataBaseDao.getConnection();
+			
+			if(personObject.containsKey(COLUMN_ID)){
+				personObject.remove(COLUMN_ID);
+			}
+			
+			//插入
+			StringBuffer sb = new StringBuffer();
+			sb.append(SQL_INSERT);
+			sb.append(Constant_Table.TABLE_PERSON);
+			sb.append(SQL_SET);
+			Iterator<String> iterator = personObject.keys();
+			while (iterator.hasNext()) {
+				String key = iterator.next();
+				sb.append(key);
+				sb.append(SQL_EQ);
+				sb.append(SQL_SINGLE_QUOTES);
+				sb.append(personObject.optString(key));
+				sb.append(SQL_SINGLE_QUOTES);
+				sb.append(SQL_COMMA);
+			}
+			sb.deleteCharAt(sb.length()-1);
+			sb.append(SQL_SEMICOLON);
+			
+			System.out.println("执行的sql语句为			" +	sb.toString());
+			
+			try {
+				PreparedStatement preparedStatement = connection.prepareStatement(sb.toString(),PreparedStatement.RETURN_GENERATED_KEYS);
+				int insertResult = preparedStatement.executeUpdate();
+				System.out.println("insertResult	" +	insertResult);
+				if(insertResult>0){
+					ResultSet resultSet = preparedStatement.getGeneratedKeys();
+					if(resultSet.next()){
+						System.out.println("id --- " + resultSet.getString(1) );
+						
+						long id = resultSet.getLong(1);
+						sb = new StringBuffer();
+						sb.append(SQL_QUERY);
+						sb.append(Constant_Table.TABLE_PERSON);
+						sb.append(SQL_WHERE);
+						sb.append(COLUMN_ID);
+						sb.append(" = ");
+						sb.append(id);
+						preparedStatement = connection.prepareStatement(sb.toString());
+						resultSet = preparedStatement.executeQuery();
+						if(resultSet.next()){
+							person = formatPerson(resultSet);
+						}
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return person;
+	}
+
 	
 	/**删除公司*/
 	public static boolean deletePerson(DataBaseDao dataBaseDao,Map<String, String> parameters){
@@ -280,5 +345,4 @@ public class PersonDao implements Constant_Column,Constant_SQL{
 		values.put(Constant_Column.COLUMN_ENGLISHNAME, "修改后的英文名");
 		boolean result = PersonDao.updatePerson(dataBaseDao, parameters, values);*/
 	}
-
 }
