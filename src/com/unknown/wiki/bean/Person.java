@@ -29,6 +29,8 @@ public class Person implements Constant_Column{
 	private String hopeVocation;
 	private String hopeSalary;
 	private boolean isHope;
+	/**简历*/
+	private String vitae;
 	private long createUserId;
 	private String createDate;
 	private String createUser;
@@ -379,6 +381,7 @@ public class Person implements Constant_Column{
 		jsonObject.put(COLUMN_HOPEVOCATION, hopeVocation);
 		jsonObject.put(COLUMN_HOPESALARY, hopeSalary);
 		jsonObject.put(COLUMN_ISHOPE, isHope);
+		jsonObject.put(COLUMN_VITAE, vitae);
 		jsonObject.put(COLUMN_CREATEUSERID, createUserId);
 		jsonObject.put(COLUMN_CREATEUSER, createUser);
 		jsonObject.put(COLUMN_CREATEDATE, createDate);
@@ -399,5 +402,17 @@ public class Person implements Constant_Column{
 			}
 		}
 		return jsonObject.toString();
+	}
+
+
+
+	public String getVitae() {
+		return vitae;
+	}
+
+
+
+	public void setVitae(String vitae) {
+		this.vitae = vitae;
 	}
 }

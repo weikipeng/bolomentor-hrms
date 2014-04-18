@@ -253,24 +253,25 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet,Const
 
 			recordMeters.put(COLUMN_TYPE, String.valueOf(RecordType.PLAN.ordinal()));
 			company.setRecordPlanList(RecordDao.queryRecord(dataBaseDao, recordMeters));
-
-			if(ROLE_ADMIN_VALUE == user.getRole()){
-				System.out.println("												");
-				System.out.println("ROLE_ADMIN_VALUE												"+ROLE_ADMIN_VALUE);
-				System.out.println("user.getRole()												"+user.getRole());
-				ArrayList<W_User> userList = LoginDao.queryUser(dataBaseDao,user);
-				JSONArray userArray = new JSONArray();
-				if(userList.size()>0){
-					int tSize = userList.size();
-					for(int j=0;j<tSize;j++){
-						userArray.add(userList.get(j).toJsonObject());
-					}
-				}
-				resultObject.put(TABLE_USER,userArray);
-			}
 			
 			jsonArray.add(company.toJsonString());
 		}
+		
+		if(ROLE_ADMIN_VALUE == user.getRole()){
+			System.out.println("												");
+			System.out.println("ROLE_ADMIN_VALUE												"+ROLE_ADMIN_VALUE);
+			System.out.println("user.getRole()												"+user.getRole());
+			ArrayList<W_User> userList = LoginDao.queryUser(dataBaseDao,user);
+			JSONArray userArray = new JSONArray();
+			if(userList.size()>0){
+				int tSize = userList.size();
+				for(int j=0;j<tSize;j++){
+					userArray.add(userList.get(j).toJsonObject());
+				}
+			}
+			resultObject.put(TABLE_USER,userArray);
+		}
+		
 		resultObject.put(Constant_Table.TABLE_COMPANY, jsonArray);
 		resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
 		resultObject.put(KEY_MESSAGE,RESULT_SUCCESS);

@@ -49,6 +49,7 @@ public interface Constant_Column {
 	public static final String COLUMN_HOPEVOCATION = "hopeVocation";
 	public static final String COLUMN_HOPESALARY = "hopeSalary";
 	public static final String COLUMN_ISHOPE = "isHope";
+	public static final String COLUMN_VITAE = "vitae";
 	public static final String COLUMN_CREATEUSERID = "createUserId";
 	public static final String COLUMN_CREATEUSER = "createUser";
 	public static final String COLUMN_CREATEDATE = "createDate";

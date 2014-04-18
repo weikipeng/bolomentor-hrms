@@ -14,12 +14,14 @@ import net.sf.json.JSONObject;
 
 import com.unknown.wiki.bean.Person;
 import com.unknown.wiki.bean.Person;
+import com.unknown.wiki.bean.W_User;
 import com.unknown.wiki.constant.Constant_Column;
 import com.unknown.wiki.constant.Constant_SQL;
+import com.unknown.wiki.constant.Constant_Servlet;
 import com.unknown.wiki.constant.Constant_Table;
 import com.unknown.wiki.w_enum.Gender;
 
-public class PersonDao implements Constant_Column,Constant_SQL{
+public class PersonDao implements Constant_Column,Constant_SQL,Constant_Table,Constant_Servlet{
 
 	
 	/**插入Person*/
@@ -200,11 +202,72 @@ public class PersonDao implements Constant_Column,Constant_SQL{
 					sb.append(SQL_WHERE);
 				}
 				sb.append(entry.getKey());
-				sb.append("= '");
+				sb.append(SQL_EQ);
+				sb.append(SQL_SINGLE_QUOTES);
 				sb.append(entry.getValue());
 				sb.append(SQL_SINGLE_QUOTES);
 				count++;
 			}
+			sb.append(SQL_SEMICOLON);
+			
+			System.out.println("执行的sql语句为			" +	sb.toString());
+			
+			try {
+				PreparedStatement preparedStatement = connection.prepareStatement(sb.toString());
+				ResultSet resultSet = preparedStatement.executeQuery();
+				while(resultSet.next()){
+					result.add(formatPerson(resultSet));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	public static ArrayList<Person> queryPersonGrant(DataBaseDao dataBaseDao,W_User user, JSONObject parameters) {
+		ArrayList<Person> result = new ArrayList<Person>();
+		if(dataBaseDao != null){
+			Connection connection = dataBaseDao.getConnection();
+			
+			int userId	 	= user.getId();
+			int role	  	= user.getRole();
+			
+			
+			StringBuffer sb = new StringBuffer();
+			sb.append(SQL_QUERY);
+			sb.append(TABLE_PERSON);
+			Iterator<String> iterator = parameters.keys();
+			int count = 0;
+			while (iterator.hasNext()) {
+				String key = iterator.next();
+				if(count != 0){
+					sb.append(SQL_AND);
+				}else{
+					sb.append(SQL_WHERE);
+				}
+				sb.append(key);
+				sb.append(SQL_EQ);
+				sb.append(SQL_SINGLE_QUOTES);
+				sb.append(parameters.getString(key));
+				sb.append(SQL_SINGLE_QUOTES);
+				count++;
+			}
+			
+			if(ROLE_ADMIN_VALUE!=role){
+				if(sb.indexOf(SQL_WHERE)>0){
+					sb.append(SQL_AND);
+				}else{
+					sb.append(SQL_WHERE);
+				}
+				
+				sb.append(COLUMN_CREATEUSERID);
+				sb.append(SQL_EQ);
+				sb.append(SQL_SINGLE_QUOTES);
+				sb.append(userId);
+				sb.append(SQL_SINGLE_QUOTES);
+			}
+			
 			sb.append(SQL_SEMICOLON);
 			
 			System.out.println("执行的sql语句为			" +	sb.toString());
@@ -300,6 +363,7 @@ public class PersonDao implements Constant_Column,Constant_SQL{
 		person.setHopeVocation(resultSet.getString(COLUMN_HOPEVOCATION));
 		person.setHopeSalary(resultSet.getString(COLUMN_HOPESALARY));
 		person.setHope(resultSet.getInt(COLUMN_ISHOPE) == 1);
+		person.setVitae(resultSet.getString(COLUMN_VITAE));
 		person.setCreateUserId(resultSet.getLong(COLUMN_CREATEUSERID));
 		person.setCreateUser(resultSet.getString(COLUMN_CREATEUSER));
 		person.setCreateDate(resultSet.getString(COLUMN_CREATEDATE));
