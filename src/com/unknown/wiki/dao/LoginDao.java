@@ -37,9 +37,9 @@ public class LoginDao implements Constant_Column,Constant_Servlet,Constant_SQL,C
 //			while (iterator.hasNext()) {
 //				Entry<String, String> entry = iterator.next();
 //				sb.append(entry.getKey());
-//				sb.append("= '");
+//				sb.append(SQL_EQ);sb.append(SQL_SINGLE_QUOTES);
 //				sb.append(entry.getValue());
-//				sb.append("',");
+//				sb.append(SQL_SINGLE_QUOTES);sb.append(SQL_COMMA);
 //			}
 //			sb.deleteCharAt(sb.length()-1);
 //			sb.append(SQL_SEMICOLON);

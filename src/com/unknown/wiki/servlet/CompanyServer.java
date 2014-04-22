@@ -309,6 +309,7 @@ public class CompanyServer extends HttpServlet implements Constant_Servlet,Const
 			}else{
 				queryMap.put(COLUMN_NAME, name);
 			}
+			queryMap.put(COLUMN_VISIBLE, String.valueOf(Visible.VISIBLE.ordinal()));
 			ArrayList<Company> companyList = CompanyDao.queryCompany(dataBaseDao,queryMap);
 			if(companyList.size()<=0){
 				JSONArray hrArray = null;

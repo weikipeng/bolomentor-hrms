@@ -34,9 +34,9 @@ public class WorkHistoryDao implements Constant_Column,Constant_SQL{
 			while (iterator.hasNext()) {
 				Entry<String, String> entry = iterator.next();
 				sb.append(entry.getKey());
-				sb.append("= '");
+				sb.append(SQL_EQ);sb.append(SQL_SINGLE_QUOTES);
 				sb.append(entry.getValue());
-				sb.append("',");
+				sb.append(SQL_SINGLE_QUOTES);sb.append(SQL_COMMA);
 			}
 			sb.deleteCharAt(sb.length()-1);
 			sb.append(SQL_SEMICOLON);
@@ -96,7 +96,7 @@ public class WorkHistoryDao implements Constant_Column,Constant_SQL{
 					sb.append(SQL_AND);
 				}
 				sb.append(entry.getKey());
-				sb.append("= '");
+				sb.append(SQL_EQ);sb.append(SQL_SINGLE_QUOTES);
 				sb.append(entry.getValue());
 				sb.append(SQL_SINGLE_QUOTES);
 				count ++;
@@ -137,7 +137,7 @@ public class WorkHistoryDao implements Constant_Column,Constant_SQL{
 					sb.append(SQL_WHERE);
 				}
 				sb.append(entry.getKey());
-				sb.append("= '");
+				sb.append(SQL_EQ);sb.append(SQL_SINGLE_QUOTES);
 				sb.append(entry.getValue());
 				sb.append(SQL_SINGLE_QUOTES);
 				count++;
@@ -177,9 +177,9 @@ public class WorkHistoryDao implements Constant_Column,Constant_SQL{
 			while (iterator.hasNext()) {
 				Entry<String, String> entry = iterator.next();
 				sb.append(entry.getKey());
-				sb.append("= '");
+				sb.append(SQL_EQ);sb.append(SQL_SINGLE_QUOTES);
 				sb.append(entry.getValue());
-				sb.append("',");
+				sb.append(SQL_SINGLE_QUOTES);sb.append(SQL_COMMA);
 			}
 			sb.deleteCharAt(sb.length()-1);
 			
@@ -194,7 +194,7 @@ public class WorkHistoryDao implements Constant_Column,Constant_SQL{
 				}
 
 				sb.append(entry.getKey());
-				sb.append("= '");
+				sb.append(SQL_EQ);sb.append(SQL_SINGLE_QUOTES);
 				sb.append(entry.getValue());
 				sb.append(SQL_SINGLE_QUOTES);
 				count ++;

@@ -46,7 +46,7 @@ public interface Constant_SQL{
 //			sb.append(" where ");
 //		}
 //		sb.append(key);
-//		sb.append("= '");
+//		sb.append(SQL_EQ);sb.append(SQL_SINGLE_QUOTES);
 //		sb.append(parameters.getString(key));
 //		sb.append("'");
 //		count++;
@@ -60,7 +60,7 @@ public interface Constant_SQL{
 //		}
 //		
 //		sb.append(COLUMN_CREATEUSERID);
-//		sb.append("= '");
+//		sb.append(SQL_EQ);sb.append(SQL_SINGLE_QUOTES);
 //		sb.append(userId);
 //		sb.append("'");
 //	}

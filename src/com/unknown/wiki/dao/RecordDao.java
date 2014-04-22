@@ -101,7 +101,7 @@ public class RecordDao implements Constant_Column,Constant_SQL,Constant_Table,Co
 					sb.append(SQL_AND);
 				}
 				sb.append(entry.getKey());
-				sb.append("= '");
+				sb.append(SQL_EQ);sb.append(SQL_SINGLE_QUOTES);
 				sb.append(entry.getValue());
 				sb.append(SQL_SINGLE_QUOTES);
 				count ++;
@@ -320,9 +320,9 @@ public class RecordDao implements Constant_Column,Constant_SQL,Constant_Table,Co
 			while (iterator.hasNext()) {
 				Entry<String, String> entry = iterator.next();
 				sb.append(entry.getKey());
-				sb.append("= '");
+				sb.append(SQL_EQ);sb.append(SQL_SINGLE_QUOTES);
 				sb.append(entry.getValue());
-				sb.append("',");
+				sb.append(SQL_SINGLE_QUOTES);sb.append(SQL_COMMA);
 			}
 			sb.deleteCharAt(sb.length()-1);
 			

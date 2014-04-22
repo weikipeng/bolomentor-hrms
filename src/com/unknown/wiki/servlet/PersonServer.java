@@ -17,10 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 import com.unknown.wiki.bean.Person;
 import com.unknown.wiki.bean.Person;
 import com.unknown.wiki.bean.Person;
+import com.unknown.wiki.bean.Person;
 import com.unknown.wiki.bean.W_User;
 import com.unknown.wiki.constant.Constant_Column;
 import com.unknown.wiki.constant.Constant_Servlet;
 import com.unknown.wiki.constant.Constant_Table;
+import com.unknown.wiki.dao.PersonDao;
+import com.unknown.wiki.dao.PersonDao;
 import com.unknown.wiki.dao.PersonDao;
 import com.unknown.wiki.dao.PersonDao;
 import com.unknown.wiki.dao.PersonDao;
@@ -116,13 +119,13 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 		if(ACTION_ADD.equals(action)){
 			addPerson(dataBaseDao,user,parameters,resultObject);
 		}else if(ACTION_DELETE.equals(action)){
-//			deletePerson(dataBaseDao,user,parameters,resultObject);
+			deletePerson(dataBaseDao,user,parameters,resultObject);
 		}else if(ACTION_QUERY.equals(action)){
 			queryPerson(dataBaseDao,user,parameters,resultObject);
 		}else if(ACTION_SINGLE.equals(action)){
 			singlePerson(dataBaseDao,user,parameters,resultObject);
 		}else if(ACTION_UPDATE.equals(action)){
-//			updatePerson(dataBaseDao,user,parameters,resultObject);
+			updatePerson(dataBaseDao,user,parameters,resultObject);
 		}
 		dataBaseDao.close();
 		return resultObject;
@@ -141,6 +144,7 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 			}else{
 				queryMap.put(COLUMN_NAME, name);
 			}
+			queryMap.put(COLUMN_VISIBLE, String.valueOf(Visible.VISIBLE.ordinal()));
 			ArrayList<Person> personList = PersonDao.queryPerson(dataBaseDao,queryMap);
 			if(personList.size()<=0){
 //				JSONArray hrArray = null;
@@ -224,7 +228,7 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 				}
 			}else{
 				resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
-				resultObject.put(KEY_MESSAGE,"已经存在该客户！");
+				resultObject.put(KEY_MESSAGE,"已经存在该人才！");
 			}
 			
 			
@@ -235,7 +239,6 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 	}
 
 	private void singlePerson(DataBaseDao dataBaseDao, W_User user,JSONObject parameters, JSONObject resultObject) {
-//		JSONObject personObject = parameters.getJSONObject(TABLE_PERSON);
 		JSONObject personObject = parameters;
 		
 		if(personObject != null){
@@ -278,18 +281,18 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 //			recordMeters.clear();
 			
 //			//HR
-//			hrMeters.put(COLUMN_COMPANYID, String.valueOf(person.getId()));
+//			hrMeters.put(COLUMN_PERSONID, String.valueOf(person.getId()));
 //			hrMeters.put(COLUMN_VISIBLE, String.valueOf(Visible.VISIBLE.ordinal()));
 //			person.setHrList(HRDao.queryHR(dataBaseDao, hrMeters));
 //			
 //			//Contact
-//			contactMeters.put(COLUMN_TYPE, String.valueOf(ContactType.COMPANY.ordinal()));
+//			contactMeters.put(COLUMN_TYPE, String.valueOf(ContactType.PERSON.ordinal()));
 //			contactMeters.put(COLUMN_TYPEID, String.valueOf(person.getId()));
 //			contactMeters.put(COLUMN_VISIBLE, String.valueOf(Visible.VISIBLE.ordinal()));
 //			person.setContactList(ContactDao.queryContact(dataBaseDao, contactMeters));
 //			
 //			//Record
-//			recordMeters.put(COLUMN_COMPANYID, String.valueOf(person.getId()));
+//			recordMeters.put(COLUMN_PERSONID, String.valueOf(person.getId()));
 //			recordMeters.put(COLUMN_VISIBLE, String.valueOf(Visible.VISIBLE.ordinal()));
 //			recordMeters.put(COLUMN_TYPE, String.valueOf(RecordType.HISTORY.ordinal()));
 //			person.setRecordList(RecordDao.queryRecord(dataBaseDao, recordMeters));
@@ -316,8 +319,92 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 			resultObject.put(TABLE_USER,userArray);
 		}
 		
-		resultObject.put(Constant_Table.TABLE_COMPANY, jsonArray);
+		resultObject.put(Constant_Table.TABLE_PERSON, jsonArray);
 		resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
 		resultObject.put(KEY_MESSAGE,RESULT_SUCCESS);
+	}
+	
+	private void deletePerson(DataBaseDao dataBaseDao, W_User user,JSONObject parameters, JSONObject resultObject) {
+		JSONObject personObject = parameters.getJSONObject(TABLE_PERSON);
+		
+		if(personObject != null){
+			boolean isSuccess = PersonDao.deletePersonJson(user,dataBaseDao,personObject);
+			if(isSuccess){
+				resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
+				resultObject.put(KEY_MESSAGE,"删除人才信息成功！");
+			}else{
+				resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+				resultObject.put(KEY_MESSAGE,"删除人才信息失败！");
+			}
+		}else{
+			resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+			resultObject.put(KEY_MESSAGE,"传入参数错误！");
+		}
+	}
+	
+	private void updatePerson(DataBaseDao dataBaseDao,W_User user,JSONObject parameters,JSONObject resultObject) {
+		JSONObject queryObject = new JSONObject();
+		
+		JSONObject personObject = parameters;
+		personObject.put(COLUMN_UPDATEUSERID, user.getId());
+		personObject.put(COLUMN_UPDATEDATE, TimeUtil.getTimeStamp());
+		
+		if(personObject != null){
+			queryObject.put(COLUMN_ID, personObject.optLong(COLUMN_ID, -1));
+			ArrayList<Person> arrayList = PersonDao.queryPersonGrant(dataBaseDao,user,queryObject);
+			if(arrayList.size()>0){
+//				if(personObject.containsKey(TABLE_HR)){
+//					JSONArray hrArray = personObject.getJSONArray(TABLE_HR);
+//					personObject.remove(TABLE_HR);
+//					
+//					for(int i=0;i<hrArray.size();i++){
+//						HRDao.InsertOrUpdateHR(dataBaseDao, hrArray.optJSONObject(i));
+//					}
+//					
+//					System.out.println("											");
+//					System.out.println("hrArray------"+hrArray.toString());
+//				}
+//				
+//				if(personObject.containsKey(TABLE_RECORD)){
+//					JSONArray recordArray = personObject.getJSONArray(TABLE_RECORD);
+//					personObject.remove(TABLE_RECORD);
+//					for(int i=0;i<recordArray.size();i++){
+//						RecordDao.insertOrUpdateRecord(dataBaseDao, recordArray.optJSONObject(i));
+//					}
+//				}
+//				
+//				if(personObject.containsKey(TABLE_RECORDPLAN)){
+//					JSONArray recordPlanArray = personObject.getJSONArray(TABLE_RECORDPLAN);
+//					personObject.remove(TABLE_RECORDPLAN);
+//					for(int i=0;i<recordPlanArray.size();i++){
+//						RecordDao.insertOrUpdateRecord(dataBaseDao, recordPlanArray.optJSONObject(i));
+//					}
+//				}
+//				
+//				if(personObject.containsKey(TABLE_CONTACT)){
+//					JSONArray contactArray = personObject.getJSONArray(TABLE_CONTACT);
+//					personObject.remove(TABLE_CONTACT);
+//					for(int i=0;i<contactArray.size();i++){
+//						ContactDao.insertOrUpdateContact(dataBaseDao, contactArray.optJSONObject(i));
+//					}
+//				}
+				
+				boolean result = PersonDao.updatePersonJSON(dataBaseDao, personObject);
+				if(result){
+					resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
+					resultObject.put(KEY_MESSAGE,RESULT_SUCCESS);
+				}else{
+					resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+					resultObject.put(KEY_MESSAGE,"更新人才信息失败");
+				}
+				
+			}else{
+				resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+				resultObject.put(KEY_MESSAGE,"没有存在该人才的信息");
+			}
+		}else{
+			resultObject.put(KEY_STATUS, RESULT_CODE_FAILED);
+			resultObject.put(KEY_MESSAGE,"传入参数错误！");
+		}
 	}
 }
