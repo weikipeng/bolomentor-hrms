@@ -303,6 +303,47 @@ public class PersonDao implements Constant_Column,Constant_SQL,Constant_Table,Co
 		return result;
 	}
 	
+	public static ArrayList<Person> queryPersonJSON(DataBaseDao dataBaseDao,JSONObject personObject) {
+		ArrayList<Person> result = new ArrayList<Person>();
+		if(dataBaseDao != null){
+			Connection connection = dataBaseDao.getConnection();
+			
+			StringBuffer sb = new StringBuffer();
+			sb.append(SQL_QUERY);
+			sb.append(Constant_Table.TABLE_PERSON);
+			Iterator<String> iterator = personObject.keys();
+			int count = 0;
+			while (iterator.hasNext()) {
+				String key= iterator.next();
+				if(count != 0){
+					sb.append(SQL_AND);
+				}else{
+					sb.append(SQL_WHERE);
+				}
+				sb.append(key);
+				sb.append(SQL_EQ);
+				sb.append(SQL_SINGLE_QUOTES);
+				sb.append(personObject.get(key));
+				sb.append(SQL_SINGLE_QUOTES);
+				count++;
+			}
+			sb.append(SQL_SEMICOLON);
+			
+			System.out.println("执行的sql语句为			" +	sb.toString());
+			
+			try {
+				PreparedStatement preparedStatement = connection.prepareStatement(sb.toString());
+				ResultSet resultSet = preparedStatement.executeQuery();
+				while(resultSet.next()){
+					result.add(formatPerson(resultSet));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
 	public static ArrayList<Person> queryPersonGrant(DataBaseDao dataBaseDao,W_User user, JSONObject parameters) {
 		ArrayList<Person> result = new ArrayList<Person>();
 		if(dataBaseDao != null){
@@ -332,19 +373,19 @@ public class PersonDao implements Constant_Column,Constant_SQL,Constant_Table,Co
 				count++;
 			}
 			
-			if(ROLE_ADMIN_VALUE!=role){
-				if(sb.indexOf(SQL_WHERE)>0){
-					sb.append(SQL_AND);
-				}else{
-					sb.append(SQL_WHERE);
-				}
-				
-				sb.append(COLUMN_CREATEUSERID);
-				sb.append(SQL_EQ);
-				sb.append(SQL_SINGLE_QUOTES);
-				sb.append(userId);
-				sb.append(SQL_SINGLE_QUOTES);
-			}
+//			if(ROLE_ADMIN_VALUE!=role){
+//				if(sb.indexOf(SQL_WHERE)>0){
+//					sb.append(SQL_AND);
+//				}else{
+//					sb.append(SQL_WHERE);
+//				}
+//				
+//				sb.append(COLUMN_CREATEUSERID);
+//				sb.append(SQL_EQ);
+//				sb.append(SQL_SINGLE_QUOTES);
+//				sb.append(userId);
+//				sb.append(SQL_SINGLE_QUOTES);
+//			}
 			
 			sb.append(SQL_SEMICOLON);
 			

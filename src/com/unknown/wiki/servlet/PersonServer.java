@@ -269,7 +269,8 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 
 	private void queryPerson(DataBaseDao dataBaseDao, W_User user,JSONObject parameters, JSONObject resultObject) {
 		JSONArray jsonArray = new JSONArray();
-		ArrayList<Person> arrayList = PersonDao.queryPersonGrant(dataBaseDao,user,parameters);
+//		ArrayList<Person> arrayList = PersonDao.queryPersonGrant(dataBaseDao,user,parameters);
+		ArrayList<Person> arrayList = PersonDao.queryPersonJSON(dataBaseDao,parameters);
 		int size = arrayList.size();
 //		HashMap<String , String> hrMeters = new HashMap<String, String>();
 //		HashMap<String , String> contactMeters = new HashMap<String, String>();
