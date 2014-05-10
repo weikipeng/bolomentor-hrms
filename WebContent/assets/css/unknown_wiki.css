@@ -1,0 +1,232 @@
+.form-horizontal .control-label {
+    float: left;
+    width: 90px;
+    padding-top: 5px;
+    text-align: right
+}
+
+.form-horizontal .controls {
+    *display: inline-block;
+    *padding-left: 20px;
+    margin-left: 100px;
+    *margin-left: 0
+}
+
+.row-fluid .span3 {
+	width: 25%;
+	*width: 23.023731587561375%
+}
+
+.form-horizontal .control-group {
+    margin-bottom: 10px;
+    *zoom: 1
+}
+
+.text-center {
+  text-align: center;
+}
+
+.table th,.table td {
+    /*background: transparent;*/
+    padding: 8px;
+  	/*padding: 0px;*/
+    line-height: 20px;
+    text-align: center;
+    vertical-align: middle;
+    border-top: 1px solid #ddd
+}
+
+.table-column-center{
+	text-align: center;
+	vertical-align: middle
+}
+
+.table-column-center li {
+  /*padding:10px 0;*/
+  overflow:hidden;
+  /*border-top:solid 1px #eee;*/
+}
+
+.table-column-center ul.unstyled,ol.unstyled {
+    margin: 0;
+    list-style: none
+}
+
+.table-column-center li .wiki-ul-Left {
+  float:left;
+  color:#646464;
+  font-size:14px;
+  text-transform:uppercase;
+}
+
+.table-column-center li .wiki-ul-Right {
+  float:right;
+  color:#169ef4;
+  font-size:16px;
+  font-weight:300;
+}
+
+.table td input{
+   /* padding: 8px;*/
+	padding: 0px;
+    line-height: 20px;
+    text-align: center;
+    vertical-align: middle;
+    border-top: 1px solid #ddd
+}
+
+.portlet.box .form .form-actions,
+.portlet.solid .form .form-actions {
+	text-align: center;
+	padding: 20px;
+	margin-left:-10px !important;
+	margin-right:-10px !important;
+	margin-bottom: -10px !important;
+}
+
+.form-actions #cancel{
+	margin-left:40px;
+}
+
+/*.wikiTableRow.wiki{
+	width: 80px;!important;
+	height: 20px;!important;
+	padding: 6px,6px;!important;
+}*/
+
+.m-wrap.small.wiki {
+  width: 80px !important;
+}
+
+.m-wrap.auto.wiki {
+  width: auto !important;
+}
+
+.m-wrap.small.wiki_m {
+  width: 100px !important;
+}
+
+.row-fluid.wiki {
+    width: 100%;
+    padding: 10px;
+    *zoom: 1
+}
+
+.row-fluid.wiki .span3{
+    width: auto;
+    *width: 23.023731587561375%
+}
+
+.row-fluid .span4.wiki {
+    width: auto;
+    margin: 0px;
+    margin-left: 30px;
+    *width: 23.023731587561375%
+}
+.row-fluid.wiki .search  {
+    width: auto;
+    margin: 0px;
+    float: right;
+}
+
+.portlet.box .portlet-title-wiki {  
+   padding:8px 10px 2px 10px;
+   border-bottom: 1px solid #eee;
+   color: #fff !important;
+}
+
+.portlet.box .portlet-title-wiki {  
+  margin-bottom: 0px;
+}
+
+.portlet-title-wiki{
+	margin-bottom: 15px;
+  	border-bottom: 1px solid #eee;
+}
+
+.portlet-title-wiki h3{
+	color:#000000;
+	font-size: 22px;
+	font-weight: 300;
+	display: inline-block;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 7px; 
+}
+
+.portlet-title-wiki .tools{
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+	margin-top: 6px;
+	float: right;
+}
+
+.portlet-title-wiki h4 {
+  display: inline-block;
+  font-size: 18px;
+  font-weight: 400;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 7px; 
+}
+
+div.innerDetails{
+	display: none;
+	text-align: left;
+}
+
+.innerDetails li .wiki-ul-Left {
+  float:left;
+  color:#646464;
+  font-size:14px;
+  text-transform:uppercase;
+}
+
+.innerDetails li .wiki-ul-Right {
+  float:right;
+  color:#169ef4;
+  font-size:16px;
+  font-weight:300;
+}
+
+.form-title-wiki{
+	display: block;
+	padding: 0 10px 0 10px;
+}
+
+.form-title-wiki ul{
+	margin: 0px;
+}
+
+.form-title-wiki li .wiki-ul-Left {
+  float:left;
+  color:#FFFFFF;
+  font-size:18px;
+  font-weight: 400;
+  text-transform:uppercase;
+}
+
+.form-title-wiki h4{
+  display: inline-block;
+  color:#FFFFFF;
+  font-size:18px;
+  font-weight: 400;
+  text-transform:uppercase;
+}
+
+.form-title-wiki li .wiki-ul-Right {
+	margin-top: 2px;
+  float:right;
+  color:#169ef4;
+  font-size:16px;
+  font-weight:300;
+}
+
+#edit_person{
+  display: none;
+}
+
+.form-title-wiki li {
+  overflow:hidden;
+}

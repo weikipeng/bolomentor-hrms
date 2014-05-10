@@ -1,0 +1,24 @@
+﻿{
+    "name": "伯乐通工作管理系统V0.57",
+    "description": "伯乐通工作管理系统V0.57",
+    "node-main":"main.js",
+    "version": "1.0",
+    "window": {
+        "title" : "伯乐通工作管理系统V0.57",
+        "icon": "logo.png",
+        "as_desktop" : false,
+        "resizable" : true,
+        "always-on-top" : false,
+        "fullscreen" : false,
+        "kiosk" : false,
+        "frame" : true,
+ 		"width": 1920,
+        "height": 1080,
+        "toolbar": false
+
+    },
+    "webkit": {
+    	"plugin": true
+  	},
+    "main" : "login.html"
+}

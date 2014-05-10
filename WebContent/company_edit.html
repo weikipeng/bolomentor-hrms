@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+	<!--<![endif]-->
+	<!-- BEGIN HEAD -->
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+		<meta content="" name="description" />
+		<meta content="" name="author" />
+		<link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="assets/css/metro.css" rel="stylesheet" />
+		<link href="assets/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" />
+		<link href="assets/bootstrap-fileupload/bootstrap-fileupload.css" rel="stylesheet" />
+		<link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+		<link href="assets/css/style.css" rel="stylesheet" />
+		<link href="assets/css/style_responsive.css" rel="stylesheet" />
+		<link href="assets/css/style_default.css" rel="stylesheet" id="style_color" />
+		<link rel="stylesheet" type="text/css" href="assets/gritter/css/jquery.gritter.css" />
+		<link rel="stylesheet" type="text/css" href="assets/chosen-bootstrap/chosen/chosen.css" />
+		<link rel="stylesheet" type="text/css" href="assets/jquery-tags-input/jquery.tagsinput.css" />
+		<link rel="stylesheet" type="text/css" href="assets/clockface/css/clockface.css" />
+		<link rel="stylesheet" type="text/css" href="assets/bootstrap-wysihtml5/bootstrap-wysihtml5.css" />
+		<link rel="stylesheet" type="text/css" href="assets/bootstrap-datepicker/css/datepicker3.css" />
+		<link rel="stylesheet" type="text/css" href="assets/bootstrap-timepicker/compiled/timepicker.css" />
+		<link rel="stylesheet" type="text/css" href="assets/bootstrap-colorpicker/css/colorpicker.css" />
+		<link rel="stylesheet" href="assets/bootstrap-toggle-buttons/static/stylesheets/bootstrap-toggle-buttons.css" />
+		<link rel="stylesheet" href="assets/data-tables/DT_bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="assets/bootstrap-daterangepicker/daterangepicker.css" />
+		<link rel="stylesheet" type="text/css" href="assets/uniform/css/uniform.default.css" />
+		<link id="favicon" rel="shortcut icon" href="faviccon.ico" />
+		<!--<link id="favicon" rel="shortcut icon" type="image/png" href="favicon.png" />-->
+		<link href="assets/css/unknown_wiki.css" rel="stylesheet" />
+	</head>
+	<!-- END HEAD -->
+	<!-- BEGIN BODY -->
+	<body class="fixed-top">
+		<!-- BEGIN HEADER -->
+		<div class="header navbar navbar-inverse navbar-fixed-top">
+			<!-- BEGIN TOP NAVIGATION BAR -->
+			<div class="navbar-inner">
+				<div class="container-fluid">
+					<!-- BEGIN LOGO -->
+					<a class="brand" href="index.html">
+						<img src="logo.png" alt="logo" style="height: 25px;"/>
+					</a>
+					<!-- END LOGO -->
+					<!-- BEGIN RESPONSIVE MENU TOGGLER -->
+					<a href="javascript:;" class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+						<img src="assets/img/menu-toggler.png" alt="" />
+					</a>
+					<!-- END RESPONSIVE MENU TOGGLER -->
+					<!-- BEGIN TOP NAVIGATION MENU -->
+					<ul class="nav pull-right">
+						<!-- BEGIN USER LOGIN DROPDOWN -->
+						<li class="dropdown user">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+								<img alt="" src="assets/img/avatar1_small.jpg" />
+								<span id="head_userName" class="username">Bob Nilson</span>
+								<i class="icon-angle-down"></i>
+							</a>
+							<ul class="dropdown-menu">
+								<li>
+									<a href="login.html">
+										<i class="icon-key"></i> 注销
+									</a>
+								</li>
+							</ul>
+						</li>
+						<!-- END USER LOGIN DROPDOWN -->
+					</ul>
+					<!-- END TOP NAVIGATION MENU -->
+				</div>
+			</div>
+			<!-- END TOP NAVIGATION BAR -->
+		</div>
+		<!-- END HEADER -->
+		<!-- BEGIN CONTAINER -->
+		<div class="page-container row-fluid">
+			<!-- BEGIN SIDEBAR -->
+			<div class="page-sidebar nav-collapse collapse">
+				<!-- BEGIN SIDEBAR MENU -->
+				<ul>
+					<li>
+						<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+						<div class="sidebar-toggler hidden-phone"></div>
+						<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+					</li>
+					<li>
+						<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+						<!--<form class="sidebar-search">
+						<div class="input-box">
+						<a href="javascript:;" class="remove"></a>
+						<input type="text" placeholder="　搜索" />
+						<input type="button" class="submit" value=" " />
+						</div>
+						</form>-->
+						<hr style="margin: 40px 20px 20px 20px;border-bottom-color: #959595 !important;border-top: 0px;">
+						<!-- END RESPONSIVE QUICK SEARCH FORM -->
+					</li>
+					<li class="start ">
+						<a href="company_index.html">
+							<i class="icon-home"></i>
+							<span class="title">首页</span>
+						</a>
+					</li>
+
+					<li class="active has-sub ">
+						<a href="javascript:;">
+							<i class="icon-table"></i>
+							<span class="title">客户</span>
+							<span class="selected"></span>
+							<span class="arrow open"></span>
+						</a>
+						<ul class="sub">
+							<li class="active" id="wiki_new_company_menu_title">
+								<a href="company_edit.html">
+									新建客户
+								</a>
+							</li>
+							<li class="active" style="display: none;" id="wiki_edit_company_menu_title">
+								<a href="#">
+									编辑客户
+								</a>
+							</li>
+							<li >
+								<a href="company_index.html">
+									客户管理
+								</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<!-- END SIDEBAR MENU -->
+			</div>
+			<!-- END SIDEBAR -->
+			<!-- BEGIN PAGE -->
+			<div class="page-content">
+				<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+				<div id="portlet-config" class="modal hide">
+					<div class="modal-header">
+						<button data-dismiss="modal" class="close" type="button"></button>
+						<h3>portlet Settings</h3>
+					</div>
+					<div class="modal-body">
+						<p>
+							Here will be a configuration form
+						</p>
+					</div>
+				</div>
+				<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+				<!-- BEGIN PAGE CONTAINER-->
+				<div class="container-fluid">
+					<!-- BEGIN PAGE HEADER-->
+					<div class="row-fluid">
+						<div class="span12">
+							<!-- BEGIN STYLE CUSTOMIZER -->
+							<div class="color-panel hidden-phone">
+								<div class="color-mode-icons icon-color"></div>
+								<div class="color-mode-icons icon-color-close"></div>
+								<div class="color-mode">
+									<p>
+										主题
+									</p>
+									<ul class="inline">
+										<li class="color-black current color-default" data-style="default"></li>
+										<li class="color-blue" data-style="blue"></li>
+										<li class="color-brown" data-style="brown"></li>
+										<li class="color-purple" data-style="purple"></li>
+										<li class="color-white color-light" data-style="light"></li>
+									</ul>
+									<label class="hidden-phone">
+										<input type="checkbox" class="header" checked value="" />
+										<span class="color-mode-label">Fixed Header</span> </label>
+								</div>
+							</div>
+							<!-- END BEGIN STYLE CUSTOMIZER -->
+							<h3 class="page-title"><span id="wiki_page_title">新建客户</span><small></small></h3>
+							<ul class="breadcrumb">
+								<li>
+									<i class="icon-home"></i>
+									<a href="company_index.html">
+										首页
+									</a>
+									<span class="icon-angle-right"></span>
+								</li>
+								<li>
+									<a href="#">
+										客户
+									</a>
+									<span class="icon-angle-right"></span>
+								</li>
+								<li>
+									<a href="#" id="wiki_page_title">
+										新建客户
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<!-- END PAGE HEADER-->
+					<!-- BEGIN PAGE CONTENT-->
+					<div class="row-fluid">
+						<div class="span12">
+							<!-- BEGIN SAMPLE FORM PORTLET-->
+							<div class="portlet box blue">
+								<div id="companyInfoTitle" class="portlet-title">
+									<h4><i class="icon-reorder"></i>客户信息</h4>
+								</div>
+								<div class="portlet-body form">
+									<!-- BEGIN FORM-->
+									<form id="company_form" action="#" class="form-horizontal">
+										<div class="alert alert-error hide">
+											<button class="close" data-dismiss="alert"></button>
+											您有一些输入不正确，请查看
+										</div>
+										<!--<h3 class="form-section">公司信息</h3>-->
+										<div id="companyInfoTitleLayout" class="portlet-title-wiki">
+											<!--<h4><i class="icon-reorder"></i>General</h4>-->
+											<h3>公司信息</h3>
+										</div>
+										<!--/row-->
+										<div class="row-fluid">
+
+											<div class="span6">
+												<div class="control-group">
+													<label class="control-label">公司名称：</label>
+													<div class="controls">
+														<input type="text" name="name" class="span10 m-wrap"/>
+														<!--<span class="help-inline">Some hint here</span>-->
+													</div>
+												</div>
+											</div>
+
+											<div class="span6">
+												<div class="control-group">
+													<label class="control-label">公司英文名：</label>
+													<div class="controls">
+														<input name="EnglishName" type="text" class="span10 m-wrap" />
+														<!--<span class="help-inline">Some hint here</span>-->
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<div class="row-fluid">
+
+											<div class="span6">
+												<div class="control-group">
+													<label class="control-label">公司性质：</label>
+													<div class="controls">
+														<!--<input name="nature" type="text" class="span10 m-wrap" />-->
+														<!--<span class="help-inline">Some hint here</span>-->
+														<select name="nature" class="span6 m-wrap" data-placeholder="选择性质" tabindex="1"></select>
+													</div>
+												</div>
+											</div>
+
+											<div class="span6">
+												<div class="control-group">
+													<label class="control-label">公司人数：</label>
+													<div class="controls">
+														<!--<input name="number" type="text" class="span10 m-wrap" />-->
+														<!--<span class="help-inline">Some hint here</span>-->
+														<select name="number" class="span6 m-wrap" data-placeholder="选择人数" tabindex="1">
+														</select>
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<div class="row-fluid">
+
+											<div class="span6">
+												<div class="control-group">
+													<label class="control-label">意向：<!--<span class="required">*</span>--></label>
+													<div class="controls">
+														<select name="intent" class="span6 m-wrap" data-placeholder="选择意向" tabindex="1">
+														</select>
+													</div>
+												</div>
+											</div>
+											<div class="span6">
+
+											</div>
+
+										</div>
+
+										<div class="row-fluid">
+
+											<div class="span6">
+												<div class="control-group">
+													<label class="control-label">猎头合作：<!--<span class="required">*</span>--></label>
+													<div class="controls">
+														<label class="radio">
+															<input type="radio" name="headhunter" value="1" />
+															是 </label>
+														<label class="radio">
+															<input type="radio" name="headhunter" value="0" />
+															否 </label>
+														<div id="company_form_headhunter_error"></div>
+													</div>
+												</div>
+											</div>
+
+											<div class="span6">
+												<div class="control-group">
+													<label class="control-label">是否上市：<!--<span class="required">*</span>--></label>
+													<div class="controls">
+														<label class="radio">
+															<input type="radio" name="isListing" value="1" />
+															是 </label>
+														<label class="radio">
+															<input type="radio" name="isListing" value="0" />
+															否 </label>
+														<div id="company_form_isListing_error"></div>
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<div class="row-fluid">
+
+											<div class="span6">
+												<div class="control-group">
+													<label class="control-label">公司电话：<!--<span class="required">*</span>--></label>
+													<div class="controls">
+														<input name="telephone" type="text" class="span10 m-wrap"/>
+													</div>
+												</div>
+											</div>
+
+											<div class="span6">
+												<div class="control-group">
+													<label class="control-label">公司地址：<!--<span class="required">*</span>--></label>
+													<div class="controls">
+														<input name="address" type="text" class="span10 m-wrap"/>
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<div class="row-fluid">
+											<div class="span12 ">
+												<div class="control-group">
+													<label class="control-label" for="introduction">公司简介：</label>
+													<div class="controls">
+														<textarea name='introduction' id="introduction" class="span8 m-wrap" rows="8"></textarea>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="portlet-title-wiki">
+											<h3>HR</h3>
+											<div class="tools">
+												<button id="hrTable_new" class="btn green">
+													添加 <i class="icon-plus"></i>
+												</button>
+											</div>
+										</div>
+										<table class="table table-striped table-hover table-bordered" id="hrTable">
+
+										</table>
+										
+										<div class="portlet-title-wiki">
+											<h3>联系记录</h3>
+											<div class="tools">
+												<button id="recordTable_new" class="btn green">
+													添加记录 <i class="icon-plus"></i>
+												</button>
+											</div>
+										</div>
+										
+										<table class="table table-striped table-hover table-bordered" id="recordTable">
+											<!--<thead>
+												<tr>
+													<th>时间</th>
+													<th>HR</th>
+													<th>内容</th>
+													<th></th>
+													<th></th>
+												</tr>
+											</thead>-->
+										</table>
+					
+										<div class="portlet-title-wiki">
+											<h3>联系计划</h3>
+											<div class="tools">
+												<button id="recordPlanTable_new" class="btn green">
+													添加计划 <i class="icon-plus"></i>
+												</button>
+											</div>
+										</div>
+										<table class="table table-striped table-hover table-bordered" id="recordPlanTable">
+											<!--<thead>
+												<tr>
+													<th>时间</th>
+													<th>HR</th>
+													<th>内容</th>
+													<th></th>
+													<th></th>
+												</tr>
+											</thead>-->
+										</table>
+
+										<div class="form-actions">
+											<button id="ok" type="submit" class="btn blue">
+												保存
+											</button>
+											<button id="cancel" type="button" class="btn">
+												取消
+											</button>
+										</div>
+									</form>
+									<!-- END FORM-->
+								</div>
+							</div>
+							<!-- END SAMPLE FORM PORTLET-->
+						</div>
+					</div>
+					<!-- END PAGE CONTENT-->
+				</div>
+				<!-- END PAGE CONTAINER-->
+			</div>
+			<!-- END PAGE -->
+		</div>
+		<!-- END CONTAINER -->
+		<!-- BEGIN FOOTER -->
+		<div class="footer">
+			2013 &copy; Metronic by keenthemes.
+			<div class="span pull-right">
+				<span class="go-top"><i class="icon-angle-up"></i></span>
+			</div>
+		</div>
+		<!-- END FOOTER -->
+		<!-- BEGIN JAVASCRIPTS -->
+		<!-- Load javascripts at bottom, this will reduce page load time -->
+		<script src="assets/js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="assets/ckeditor/ckeditor.js"></script>
+		<script src="assets/breakpoints/breakpoints.js"></script>
+		<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="assets/bootstrap-fileupload/bootstrap-fileupload.js"></script>
+		<script src="assets/js/jquery.blockui.js"></script>
+		<script src="assets/js/jquery.cookie.js"></script>
+		<!-- ie8 fixes -->
+		<!--[if lt IE 9]>
+		<script src="assets/js/excanvas.js"></script>
+		<script src="assets/js/respond.js"></script>
+		<![endif]-->
+		<script type="text/javascript" src="assets/chosen-bootstrap/chosen/chosen.jquery.min.js"></script>
+		<script type="text/javascript" src="assets/uniform/jquery.uniform.min.js"></script>
+		<script type="text/javascript" src="assets/data-tables/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="assets/data-tables/DT_bootstrap.js"></script>
+		<script type="text/javascript" src="assets/bootstrap-wysihtml5/wysihtml5-0.3.0.js"></script>
+		<script type="text/javascript" src="assets/bootstrap-wysihtml5/bootstrap-wysihtml5.js"></script>
+		<script type="text/javascript" src="assets/jquery-tags-input/jquery.tagsinput.min.js"></script>
+		<script type="text/javascript" src="assets/bootstrap-toggle-buttons/static/js/jquery.toggle.buttons.js"></script>
+		<script type="text/javascript" src="assets/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+		<script type="text/javascript" src="assets/bootstrap-datepicker/js/locales/bootstrap-datepicker.zh-CN.js" charset="UTF-8"></script>
+		<script type="text/javascript" src="assets/clockface/js/clockface.js"></script>
+		<script type="text/javascript" src="assets/bootstrap-daterangepicker/date.js"></script>
+		<script type="text/javascript" src="assets/bootstrap-daterangepicker/daterangepicker.js"></script>
+		<script type="text/javascript" src="assets/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+		<script type="text/javascript" src="assets/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+		<script type="text/javascript" src="assets/jquery-validation/dist/jquery.validate.min.js"></script>
+		<script type="text/javascript" src="assets/jquery-validation/dist/additional-methods.min.js"></script>
+
+		<!--自定义添加-->
+		<script src="assets/js/jquery.cookie.js"></script>
+		<script src="assets/js/app.js"></script>
+		<script src="assets/js/purl.js"></script>
+		<script src="assets/js/bean/Company.js"></script>
+		<script src="assets/js/bean/Record.js"></script>
+		<script src="assets/js/bean/User.js"></script>
+		<script src="assets/js/bean/HR.js"></script>
+		<script src="assets/js/MainUrl.js"></script>
+		<script src="assets/js/MainString.js"></script>
+		<script src="assets/js/bean/Contact.js"></script>
+		<script src="assets/js/bean/WebConstant.js"></script>
+
+		<script>
+			jQuery(document).ready(function() {
+				// initiate layout and plugins
+				WebConstant.init();
+				App.setPage("company_edit");
+				App.init();
+
+				$("#cancel").live('click', function(e) {
+					e.preventDefault();
+					nowCompany = new Company();
+  					window.location.href = "company_index.html";
+//					window.self.close();
+				});
+			});
+		</script>
+		<!-- END JAVASCRIPTS -->
+	</body>
+	<!-- END BODY -->
+</html>
