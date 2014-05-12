@@ -1257,6 +1257,7 @@ CompanyDao = {
                 "sZeroRecords": "对不起，查询不到相关数据！",
                 "sEmptyTable": "表中无数据存在！",
                 "sInfo": "当前显示 _START_ 到 _END_ 条，共 _TOTAL_ 条记录",
+                "sInfoEmpty": '数据表为空',
                 "sInfoFiltered": "数据表中共为 _MAX_ 条记录",
                 "sSearch": "搜索",
                 "oPaginate": {

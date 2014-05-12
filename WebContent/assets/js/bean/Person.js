@@ -47,21 +47,55 @@ function Person(){
 			this.EnglishName = data.EnglishName;
 		}
 		
-		if(data.hasOwnProperty(MString.VITAE)){
-			this.vitae = data[MString.VITAE];
+		if(data.hasOwnProperty(MString.BIRTHDAY)){
+			this.birthday = data[MString.BIRTHDAY];
 		}
 		
 		if(data.hasOwnProperty(MString.GENDER)){
 			this.gender = data[MString.GENDER];
 		}
 		
-		if(data.hasOwnProperty(MString.HOPEADDRESS)){
-			this.hopeAddress = data[MString.HOPEADDRESS];
+		if(data.hasOwnProperty(MString.AGE)){
+			this.age = data[MString.AGE];
 		}
 		
 		if(data.hasOwnProperty(MString.EDUCATION)){
 			this.education = data[MString.EDUCATION];
 		}
+		
+		if(data.hasOwnProperty(MString.MARITALSTATUS)){
+			this.maritalstatus = data[MString.MARITALSTATUS];
+		}
+		
+		if(data.hasOwnProperty(MString.WORKYEAR)){
+			this.workYear = data[MString.WORKYEAR];
+		}
+		
+		if(data.hasOwnProperty(MString.LIVEADDRESS)){
+			this.liveAddress = data[MString.LIVEADDRESS];
+		}
+		
+		if(data.hasOwnProperty(MString.BELONGADDRESS)){
+			this.belongAddress = data[MString.BELONGADDRESS];
+		}
+		
+		if(data.hasOwnProperty(MString.ENGLISHLEVEL)){
+			this.EnglishLevel = data[MString.ENGLISHLEVEL];
+		}
+		
+		if(data.hasOwnProperty(MString.OTHERLANGUAGE)){
+			this.otherLanguage = data[MString.OTHERLANGUAGE];
+		}
+		
+		if(data.hasOwnProperty(MString.SALARY)){
+			this.salary = data[MString.SALARY];
+		}
+		//------------------------------------------
+		
+		if(data.hasOwnProperty(MString.HOPEADDRESS)){
+			this.hopeAddress = data[MString.HOPEADDRESS];
+		}
+		
 		
 		if(data.hasOwnProperty(MString.WORKSTATUS)){
 			this.workStatus = data[MString.WORKSTATUS];
@@ -87,100 +121,6 @@ function Person(){
 			this.updateDate = data[MString.UPDATEDATE];
 		}
 		
-//		id,name,gender,hopeAddress,education,workStatus,workYear,vitae
-		
-//		if(data.hasOwnProperty(MString.BIRTHDAY)){
-//			this.birthday = data.birthday;
-//		}
-//		
-//		if(data.hasOwnProperty(MString.AGE)){
-//			this.age = data.age;
-//		}
-//		
-//		if(data.hasOwnProperty(MString.EDUCATION)){
-//			this.education = data.education;
-//		}
-//		
-//		if(data.hasOwnProperty(MString.MARITALSTATUS)){
-//			this.maritalstatus = data.maritalstatus;
-//		}
-//		
-//		if(data.hasOwnProperty(MString.WORKYEAR)){
-//			this.workYear = data.workYear;
-//		}
-//		
-//		if(data.hasOwnProperty(MString.LIVEADDRESS)){
-//			this.liveAddress = data.liveAddress;
-//		}
-//		
-//		if(data.hasOwnProperty(MString.BELONGADDRESS)){
-//			this.belongAddress = data.belongAddress;
-//		}
-//		
-//		if(data.hasOwnProperty(MString.ENGLISHLEVEL)){
-//			this.EnglishLevel = data.EnglishLevel;
-//		}
-//		
-//		
-//		if(data.hasOwnProperty(MString.ISLISTING)){
-//			this.isListing = data.isListing;
-//		}
-//		
-//		if(data.hasOwnProperty(MString.ISLISTING)){
-//			this.isListing = data.isListing;
-//		}
-//		
-//		if(data.hasOwnProperty(MString.ISLISTING)){
-//			this.isListing = data.isListing;
-//		}
-//		
-//		if(data.hasOwnProperty(MString.ISLISTING)){
-//			this.isListing = data.isListing;
-//		}
-//		//	ENGLISHLEVEL : "EnglishLevel",
-////	OTHERLANGUAGE : "otherLanguage",
-////	SALARY : "salary",
-////	PERSONNATURE : "personNature",
-////	WORKSTATUS : "workStatus",
-////	HOPEADDRESS : "hopeAddress",
-////	HOPEJOB : "hopeJob",
-////	HOPEVOCATION : "hopeVocation",
-////	HOPESALARY : "hopeSalary",
-////	ISHOPE : "isHope",
-////	CREATEUSERID : "createUserId",
-////	CREATEUSER : "createUser",
-////	CREATEDATE : "createDate",
-////	UPDATEUSERID : "updateUserId",
-////	UPDATEUSER : "updateUser",
-////	UPDATEDATE : "updateDate",
-//		if(data.hasOwnProperty(MString.ISLISTING)){
-//			this.isListing = data.isListing;
-//		}
-//		
-//		if(data.hasOwnProperty(MString.ISLISTING)){
-//			this.isListing = data.isListing;
-//		}
-//
-//		if(data.hasOwnProperty(MString.ISLISTING)){
-//			this.isListing = data.isListing;
-//		}
-//		
-//		if(data.hasOwnProperty(MString.ISLISTING)){
-//			this.isListing = data.isListing;
-//		}
-//		
-//		if(data.hasOwnProperty(MString.ISLISTING)){
-//			this.isListing = data.isListing;
-//		}
-//
-//
-//
-//
-//		
-//		if(data.hasOwnProperty(MString.INTRODUCTION)){
-//			this.introduction = data.introduction;
-//		}
-//		
 //		if(data.hasOwnProperty(MString.CONTACT)){
 //			contactArray = data.contact;
 //			
@@ -203,15 +143,34 @@ function Person(){
 			data[MString.NAME] = nameV;
 		}
 		
-		//id,name,gender,hopeAddress,education,workStatus,workYear,vitae
+		var EnglishNameV = nowP.EnglishName.val();
+		if(EnglishNameV!=this.EnglishName){
+			data[MString.EnglishName] = EnglishNameV;
+		}
 		
-		//		var headhunterV = nowP.headhunter.filter(":checked").val();
-//		if(headhunterV!=this.headhunter){
-//			data[MString.HEADHUNTER] = headhunterV;
-//		}
+		var birthdayV = nowP.birthday.val();
+		if(birthdayV!=this.birthday){
+			data[MString.BIRTHDAY] = birthdayV;
+		}
+		
 		var genderV = nowP.gender.filter(":checked").val();
 		if(genderV != this.gender){
 			data[MString.GENDER] = genderV;
+		}
+		
+		var ageV = nowP.age.val();
+		if(ageV != this.age){
+			data[MString.AGE] = ageV;
+		}
+
+		var educationV = nowP.education.val();
+		if(educationV != this.education){
+			data[MString.EDUCATION] = educationV;
+		}
+		
+		var maritalstatusV = nowP.maritalstatus.val();
+		if(maritalstatusV!=this.maritalstatus){
+			data[MString.]
 		}
 		
 		var hopeAddressV = nowP.hopeAddress.val();
@@ -219,10 +178,6 @@ function Person(){
 			data[MString.HOPEADDRESS] = hopeAddressV;
 		}
 		
-		var educationV = nowP.education.val();
-		if(educationV != this.education){
-			data[MString.EDUCATION] = educationV;
-		}
 		
 		var workStatusV = nowP.workStatus.filter(":checked").val();
 		if(workStatusV != this.workStatus){
