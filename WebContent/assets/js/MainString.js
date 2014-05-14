@@ -122,6 +122,8 @@ MString ={
 	NATURE_LIST:["欧美","日资","台资","合资","民企","其他"],
 	NUMBER_LIST:["50以下","50-150","150-500","500-1000","1000-5000","5000-10000","10000以上"],
 	EDUCATION_LIST:["大专","本科","硕士","博士"],
+
+	MARITALSTATUS_LIST:["未婚","已婚","离异"],
 	
 	TEXT_PLEASE_SELECT : "请选择...",
 	TEXT_MOBILE : "手机",
@@ -131,6 +133,15 @@ MString ={
 }
 
 MStringF = {
+	initSelect:function(widget,valueList){
+		var pSelect = new Option(MString.TEXT_PLEASE_SELECT,"-1");
+     	widget.empty();
+     	widget.append(pSelect);
+     	for(var i = 0;i<valueList.length;i++){
+     		widget.append(new Option(valueList[i],i));
+     	}
+	},
+	
 	getGender:function(index){
 		var index = parseInt(index);
 		switch(index){
@@ -180,6 +191,17 @@ MStringF = {
 		var indexV = parseInt(index);
 		if(indexV!=null && indexV >=0 && indexV < MString.NATURE_LIST.length){
 			return MString.NATURE_LIST[indexV];
+		}else if(indexV == -1){
+			return MString.UNKNOWN;
+		}else{
+			return index;
+		}
+	},
+	
+	getMaritalstatus:function(index){
+		var indexV = parseInt(index);
+		if(indexV!=null && indexV >=0 && indexV < MString.MARITALSTATUS_LIST.length){
+			return MString.MARITALSTATUS_LIST[indexV];
 		}else if(indexV == -1){
 			return MString.UNKNOWN;
 		}else{

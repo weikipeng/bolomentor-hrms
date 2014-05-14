@@ -145,10 +145,13 @@ function Person(){
 		
 		var EnglishNameV = nowP.EnglishName.val();
 		if(EnglishNameV!=this.EnglishName){
-			data[MString.EnglishName] = EnglishNameV;
+			data[MString.ENGLISHNAME] = EnglishNameV;
 		}
 		
-		var birthdayV = nowP.birthday.val();
+		var birthdayWidget = nowP.birthday.find("#birthdate");
+//		var birthdayV = nowP.birthday.val();
+		var birthdayV = birthdayWidget.val();
+		console.log("birthdayV ---------- " + birthdayV);
 		if(birthdayV!=this.birthday){
 			data[MString.BIRTHDAY] = birthdayV;
 		}
@@ -170,8 +173,28 @@ function Person(){
 		
 		var maritalstatusV = nowP.maritalstatus.val();
 		if(maritalstatusV!=this.maritalstatus){
-			data[MString.]
+			data[MString.MARITALSTATUS] = maritalstatusV;
 		}
+		
+		var workYearV = nowP.workYear.val();
+		if(workYearV != this.workYear){
+			data[MString.WORKYEAR] = workYearV;
+		}
+		
+		var liveAddressV = nowP.liveAddress.val();
+		if(liveAddressV != this.liveAddress){
+			data[MString.LIVEADDRESS] = liveAddressV;
+		}
+		
+		var belongAddressV = nowP.belongAddress.val();
+		if(belongAddressV != this.belongAddress){
+			data[MString.BELONGADDRESS] = belongAddressV;
+		}
+		
+//		var EnglishLevelV = nowP.EnglishLevel.val();
+//		if(EnglishLevelV!=this.EnglishLevel){
+//			data[MString.EnglishLevel] = EnglishLevelV;
+//		}
 		
 		var hopeAddressV = nowP.hopeAddress.val();
 		if(hopeAddressV != this.hopeAddress){
@@ -184,10 +207,6 @@ function Person(){
 			data[MString.WORKSTATUS] = workStatusV;
 		}
 		
-		var workYearV = nowP.workYear.val();
-		if(workYearV != this.workYear){
-			data[MString.WORKYEAR] = workYearV;
-		}
 		
 		var vitaeV = nowP.vitae.val();
 		console.log("vitaeV ---------- "+vitaeV);
@@ -272,13 +291,21 @@ function Person(){
 function PersonEditForm(){
 	//id,name,gender,hopeAddress,education,workStatus,workYear,vitae
 	this.name = $('#name');
-//	this.EnglishName = $('[name="EnglishName"]');
-	this.vitae = $('#vitae');
+	this.EnglishName = $('#EnglishName');
+	this.birthday =$('#birthday');
 	this.gender = $('[name="gender"]');
-	this.hopeAddress = $('#hopeAddress');
+	this.age = $('#age');
+
 	this.education = $('#education');
-	this.workStatus = $('[name="workStatus"]');
+	this.maritalstatus = $('#maritalstatus');
 	this.workYear =  $('#workYear');
+	
+	this.liveAddress = $('#liveAddress');
+	this.belongAddress = $('#belongAddress');
+	
+	this.vitae = $('#vitae');
+	this.hopeAddress = $('#hopeAddress');
+	this.workStatus = $('[name="workStatus"]');
 //	this.nature = $('[name="nature"]');
 //	this.number = $('[name="number"]');
 //	this.intent= $('[name="intent"]');
@@ -289,12 +316,21 @@ function PersonEditForm(){
 //	this.introduction = $('[name="introduction"]');
 
 	this.nameLabel = "";
+	this.EnglishNameLabel = "";
+	this.birthdayLabel = "";
 	this.genderLabel = "";
-	this.hopeAddressLabel = "";
+	this.ageLabel = "";
 	this.educationLabel = "";
-	this.workStatusLabel = "";
+	
+	this.maritalstatusLabel = "";
 	this.workYearLabel = "";
+	this.liveAddressLabel = "";
+	this.belongAddressLabel = "";
+	
 	this.vitaeLabel = "";
+	
+	this.hopeAddressLabel = "";
+	this.workStatusLabel = "";
 	
 	this.initAddMode = function(){
       	jQuery.validator.addMethod("isMobile", function(value, element) {
@@ -304,16 +340,16 @@ function PersonEditForm(){
 		    return this.optional(element) || (telTest.test(value));
   		}, "请输入正确的手机或者电话号码！");
   		
-//    	jQuery.validator.addMethod("nameOrEnghlisName", function(value, element) {
-//    		var name = $('input[name="name"]').val();
-//    		var EnglishName = $('input[name="EnglishName"]').val();
-//    		
-//    		if(name.length>0 || EnglishName.length > 0){
-//    			return true;
-//    		}else{
-//    			return false;
-//    		}
-//		}, "请输入人才名称或英文名！");
+      	jQuery.validator.addMethod("nameOrEnghlisName", function(value, element) {
+      		var name = $('#name').val();
+      		var EnglishName = $('#EnglishName').val();
+      		
+      		if(name.length>0 || EnglishName.length > 0){
+      			return true;
+      		}else{
+      			return false;
+      		}
+		}, "请输入人才名称或英文名！");
   		
       	jQuery.validator.addMethod("singleName", function(value, element) {
       		var isSuccess = true;
@@ -368,7 +404,7 @@ function PersonEditForm(){
             
             messages: {
                 name: {
-//              	nameOREnghlisName: "请输入人才名称或英文名！",
+                	nameOREnghlisName: "请输入人才名称或英文名！",
                     required: "请输入人才名称！",
                     singleName:"该人才已存在！"
                 },
@@ -379,22 +415,11 @@ function PersonEditForm(){
                 
                 gender: {
                     required: "请选择人才性别！",
-                }
-//              ,
-//				EnglishName: {
-//					nameOREnghlisName: "请输入人才名称或英文名！",
-//					required:"请输入人才名称或英文名！"
-//				}
-//				,
-//              headhunter:{
-//                  required: "请选择是否与猎头合作"
-//              },
-//              intent: {
-//                  required: "请选择人才的合作意图"
-//              },
-//				telephone:{
-//					isMobile:"请输入正确的手机或者电话号码"
-//				}
+                },
+				EnglishName: {
+					nameOREnghlisName: "请输入人才名称或英文名！",
+					required:"请输入人才名称或英文名！"
+				}
             },
     		
             errorPlacement:function(error,element){
@@ -467,10 +492,10 @@ function PersonEditForm(){
   				
   				var formData =  nowForm.getJSONV();
   				
-  				if(jQuery.isEmptyObject(formData)){
-  					window.self.close();
-  					return true;
-  				}
+				if(jQuery.isEmptyObject(formData)){
+//					window.self.close();
+					return true;
+				}
   				
   				
   				var url = MainUrl.DOMAIN+MainUrl.URL_PERSON;
@@ -479,35 +504,31 @@ function PersonEditForm(){
   				
     			console.log("add person-->"+JSON.stringify(postData));
   				
-  				$.post(url,postData,function(data,status){
-  					if(data!=null){
-  						var status = data[MainUrl.STATUS];
-  						status = parseInt(status);
-  						if(status == MainUrl.RESULT_CODE_SUCCESS){
-  							if(nowPerson.id > 0){
-  								alert("修改人才信息成功！");
-//								if(nowUser.role == 127){
-  	  								window.location.href="person_edit.html?id="+nowPerson.id;
-//								}else{
-//									window.location.href="person_detail.html?id="+nowPerson.id;
-//								}
-  							}else{
-  	  							alert("添加人才信息成功！");
-  	  							if (confirm("是否继续添加人才？") == true) {
-  									window.location.href="person_edit.html";
-  					                return;
-  					            }
-  	  							window.self.close();
-  							}
-  						}else{
-  							alert(data[MainUrl.KEY_MESSAGE]);
-  							window.self.close();
-  						}
-  					}else{
-  						alert("更新人才信息失败！");
-  						window.self.close();
-  					}
-  				});
+				$.post(url,postData,function(data,status){
+					if(data!=null){
+						var status = data[MainUrl.STATUS];
+						status = parseInt(status);
+						if(status == MainUrl.RESULT_CODE_SUCCESS){
+							if(nowPerson.id > 0){
+								alert("修改人才信息成功！");
+	  								window.location.href="person_edit.html?id="+nowPerson.id;
+							}else{
+	  							alert("添加人才信息成功！");
+	  							if (confirm("是否继续添加人才？") == true) {
+									window.location.href="person_edit.html";
+					                return;
+					            }
+	  							window.self.close();
+							}
+						}else{
+							alert(data[MainUrl.KEY_MESSAGE]);
+							window.self.close();
+						}
+					}else{
+						alert("更新人才信息失败！");
+						window.self.close();
+					}
+				});
   				return false;
 			}
     	});
@@ -608,10 +629,39 @@ function PersonEditForm(){
 
 		//id,name,gender,hopeAddress,education,workStatus,workYear,vitae
 		this.name.val(person.name);
+		this.EnglishName.val(person.EnglishName);
+		
+		var tBirthday ="";
+		if(person.birthday!=null && person.birthday.length>0){
+			tBirthday = $.format.date(person.birthday,"yyyy-MM-dd");
+		}
+		
+		console.log("tBirthDay ---> "+tBirthday);
+		
+//		this.birthday.val(person.birthday);
+		this.birthday.empty();
+		this.birthday.birthdaypicker({
+			dateFormat : "bigEndian",
+			wraper:"fieldset",
+			futureDates : false,
+			defaultDate : tBirthday,
+			maxAge : 70,
+			minAge:10
+		});
 		
   		var tGender = this.gender.filter('[value='+person.gender+']');
   		tGender.attr("checked",true);
   		tGender.closest('span').addClass('checked');
+  		
+  		//年龄
+  		this.age.val(person.age);
+  		
+  		var tMaritalstatus = this.maritalstatus.filter('[value='+person.maritalstatus+']');
+  		tMaritalstatus.attr("checked",true);
+  		tMaritalstatus.closest('span').addClass('checked');
+  		
+  		this.liveAddress.val(person.liveAddress);
+  		this.belongAddress.val(person.belongAddress);
   		
   		this.hopeAddress.val(person.hopeAddress);
   		this.education.val(person.education);
@@ -626,9 +676,16 @@ function PersonEditForm(){
 		
 		//Label
 		this.nameLabel = MStringF.createLabel(this.name,MStringF.getLabelName(MString.NAME),person.name);
+		this.EnglishNameLabel = MStringF.createLabel(this.EnglishName,MStringF.getLabelName(MString.ENGLISHNAME),person.EnglishName);
+		this.birthdayLabel = MStringF.createLabel(this.birthday,MStringF.getLabelName(MString.BIRTHDAY),person.birthday);
 		this.genderLabel = MStringF.createLabel(this.gender,MStringF.getLabelName(MString.GENDER),MStringF.getGender(person.gender));
-		this.hopeAddressLabel = MStringF.createLabel(this.hopeAddress,MStringF.getLabelName(MString.HOPEADDRESS),person.hopeAddress);
+		this.ageLabel = MStringF.createLabel(this.age,MStringF.getLabelName(MString.AGE),person.age);
+		this.maritalstatusLabel = MStringF.createLabel(this.maritalstatus,MStringF.getLabelName(MString.MARITALSTATUS),MStringF.getMaritalstatus(person.maritalstatus));
+		this.liveAddressLabel = MStringF.createLabel(this.liveAddress,MStringF.getLabelName(MString.LIVEADDRESS),person.liveAddress);
+		this.belongAddressLabel = MStringF.createLabel(this.belongAddress,MStringF.getLabelName(MString.BELONGADDRESS),person.belongAddress);
 		this.educationLabel = MStringF.createLabel(this.education,MStringF.getLabelName(MString.EDUCATION),MStringF.getEducation(person.education));
+		
+		this.hopeAddressLabel = MStringF.createLabel(this.hopeAddress,MStringF.getLabelName(MString.HOPEADDRESS),person.hopeAddress);
 		this.workStatusLabel = MStringF.createLabel(this.workStatus,MStringF.getLabelName(MString.WORKSTATUS),MStringF.isWorking(person.workStatus));
 		this.workYearLabel = MStringF.createLabel(this.workYear,MStringF.getLabelName(MString.WORKYEAR),person.workYear);
   		this.vitaeLabel = MStringF.createLabel(this.vitae,MStringF.getLabelName(MString.VITAE),person.vitae);
@@ -702,17 +759,24 @@ PersonDao = {
 	
 	initPersonEditForm:function(){
 //		 $('#vitae').wysiwyg();
-		 
-     	var educationList = MString.EDUCATION_LIST;
-     	
-     	var educationS = $("#education");
-     	educationS.empty();
-     	
-     	educationS.append(new Option(MString.TEXT_PLEASE_SELECT,"-1"));
-     	i = 0;
-     	for(i = 0;i<educationList.length;i++){
-     		educationS.append(new Option(educationList[i],i));
-     	}
+		
+		nowPersonEditForm.birthday.birthdaypicker({
+			dateFormat : "bigEndian",
+			wraper:"fieldset",
+			futureDates : false,
+			maxAge : 70,
+			minAge:10
+		});
+		
+		nowPersonEditForm.age.jStepper({minValue:0, maxValue:70, minLength:2});
+		
+		nowPersonEditForm.workYear.jStepper({minValue:0, maxValue:70, minLength:2});
+		
+		//教育经历
+		MStringF.initSelect(nowPersonEditForm.education,MString.EDUCATION_LIST);
+		
+		//婚姻状况
+		MStringF.initSelect(nowPersonEditForm.maritalstatus,MString.MARITALSTATUS_LIST);
      	
      	$("#cancel").live("click",function(e){
      		e.preventDefault();
@@ -1037,6 +1101,8 @@ PersonDao = {
 	initEditPerson: function (){
 //		HRDao.initHrTable();
 //	  	
+		nowPersonEditForm = new PersonEditForm();
+		
   	  	PersonDao.initPersonEditForm();
 //	  	
 //	  	RecordDao.initRecordTable($('#recordTable'),$('#recordTable_new'),$('#recordTable a#remove'),RecordType.HISTORY);
@@ -1047,7 +1113,6 @@ PersonDao = {
 		
 		var personId = thisUrl.param(MString.ID);
 
-		nowPersonEditForm = new PersonEditForm();
 		
 		var nowForm = nowPersonEditForm;
 		

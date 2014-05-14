@@ -81,7 +81,7 @@
 												<h4><i class="icon-reorder"></i>人才信息</h4>
 											</div>
 											<div class="wiki-ul-Right">
-												<button id="edit_person" class="btn green">
+												<button id="edit_person" class="btn green" style="margin-top: 2px;">
 													编辑 <i class="icon-edit"></i>
 												</button>
 											</div>
@@ -112,7 +112,7 @@
 												</li>
 												<li>
 													<a href="#tab_1_3" data-toggle="tab">
-														工作经历
+														简历
 													</a>
 												</li>
 											</ul>
@@ -185,7 +185,8 @@
 																		<div class="control-group">
 																			<label class="control-label">生日：</label>
 																			<div class="controls">
-																				<input id="birthday" class="m-wrap auto wiki date-picker" size="16" type="text" value=""/>
+																				<!--<input id="birthday" class="m-wrap auto wiki" size="16" type="text" value=""/>-->
+																				<div id="birthday"></div>
 																			</div>
 																		</div>
 																	</div>
@@ -277,6 +278,12 @@
 																</div>
 															</li>
 													</div>
+												</div>
+												<div class="tab-pane" id="tab_1_2">
+													尽请期待
+												</div>
+												<div class="tab-pane" id="tab_1_3">
+													<!--尽请期待-->
 													<div class="row-fluid">
 														<label >简历：</label>
 													</div>
@@ -284,12 +291,6 @@
 														<!--<textarea id="vitae" class="span12 ckeditor m-wrap" rows="6"></textarea>-->
 														<textarea id="vitae" class="span12 m-wrap" rows="6"></textarea>
 													</div>
-												</div>
-												<div class="tab-pane" id="tab_1_2">
-													尽请期待
-												</div>
-												<div class="tab-pane" id="tab_1_3">
-													尽请期待
 												</div>
 											</div>
 										</div>
@@ -374,6 +375,9 @@
 		<script src="assets/js/bean/Contact.js"></script>
 		<script src="assets/js/bean/WebConstant.js"></script>
 		<script src="assets/js/bean/Person.js"></script>
+		<script src="assets/bday-picker/bday-picker.js"></script>
+		<script src="assets/jStepper/jquery.jstepper.js"></script>
+		<script src="assets/jquery-dateFormat/jquery-dateFormat.min.js"></script>
 
 		<script>
 			jQuery(document).ready(function() {

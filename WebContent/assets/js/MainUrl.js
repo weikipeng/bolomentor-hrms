@@ -1,8 +1,6 @@
 MainUrl = {
-	DOMAIN:"http://192.168.1.51/unknown",
-//	domain:"http://192.168.1.73:8080/unknown",
-//	DOMAIN:"http://192.168.1.73:8080/unknown",
-//	domain:"http://192.168.1.100:8080/bolomentor",
+//	DOMAIN:"http://192.168.1.51/unknown",
+	DOMAIN:"http://192.168.1.73:8080/unknown",
 //	DOMAIN:"http://192.168.1.100:8080/bolomentor",
 	url_company:"/company",
 	URL_COMPANY:"/company",
