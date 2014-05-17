@@ -10,6 +10,7 @@ import com.unknown.wiki.w_enum.Gender;
 
 public class Person implements Constant_Column{
 	private long id;
+	private String netId;
 	private String name;
 	private String EnglishName;
 	private String birthday;
@@ -362,6 +363,7 @@ public class Person implements Constant_Column{
 	public String toJsonString() {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put(COLUMN_ID, id);
+		jsonObject.put(COLUMN_NETID, netId);
 		jsonObject.put(COLUMN_NAME, name);
 		jsonObject.put(COLUMN_ENGLISHNAME, EnglishName);
 		jsonObject.put(COLUMN_BIRTHDAY, birthday);
@@ -414,5 +416,17 @@ public class Person implements Constant_Column{
 
 	public void setVitae(String vitae) {
 		this.vitae = vitae;
+	}
+
+
+
+	public String getNetId() {
+		return netId;
+	}
+
+
+
+	public void setNetId(String netId) {
+		this.netId = netId;
 	}
 }

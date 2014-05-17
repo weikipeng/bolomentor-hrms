@@ -1,10 +1,10 @@
 ﻿{
-    "name": "伯乐通工作管理系统V0.57",
-    "description": "伯乐通工作管理系统V0.57",
+    "name": "伯乐通工作管理系统V0.58",
+    "description": "伯乐通工作管理系统V0.58",
     "node-main":"main.js",
     "version": "1.0",
     "window": {
-        "title" : "伯乐通工作管理系统V0.57",
+        "title" : "伯乐通工作管理系统V0.58",
         "icon": "logo.png",
         "as_desktop" : false,
         "resizable" : true,

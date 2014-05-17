@@ -1,5 +1,6 @@
 function Person(){
 	this.id= -1;
+	this.netId = "";
 	this.name = '';
 	this.EnglishName='';
 	this.birthday='';
@@ -37,6 +38,10 @@ function Person(){
 		
 		if(data.hasOwnProperty(MString.ID)){
 			this.id = data.id;
+		}
+		
+		if(data.hasOwnProperty(MString.NETID)){
+			this.netId = data[MString.NETID];
 		}
 		
 		if(data.hasOwnProperty(MString.NAME)){
@@ -96,7 +101,6 @@ function Person(){
 			this.hopeAddress = data[MString.HOPEADDRESS];
 		}
 		
-		
 		if(data.hasOwnProperty(MString.WORKSTATUS)){
 			this.workStatus = data[MString.WORKSTATUS];
 		}
@@ -105,6 +109,11 @@ function Person(){
 			this.workYear = data[MString.WORKYEAR];
 		}
 		
+		if(data.hasOwnProperty(MString.VITAE)){
+			this.vitae=data[MString.VITAE];
+		}
+
+
 		if(data.hasOwnProperty(MString.CREATEUSERID)){
 			this.createUserId = data[MString.CREATEUSERID];
 		}
@@ -138,6 +147,12 @@ function Person(){
 	this.getUpdateJSON = function(nowP){
 		console.log("getUpdateJSON ---------- ");
 		var data = {};
+		
+		var netIdV = nowP.netId.val();
+		if(netIdV!=this.netId){
+			data[MString.NETID] = netIdV;
+		}
+		
 		var nameV = nowP.name.val();
 		if(nameV != this.name){
 			data[MString.NAME] = nameV;
@@ -209,8 +224,11 @@ function Person(){
 		
 		
 		var vitaeV = nowP.vitae.val();
-		console.log("vitaeV ---------- "+vitaeV);
-		console.log("vitaeV2 ---------- "+nowP.vitae.val());
+		vitaeV = vitaeV.replace(htmlEscaper, function(match) {
+    		return htmlEscapes[match];
+		});
+//		console.log("vitaeV ---------- "+vitaeV);
+		
 		if(vitaeV != this.vitae){
 			data[MString.VITAE] = vitaeV;
 		}
@@ -290,7 +308,9 @@ function Person(){
 
 function PersonEditForm(){
 	//id,name,gender,hopeAddress,education,workStatus,workYear,vitae
+	this.mode = PAGE_MODE.VIEW;
 	this.name = $('#name');
+	this.netId =$('#netId');
 	this.EnglishName = $('#EnglishName');
 	this.birthday =$('#birthday');
 	this.gender = $('[name="gender"]');
@@ -316,6 +336,7 @@ function PersonEditForm(){
 //	this.introduction = $('[name="introduction"]');
 
 	this.nameLabel = "";
+	this.netIdLabel = "";
 	this.EnglishNameLabel = "";
 	this.birthdayLabel = "";
 	this.genderLabel = "";
@@ -488,9 +509,13 @@ function PersonEditForm(){
   				var postData = {};
   				postData[MainUrl.ACTION] = App.wiki_action;
   				postData[MString.TABLE_USER] = MStringF.getPostJson(nowUser.getJSONV());
-  				var nowForm = new PersonEditForm();
-  				
-  				var formData =  nowForm.getJSONV();
+
+//				var nowForm = new PersonEditForm();
+//				
+//				var formData =  nowForm.getJSONV();
+
+				
+				var formData =  nowPersonEditForm.getJSONV();
   				
 				if(jQuery.isEmptyObject(formData)){
 //					window.self.close();
@@ -592,42 +617,7 @@ function PersonEditForm(){
 	}
 	
 	this.setPerson = function(person){
-//		//id,name,gender,hopeAddress,education,workStatus,workYear,vitae
-//		this.name.val(Person.name);
-//		
-//		var tGender = this.gender.filter('[value='+person.gender+']');
-//		tGender.attr("checked",true);
-//		tGender.closest('span').addClass('checked');
-//		
-//		this.hopeAddress.val(Person.hopeAddress);
-//		this.education.val(Person.education);
-//		
-//		var tWorkStatus = this.workStatus.filter('[value='+person.workStatus+']');
-//		tWorkStatus.attr("checked",true);
-//		tWorkStatus.closest('span').addClass('checked');
-//		
-//		this.workYear.val(Person.workYear);
-//		
-//		
-////		this.EnglishName.val(person.EnglishName);
-////		this.nature.val(person.nature);
-////		this.number.val(person.number);
-////		this.intent.val(person.intent);
-////		tHeadhunter = this.headhunter.filter('[value='+person.headhunter+']');
-////		tHeadhunter.attr("checked",true);
-////		tHeadhunter.closest('span').addClass('checked');
-////		
-////		tIsListing = this.isListing.filter('[value='+person.isListing+']');
-////		tIsListing.attr("checked",true);
-////		tIsListing.closest('span').addClass('checked');
-////		tIsListing.closest('div').addClass('focus');
-////		
-////		
-////		this.telephone.val(person.telephone);		
-////		this.address.val(person.address);
-////		this.introduction.val(person.introduction);
-
-		//id,name,gender,hopeAddress,education,workStatus,workYear,vitae
+		this.netId.val(person.netId);
 		this.name.val(person.name);
 		this.EnglishName.val(person.EnglishName);
 		
@@ -671,11 +661,34 @@ function PersonEditForm(){
   		tWorkStatus.closest('span').addClass('checked');
   		
   		this.workYear.val(person.workYear);
-		this.vitae.val(person.vitae);
-		this.vitae.prop("readonly",true);
+  		
+//		console.log("vitae ---> "+person.vitae);
+//		this.vitae.val(person.vitae);
+//		this.vitae.prop("readonly",true);
+		var cVitae = person.vitae.replace(/&quot;/g,'"');
+		cVitae = cVitae.replace(/&#x27;/g,"'");
+		//"'": '&#x27;'
+//		this.vitae.wysiwyg('setContent',person.vitae);
+//		console.log("vitae ---> "+cVitae);
+
+		this.vitae.wysiwyg('setContent',cVitae);
+//		if(this.mode == PAGE_MODE.VIEW){
+////			this.vitae.wysiwyg("destroy");
+//			this.vitae.wysiwyg("clear");
+//			this.vitae.parent().find("#vitae-wysiwyg-iframe").height(0);
+//			this.vitae.parent().append(cVitae);
+////			this.vitae.replaceWith(this.vitae.wysiwyg('getContent'));
+////			$(".wysiwyg").replaceWith(this.vitae.wysiwyg('getContent'));
+//		}
+		
+		if(this.mode == PAGE_MODE.VIEW){
+//			nowPersonEditForm.vitae.parent().append(cVitae);
+			$("#vitae_view").append(cVitae);
+		}
 		
 		//Label
 		this.nameLabel = MStringF.createLabel(this.name,MStringF.getLabelName(MString.NAME),person.name);
+		this.netIdLabel = MStringF.createLabel(this.netId,MStringF.getLabelName(MString.NETID),person.netId);
 		this.EnglishNameLabel = MStringF.createLabel(this.EnglishName,MStringF.getLabelName(MString.ENGLISHNAME),person.EnglishName);
 		this.birthdayLabel = MStringF.createLabel(this.birthday,MStringF.getLabelName(MString.BIRTHDAY),person.birthday);
 		this.genderLabel = MStringF.createLabel(this.gender,MStringF.getLabelName(MString.GENDER),MStringF.getGender(person.gender));
@@ -714,7 +727,8 @@ function PersonEditForm(){
 	this.getJSONV = function(){
 		var data = {};
 		
-		if(this.name.is(":visible")){
+//		if(this.name.is(":visible")){
+		if(nowPersonEditForm.mode == PAGE_MODE.EDIT){
 			data = nowPerson.getUpdateJSON(nowPersonEditForm);
 		}
 		
@@ -758,7 +772,17 @@ PersonDao = {
 	expandArray:[],
 	
 	initPersonEditForm:function(){
-//		 $('#vitae').wysiwyg();
+		var nVitae = nowPersonEditForm.vitae;
+		nVitae.wysiwyg({
+	        rmUnusedControls: true
+	        //,
+//	        controls: {
+//	            bold: { visible : true },
+//	            html: { visible : true }
+//	        }
+	    });
+		nVitae.wysiwyg('clear');
+		nVitae.parent().append("<div id='vitae_view' style='font-size: 16px;'></div>"); 
 		
 		nowPersonEditForm.birthday.birthdaypicker({
 			dateFormat : "bigEndian",
@@ -1112,7 +1136,6 @@ PersonDao = {
 	 	var thisUrl = $.url();
 		
 		var personId = thisUrl.param(MString.ID);
-
 		
 		var nowForm = nowPersonEditForm;
 		
@@ -1164,6 +1187,7 @@ PersonDao = {
 	},
 	
 	setViewMode:function(){
+		nowPersonEditForm.mode = PAGE_MODE.VIEW;
 		var personForm = $('#person_form');
 		
 		this.removeEditRule();
@@ -1176,9 +1200,26 @@ PersonDao = {
 
 		var personHelpList = $('.help-inline',personForm);
     	personHelpList.remove();
+    	
+    	console.log("nowPerson.vitae --------- "+nowPerson.vitae);
+    	var cVitae = nowPerson.vitae.replace(/&quot;/g,'"');
+		cVitae = cVitae.replace(/&#x27;/g,"'");
+
+		nowPersonEditForm.vitae.wysiwyg("clear");
+		nowPersonEditForm.vitae.parent().find("#vitae-wysiwyg-iframe").height(0);
+//		nowPersonEditForm.vitae.parent().append(cVitae);
+		$("#vitae_view").append(cVitae);
 	},
 	
 	setEditMode:function(){
+		nowPersonEditForm.mode = PAGE_MODE.EDIT;
+		var cVitae = nowPerson.vitae.replace(/&quot;/g,'"');
+		cVitae = cVitae.replace(/&#x27;/g,"'");
+		nowPersonEditForm.vitae.wysiwyg('setContent',cVitae);
+		nowPersonEditForm.vitae.parent().find("#vitae-wysiwyg-iframe").height("100%");
+//		nowPersonEditForm.vitae.nextAll().empty();
+		$("#vitae_view").empty();
+		
 		this.addEditRule();
 	},
 	

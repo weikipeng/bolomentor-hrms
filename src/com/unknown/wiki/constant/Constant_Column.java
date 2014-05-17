@@ -32,6 +32,7 @@ public interface Constant_Column {
 	public static final String COLUMN_CONTACT = "contact";
 	
 	//Person
+	public static final String COLUMN_NETID = "netId";
 	public static final String COLUMN_BIRTHDAY = "birthday";
 	public static final String COLUMN_AGE = "age";
 	public static final String COLUMN_EDUCATION = "education";

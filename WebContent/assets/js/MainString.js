@@ -31,6 +31,7 @@ MString ={
 	CONTACT : "contact",
 	
 	//Person
+	NETID:"netId",
 	BIRTHDAY : "birthday",
 	AGE : "age",
 	EDUCATION : "education",
@@ -270,12 +271,34 @@ MStringF = {
 	},
 }
 
-MStringFEDITMODE = {
-	MODE_VIEW:0,
-	MODE_EDIT:1
+PAGE_MODE = {
+	VIEW:0,
+	EDIT:1
 }
 
 VISIBLEMODE = {
 	INVISIBLE:0,
 	VISIBLE:1
 }
+
+htmlEscapes = {
+//'&': '&amp;',
+//'<': '&lt;',
+//'>': '&gt;',
+  '"': '&quot;',
+  "'": '&#x27;'
+//,
+//'/': '&#x2F;'
+};
+
+// Regex containing the keys listed immediately above.
+//var htmlEscaper = /[&<>"'\/]/g;
+htmlEscaper = /["']/g;
+
+
+// Escape a string for HTML interpolation.
+//_.escape = function(string) {
+//return ('' + string).replace(htmlEscaper, function(match) {
+//  return htmlEscapes[match];
+//});
+//};

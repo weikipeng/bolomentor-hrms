@@ -490,6 +490,7 @@ public class PersonDao implements Constant_Column,Constant_SQL,Constant_Table,Co
 	private static Person formatPerson(ResultSet resultSet) throws SQLException {
 		Person person = new Person();
 		person.setId(resultSet.getLong(COLUMN_ID));
+		person.setNetId(resultSet.getString(COLUMN_NETID));
 		person.setName(resultSet.getString(COLUMN_NAME));
 		person.setEnglishName(resultSet.getString(COLUMN_ENGLISHNAME));
 		person.setBirthday(resultSet.getString(COLUMN_BIRTHDAY));
