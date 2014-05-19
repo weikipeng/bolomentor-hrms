@@ -244,52 +244,6 @@ function Person(){
 //		if(vitaeV != this.vitae){
 //			data[MString.VITAE] = vitaeV;
 //		}
-		
-//		var natureV = nowP.nature.val(); 
-//		if(natureV != this.nature){
-//			data[MString.NATURE] = natureV;
-//		}
-//		
-//		var numberV = nowP.number.val(); 
-//		if(numberV != this.number){
-//	  		data[MString.NUMBER] = numberV;
-//		}
-//		
-//		var intentV = nowP.intent.val(); 
-//		if(intentV != this.intent){
-//	  		data[MString.INTENT] = intentV;
-//		}
-//
-//		var addressV = nowP.address.val();
-//		if(addressV!=this.address){
-//			data[MString.ADDRESS] = addressV;
-//		}
-//		
-//		var headhunterV = nowP.headhunter.filter(":checked").val();
-//		if(headhunterV!=this.headhunter){
-//			data[MString.HEADHUNTER] = headhunterV;
-//		}
-//		
-//		var isListingV = nowP.isListing.filter(":checked").val();
-//		if(isListingV!=this.isListing){
-//			data[MString.ISLISTING] = isListingV;
-//		}
-//		
-//		var introductionV = nowP.introduction.val();
-//		if(introductionV!=this.introduction){
-//			data[MString.INTRODUCTION] = introductionV;
-//		}
-//		//电话
-//		var telephoneV = nowP.telephone.val();
-//		if(telephoneV!=this.telephone){
-//	  		var telInfo = $.grep(this.contactList,function(item){
-//				return item.infoType == ContactInfoType.PERSON_TEL;
-//			});
-//			if(telInfo.length>0){
-//	  			telInfo[0].info = telephoneV;
-//		  		data[MString.TABLE_CONTACT] = telInfo;
-//			}
-//		}
   		
   		return data;
 	}
@@ -326,14 +280,6 @@ function PersonEditForm(){
 	this.vitae = $('#vitae');
 	this.hopeAddress = $('#hopeAddress');
 	this.workStatus = $('[name="workStatus"]');
-//	this.nature = $('[name="nature"]');
-//	this.number = $('[name="number"]');
-//	this.intent= $('[name="intent"]');
-//	this.headhunter = $('[name="headhunter"]');
-//	this.isListing = $('[name="isListing"]');
-//	this.telephone = $('[name="telephone"]');
-//	this.address = $('[name="address"]');
-//	this.introduction = $('[name="introduction"]');
 
 	this.nameLabel = "";
 	this.netIdLabel = "";
@@ -348,7 +294,7 @@ function PersonEditForm(){
 	this.liveAddressLabel = "";
 	this.belongAddressLabel = "";
 	
-	this.vitaeLabel = "";
+	this.vitaeLabel = $("#vitae_view");;
 	
 	this.hopeAddressLabel = "";
 	this.workStatusLabel = "";
@@ -510,11 +456,6 @@ function PersonEditForm(){
   				postData[MainUrl.ACTION] = App.wiki_action;
   				postData[MString.TABLE_USER] = MStringF.getPostJson(nowUser.getJSONV());
 
-//				var nowForm = new PersonEditForm();
-//				
-//				var formData =  nowForm.getJSONV();
-
-				
 				var formData =  nowPersonEditForm.getJSONV();
   				
 				if(jQuery.isEmptyObject(formData)){
@@ -590,10 +531,8 @@ function PersonEditForm(){
   		  		
   		  		controls.children().show();
   		  		controls.find("span:last").hide();
-  		  		$('#vitae').prop("readonly",false);
+//		  		$('#vitae').prop("readonly",false);
   		  		$("#ok").show();
-//		  		$("#vitae").show();
-//		  		$("#vitae").next().hide();
   		  		PersonDao.setEditMode();
   	  		}else{
   		  		editButton.html('编辑 <i class="icon-edit"></i>');
@@ -602,10 +541,8 @@ function PersonEditForm(){
   		  		
   		  		controls.children().hide();
   		  		controls.find("span:last").show();
-  		  		$('#vitae').prop("readonly",true);
+//		  		$('#vitae').prop("readonly",true);
   		  		$("#ok").hide();
-//		  		$("#vitae").hide();
-//		  		$("#vitae").next().show();
   		  		PersonDao.setViewMode();
   	  		}
   	  	});
@@ -661,17 +598,26 @@ function PersonEditForm(){
   		tWorkStatus.closest('span').addClass('checked');
   		
   		this.workYear.val(person.workYear);
-  		
+
+		var cVitae = person.vitae.replace(/&quot;/g,'"');
+		cVitae = cVitae.replace(/&#x27;/g,"'");
+		this.vitae.val(cVitae);
+
+
+//		var cVitae = person.vitae.replace(/&quot;/g,'"');
+//		cVitae = cVitae.replace(/&#x27;/g,"'");
+//		this.vitae.wysiwyg('setContent',cVitae);
+
+
+
+
 //		console.log("vitae ---> "+person.vitae);
 //		this.vitae.val(person.vitae);
 //		this.vitae.prop("readonly",true);
-		var cVitae = person.vitae.replace(/&quot;/g,'"');
-		cVitae = cVitae.replace(/&#x27;/g,"'");
 		//"'": '&#x27;'
 //		this.vitae.wysiwyg('setContent',person.vitae);
 //		console.log("vitae ---> "+cVitae);
 
-		this.vitae.wysiwyg('setContent',cVitae);
 //		if(this.mode == PAGE_MODE.VIEW){
 ////			this.vitae.wysiwyg("destroy");
 //			this.vitae.wysiwyg("clear");
@@ -701,53 +647,23 @@ function PersonEditForm(){
 		this.hopeAddressLabel = MStringF.createLabel(this.hopeAddress,MStringF.getLabelName(MString.HOPEADDRESS),person.hopeAddress);
 		this.workStatusLabel = MStringF.createLabel(this.workStatus,MStringF.getLabelName(MString.WORKSTATUS),MStringF.isWorking(person.workStatus));
 		this.workYearLabel = MStringF.createLabel(this.workYear,MStringF.getLabelName(MString.WORKYEAR),person.workYear);
-  		this.vitaeLabel = MStringF.createLabel(this.vitae,MStringF.getLabelName(MString.VITAE),person.vitae);
-		
-		
+//		this.vitaeLabel = MStringF.createLabel(this.vitae,MStringF.getLabelName(MString.VITAE),person.vitae);
+//		this.vitaeLabel = $("#vitae_view");
+		this.vitae.hide();
+		if(person.vitae!=null){
+			this.vitaeLabel.html(cVitae);
+		}
 		
   		PersonDao.initPersonCreateInfo(person);
-		
-//		this.EnglishNameLabel = MStringF.createLabel(this.EnglishName,MStringF.getLabelName(MString.ENGLISHNAME),person.EnglishName);
-//		this.natureLabel = MStringF.createLabel(this.nature,MStringF.getLabelName(MString.NATURE),MStringF.getPersonNature(person.nature));
-//		this.numberLabel = MStringF.createLabel(this.number,MStringF.getLabelName(MString.NUMBER),MStringF.getPersonNumber(person.number));
-//		this.intentLabel = MStringF.createLabel(this.intent,MStringF.getLabelName(MString.INTENT),MStringF.getIntent(person.intent));
-//		this.headhunterLabel = MStringF.createLabel(this.headhunter,MStringF.getLabelName(MString.HEADHUNTER),MStringF.getYesNo(person.headhunter));
-//		this.isListingLabel = MStringF.createLabel(this.isListing,MStringF.getLabelName(MString.ISLISTING),MStringF.getYesNo(person.isListing));
-//		this.telephoneLabel = MStringF.createLabel(this.telephone,MStringF.getLabelName(MString.TELEPHONE),person.telephone);
-//		this.addressLabel = MStringF.createLabel(this.address,MStringF.getLabelName(MString.ADDRESS),person.address);
-//		this.introductionLabel = MStringF.createLabel(this.introduction,MStringF.getLabelName(MString.INTRODUCTION),person.introduction);
-//		
-//		RecordDao.initRecordTableData(this.recordTable,person.recordList);
-//		RecordDao.initRecordTableData(this.recordPlanTable,person.recordPlanList);
-//
-//		HRDao.initEditHRTableData(this.hrTable,person.hrList);
-
 	}
 	
 	this.getJSONV = function(){
 		var data = {};
 		
-//		if(this.name.is(":visible")){
 		if(nowPersonEditForm.mode == PAGE_MODE.EDIT){
 			data = nowPerson.getUpdateJSON(nowPersonEditForm);
 		}
 		
-//		var hrTableJSON = HRDao.getHRTableUpdateJSON(this.hrTable);
-//		
-//		if(hrTableJSON.length > 0){
-//			data[MString.TABLE_HR] = hrTableJSON;
-//		}
-//		
-//		var tRecord = RecordDao.getTableJSON(this.recordTable,RecordType.HISTORY);
-//		if(tRecord.length > 0){
-//			data[MString.TABLE_RECORD] = tRecord;
-//		}
-//		
-//		var tPlan = RecordDao.getTableJSON(this.recordPlanTable,RecordType.PLAN);
-//		if(tPlan.length > 0){
-//			data[MString.TABLE_RECORDPLAN] = tPlan;
-//		}
-  		
 		if(!jQuery.isEmptyObject(data)){
 			data[MString.ID] = nowPerson.id;
 			if(nowPerson.id > 0){
@@ -772,17 +688,17 @@ PersonDao = {
 	expandArray:[],
 	
 	initPersonEditForm:function(){
-		var nVitae = nowPersonEditForm.vitae;
-		nVitae.wysiwyg({
-	        rmUnusedControls: true
-	        //,
-//	        controls: {
-//	            bold: { visible : true },
-//	            html: { visible : true }
-//	        }
-	    });
-		nVitae.wysiwyg('clear');
-		nVitae.parent().append("<div id='vitae_view' style='font-size: 16px;'></div>"); 
+//		var nVitae = nowPersonEditForm.vitae;
+//		nVitae.wysiwyg({
+//	        rmUnusedControls: true
+//	        //,
+////	        controls: {
+////	            bold: { visible : true },
+////	            html: { visible : true }
+////	        }
+//	    });
+//		nVitae.wysiwyg('clear');
+//		nVitae.parent().append("<div id='vitae_view' style='font-size: 16px;'></div>"); 
 		
 		nowPersonEditForm.birthday.birthdaypicker({
 			dateFormat : "bigEndian",
@@ -1201,24 +1117,30 @@ PersonDao = {
 		var personHelpList = $('.help-inline',personForm);
     	personHelpList.remove();
     	
-    	console.log("nowPerson.vitae --------- "+nowPerson.vitae);
-    	var cVitae = nowPerson.vitae.replace(/&quot;/g,'"');
-		cVitae = cVitae.replace(/&#x27;/g,"'");
-
-		nowPersonEditForm.vitae.wysiwyg("clear");
-		nowPersonEditForm.vitae.parent().find("#vitae-wysiwyg-iframe").height(0);
-//		nowPersonEditForm.vitae.parent().append(cVitae);
-		$("#vitae_view").append(cVitae);
+    	nowPersonEditForm.vitae.hide();
+	    nowPersonEditForm.vitaeLabel.show();
+    	
+//  	console.log("nowPerson.vitae --------- "+nowPerson.vitae);
+//  	var cVitae = nowPerson.vitae.replace(/&quot;/g,'"');
+//		cVitae = cVitae.replace(/&#x27;/g,"'");
+//
+//		nowPersonEditForm.vitae.wysiwyg("clear");
+//		nowPersonEditForm.vitae.parent().find("#vitae-wysiwyg-iframe").height(0);
+////		nowPersonEditForm.vitae.parent().append(cVitae);
+//		$("#vitae_view").append(cVitae);
 	},
 	
 	setEditMode:function(){
 		nowPersonEditForm.mode = PAGE_MODE.EDIT;
-		var cVitae = nowPerson.vitae.replace(/&quot;/g,'"');
-		cVitae = cVitae.replace(/&#x27;/g,"'");
-		nowPersonEditForm.vitae.wysiwyg('setContent',cVitae);
-		nowPersonEditForm.vitae.parent().find("#vitae-wysiwyg-iframe").height("100%");
-//		nowPersonEditForm.vitae.nextAll().empty();
-		$("#vitae_view").empty();
+		nowPersonEditForm.vitae.show();
+		nowPersonEditForm.vitaeLabel.hide();
+		
+//		var cVitae = nowPerson.vitae.replace(/&quot;/g,'"');
+//		cVitae = cVitae.replace(/&#x27;/g,"'");
+//		nowPersonEditForm.vitae.wysiwyg('setContent',cVitae);
+//		nowPersonEditForm.vitae.parent().find("#vitae-wysiwyg-iframe").height("100%");
+////		nowPersonEditForm.vitae.nextAll().empty();
+//		$("#vitae_view").empty();
 		
 		this.addEditRule();
 	},
