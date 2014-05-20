@@ -6,9 +6,10 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import com.unknown.wiki.constant.Constant_Column;
+import com.unknown.wiki.constant.Constant_Table;
 import com.unknown.wiki.w_enum.Gender;
 
-public class Person implements Constant_Column{
+public class Person implements Constant_Column,Constant_Table{
 	private long id;
 	private String netId;
 	private String name;
@@ -39,6 +40,7 @@ public class Person implements Constant_Column{
 	private String updateUser;
 	private String updateDate;
 	private ArrayList<Contact> contactList;
+	private ArrayList<PersonRecord> recordList;
 	
 	
 	
@@ -346,8 +348,6 @@ public class Person implements Constant_Column{
 		return contactList;
 	}
 
-
-
 	public void setContactList(ArrayList<Contact> contactList) {
 		this.contactList = contactList;
 	}
@@ -403,6 +403,18 @@ public class Person implements Constant_Column{
 				jsonObject.put(COLUMN_CONTACT, jsonArray);
 			}
 		}
+		
+		if(recordList!=null){
+			int size = recordList.size();
+			if(size > 0){
+				JSONArray jsonArray = new JSONArray();
+				for(int i=0;i<size;i++){
+					jsonArray.add(recordList.get(i).toJsonString());
+				}
+				
+				jsonObject.put(TABLE_RECORD, jsonArray);
+			}
+		}
 		return jsonObject.toString();
 	}
 
@@ -429,4 +441,18 @@ public class Person implements Constant_Column{
 	public void setNetId(String netId) {
 		this.netId = netId;
 	}
+
+
+
+	public ArrayList<PersonRecord> getRecordList() {
+		return recordList;
+	}
+
+
+
+	public void setRecordList(ArrayList<PersonRecord> recordList) {
+		this.recordList = recordList;
+	}
+	
+	
 }

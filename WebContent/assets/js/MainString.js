@@ -56,6 +56,9 @@ MString ={
 	UPDATEUSERID : "updateUserId",
 	UPDATEUSER : "updateUser",
 	UPDATEDATE : "updateDate",
+	PERSONID:"personId",
+	USERID:"userId",
+	
 	
 	//Project表
 //	COMPANYID : "companyId",
@@ -82,6 +85,7 @@ MString ={
 	TABLE_PROJECT : "project",
 	TABLE_USER : "user",
 	TABLE_RECORD : "record",
+	TABLE_PERSON_RECORD : "person_record",
 	TABLE_RECORDPLAN : "recordPlan",
 	
 		//User

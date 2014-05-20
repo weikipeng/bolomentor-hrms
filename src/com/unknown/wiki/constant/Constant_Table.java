@@ -6,6 +6,8 @@ public interface Constant_Table {
 	public static final String TABLE_CONTACT = "contact";
 	public static final String TABLE_RECORD = "record";
 	public static final String TABLE_RECORDPLAN = "recordPlan";
+	public static final String TABLE_PERSON_RECORD = "person_record";
+//	public static final String TABLE_PERSON_RECORDPLAN = "person_recordPlan";
 
 	public static final String TABLE_PERSON = "person";
 	public static final String TABLE_COMPANYJOB = "company_job";

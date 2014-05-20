@@ -10,6 +10,7 @@ MainUrl = {
 	URL_HR:"/hr",
 	URL_RECORD:"/record",
 	URL_PERSON:"/person",
+	URL_PERSON_RECORD:"/person_record",
 	
 	DATA : "data",
 	

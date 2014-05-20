@@ -14,31 +14,23 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.unknown.wiki.bean.Person;
-import com.unknown.wiki.bean.Person;
-import com.unknown.wiki.bean.Person;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import com.unknown.wiki.bean.Person;
 import com.unknown.wiki.bean.W_User;
 import com.unknown.wiki.constant.Constant_Column;
 import com.unknown.wiki.constant.Constant_Servlet;
 import com.unknown.wiki.constant.Constant_Table;
-import com.unknown.wiki.dao.PersonDao;
-import com.unknown.wiki.dao.PersonDao;
-import com.unknown.wiki.dao.PersonDao;
-import com.unknown.wiki.dao.PersonDao;
-import com.unknown.wiki.dao.PersonDao;
 import com.unknown.wiki.dao.ContactDao;
 import com.unknown.wiki.dao.DataBaseDao;
-import com.unknown.wiki.dao.HRDao;
 import com.unknown.wiki.dao.LoginDao;
-import com.unknown.wiki.dao.RecordDao;
+import com.unknown.wiki.dao.PersonDao;
+import com.unknown.wiki.dao.PersonRecordDao;
 import com.unknown.wiki.tool.TimeUtil;
 import com.unknown.wiki.w_enum.ContactType;
 import com.unknown.wiki.w_enum.RecordType;
 import com.unknown.wiki.w_enum.Visible;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 /**
  * Servlet implementation class PersonServer
@@ -147,30 +139,17 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 			queryMap.put(COLUMN_VISIBLE, String.valueOf(Visible.VISIBLE.ordinal()));
 			ArrayList<Person> personList = PersonDao.queryPerson(dataBaseDao,queryMap);
 			if(personList.size()<=0){
-//				JSONArray hrArray = null;
-//				if(personObject.containsKey(TABLE_HR)){
-//					hrArray = personObject.getJSONArray(TABLE_HR);
-//					personObject.remove(TABLE_HR);
-//				}
-//				
-//				
-//				JSONArray contactArray = null;
-//				if(personObject.containsKey(TABLE_CONTACT)){
-//					contactArray = personObject.getJSONArray(TABLE_CONTACT);
-//					personObject.remove(TABLE_CONTACT);
-//				}
-//				
-//				JSONArray recordArray = null;
-//				if(personObject.containsKey(TABLE_RECORD)){
-//					recordArray = personObject.getJSONArray(TABLE_RECORD);
-//					personObject.remove(TABLE_RECORD);
-//				}
-//				
-//				JSONArray recordPlanArray = null;
-//				if(personObject.containsKey(TABLE_RECORDPLAN)){
-//					recordPlanArray = personObject.getJSONArray(TABLE_RECORDPLAN);
-//					personObject.remove(TABLE_RECORDPLAN);
-//				}
+				JSONArray contactArray = null;
+				if(personObject.containsKey(TABLE_CONTACT)){
+					contactArray = personObject.getJSONArray(TABLE_CONTACT);
+					personObject.remove(TABLE_CONTACT);
+				}
+				
+				JSONArray recordArray = null;
+				if(personObject.containsKey(TABLE_PERSON_RECORD)){
+					recordArray = personObject.getJSONArray(TABLE_PERSON_RECORD);
+					personObject.remove(TABLE_PERSON_RECORD);
+				}
 				
 				
 				personObject.put(COLUMN_CREATEUSERID, user.getId());
@@ -180,44 +159,25 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 				personObject.put(COLUMN_UPDATEDATE, timeStamp);
 				Person person = PersonDao.insertPersonJSONObject(dataBaseDao, personObject);
 				if(person!=null){
-//					//HR
-//					if(hrArray!=null && hrArray.size() > 0){
-//						for(int i=0;i<hrArray.size();i++){
-//							JSONObject hrObject = hrArray.optJSONObject(i);
-//							hrObject.put(COLUMN_PERSONID, person.getId());
-//							HRDao.InsertOrUpdateHR(dataBaseDao,hrObject);
-//						}
-//						System.out.println("											");
-//						System.out.println("hrArray------"+hrArray.toString());
-//					}
-//					
-//					//contact
-//					if(contactArray!=null && contactArray.size()>0){
-//						for(int i=0;i<contactArray.size();i++){
-//							JSONObject contactObject = contactArray.optJSONObject(i);
-//							contactObject.put(COLUMN_TYPEID, person.getId());
-//							ContactDao.insertOrUpdateContact(dataBaseDao, contactObject);
-//						}
-//						
-//						System.out.println("											");
-//						System.out.println("contactArray------"+contactArray.toString());
-//					}
-//					
-//					if(recordArray!=null){
-//						for(int i=0;i<recordArray.size();i++){
-//							JSONObject recordObject =  recordArray.optJSONObject(i);
-//							recordObject.put(COLUMN_PERSONID, person.getId());
-//							RecordDao.insertOrUpdateRecord(dataBaseDao,recordObject);
-//						}
-//					}
-//					
-//					if(recordPlanArray!=null){
-//						for(int i=0;i<recordPlanArray.size();i++){
-//							JSONObject recordPlanObject = recordPlanArray.optJSONObject(i);
-//							recordPlanObject.put(COLUMN_PERSONID, person.getId());
-//							RecordDao.insertOrUpdateRecord(dataBaseDao,recordPlanObject);
-//						}
-//					}
+					//contact
+					if(contactArray!=null && contactArray.size()>0){
+						for(int i=0;i<contactArray.size();i++){
+							JSONObject contactObject = contactArray.optJSONObject(i);
+							contactObject.put(COLUMN_TYPEID, person.getId());
+							ContactDao.insertOrUpdateContact(dataBaseDao, contactObject);
+						}
+						
+						System.out.println("											");
+						System.out.println("contactArray------"+contactArray.toString());
+					}
+					
+					if(recordArray!=null){
+						for(int i=0;i<recordArray.size();i++){
+							JSONObject recordObject =  recordArray.optJSONObject(i);
+							recordObject.put(COLUMN_PERSONID, person.getId());
+							PersonRecordDao.insertOrUpdateRecord(dataBaseDao,recordObject);
+						}
+					}
 					
 					resultObject.put(TABLE_PERSON, person.toJsonString());
 					resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
@@ -272,35 +232,23 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 //		ArrayList<Person> arrayList = PersonDao.queryPersonGrant(dataBaseDao,user,parameters);
 		ArrayList<Person> arrayList = PersonDao.queryPersonJSON(dataBaseDao,parameters);
 		int size = arrayList.size();
-//		HashMap<String , String> hrMeters = new HashMap<String, String>();
-//		HashMap<String , String> contactMeters = new HashMap<String, String>();
-//		HashMap<String , String> recordMeters = new HashMap<String, String>();
+		HashMap<String , String> contactMeters = new HashMap<String, String>();
+		HashMap<String , String> recordMeters = new HashMap<String, String>();
 		for(int i=0;i<size;i++){
 			Person person = arrayList.get(i);
-//			hrMeters.clear();
-//			contactMeters.clear();
-//			recordMeters.clear();
+			contactMeters.clear();
+			recordMeters.clear();
 			
-//			//HR
-//			hrMeters.put(COLUMN_PERSONID, String.valueOf(person.getId()));
-//			hrMeters.put(COLUMN_VISIBLE, String.valueOf(Visible.VISIBLE.ordinal()));
-//			person.setHrList(HRDao.queryHR(dataBaseDao, hrMeters));
-//			
-//			//Contact
-//			contactMeters.put(COLUMN_TYPE, String.valueOf(ContactType.PERSON.ordinal()));
-//			contactMeters.put(COLUMN_TYPEID, String.valueOf(person.getId()));
-//			contactMeters.put(COLUMN_VISIBLE, String.valueOf(Visible.VISIBLE.ordinal()));
-//			person.setContactList(ContactDao.queryContact(dataBaseDao, contactMeters));
-//			
-//			//Record
-//			recordMeters.put(COLUMN_PERSONID, String.valueOf(person.getId()));
-//			recordMeters.put(COLUMN_VISIBLE, String.valueOf(Visible.VISIBLE.ordinal()));
-//			recordMeters.put(COLUMN_TYPE, String.valueOf(RecordType.HISTORY.ordinal()));
-//			person.setRecordList(RecordDao.queryRecord(dataBaseDao, recordMeters));
-//
-//			recordMeters.put(COLUMN_TYPE, String.valueOf(RecordType.PLAN.ordinal()));
-//			person.setRecordPlanList(RecordDao.queryRecord(dataBaseDao, recordMeters));
-
+			//Contact
+			contactMeters.put(COLUMN_TYPE, String.valueOf(ContactType.PERSON.ordinal()));
+			contactMeters.put(COLUMN_TYPEID, String.valueOf(person.getId()));
+			contactMeters.put(COLUMN_VISIBLE, String.valueOf(Visible.VISIBLE.ordinal()));
+			person.setContactList(ContactDao.queryContact(dataBaseDao, contactMeters));
+			
+			//Record
+			recordMeters.put(COLUMN_PERSONID, String.valueOf(person.getId()));
+			recordMeters.put(COLUMN_VISIBLE, String.valueOf(Visible.VISIBLE.ordinal()));
+			person.setRecordList(PersonRecordDao.queryPersonRecord(dataBaseDao, recordMeters));
 			
 			jsonArray.add(person.toJsonString());
 		}
@@ -354,41 +302,21 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 			queryObject.put(COLUMN_ID, personObject.optLong(COLUMN_ID, -1));
 			ArrayList<Person> arrayList = PersonDao.queryPersonGrant(dataBaseDao,user,queryObject);
 			if(arrayList.size()>0){
-//				if(personObject.containsKey(TABLE_HR)){
-//					JSONArray hrArray = personObject.getJSONArray(TABLE_HR);
-//					personObject.remove(TABLE_HR);
-//					
-//					for(int i=0;i<hrArray.size();i++){
-//						HRDao.InsertOrUpdateHR(dataBaseDao, hrArray.optJSONObject(i));
-//					}
-//					
-//					System.out.println("											");
-//					System.out.println("hrArray------"+hrArray.toString());
-//				}
-//				
-//				if(personObject.containsKey(TABLE_RECORD)){
-//					JSONArray recordArray = personObject.getJSONArray(TABLE_RECORD);
-//					personObject.remove(TABLE_RECORD);
-//					for(int i=0;i<recordArray.size();i++){
-//						RecordDao.insertOrUpdateRecord(dataBaseDao, recordArray.optJSONObject(i));
-//					}
-//				}
-//				
-//				if(personObject.containsKey(TABLE_RECORDPLAN)){
-//					JSONArray recordPlanArray = personObject.getJSONArray(TABLE_RECORDPLAN);
-//					personObject.remove(TABLE_RECORDPLAN);
-//					for(int i=0;i<recordPlanArray.size();i++){
-//						RecordDao.insertOrUpdateRecord(dataBaseDao, recordPlanArray.optJSONObject(i));
-//					}
-//				}
-//				
-//				if(personObject.containsKey(TABLE_CONTACT)){
-//					JSONArray contactArray = personObject.getJSONArray(TABLE_CONTACT);
-//					personObject.remove(TABLE_CONTACT);
-//					for(int i=0;i<contactArray.size();i++){
-//						ContactDao.insertOrUpdateContact(dataBaseDao, contactArray.optJSONObject(i));
-//					}
-//				}
+				if(personObject.containsKey(TABLE_PERSON_RECORD)){
+					JSONArray recordArray = personObject.getJSONArray(TABLE_PERSON_RECORD);
+					personObject.remove(TABLE_PERSON_RECORD);
+					for(int i=0;i<recordArray.size();i++){
+						PersonRecordDao.insertOrUpdateRecord(dataBaseDao, recordArray.optJSONObject(i));
+					}
+				}
+				
+				if(personObject.containsKey(TABLE_CONTACT)){
+					JSONArray contactArray = personObject.getJSONArray(TABLE_CONTACT);
+					personObject.remove(TABLE_CONTACT);
+					for(int i=0;i<contactArray.size();i++){
+						ContactDao.insertOrUpdateContact(dataBaseDao, contactArray.optJSONObject(i));
+					}
+				}
 				
 				boolean result = PersonDao.updatePersonJSON(dataBaseDao, personObject);
 				if(result){

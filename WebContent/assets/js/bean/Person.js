@@ -31,6 +31,10 @@ function Person(){
 	this.updateUser='';
 	this.updateDate='';
 	
+	this.recordList =[];
+	this.recordHistoryList =[];
+	this.recordPlanList =[];
+	
 //	姓名，性别，期望地点，学历，状态（在职，离职），工作年限，人才代码。然后下面是简历 
 	
 	
@@ -113,7 +117,6 @@ function Person(){
 			this.vitae=data[MString.VITAE];
 		}
 
-
 		if(data.hasOwnProperty(MString.CREATEUSERID)){
 			this.createUserId = data[MString.CREATEUSERID];
 		}
@@ -130,18 +133,21 @@ function Person(){
 			this.updateDate = data[MString.UPDATEDATE];
 		}
 		
-//		if(data.hasOwnProperty(MString.CONTACT)){
-//			contactArray = data.contact;
-//			
-//			telInfo = $.grep(contactArray,function(item){
-////				console.log("                                       ");
-////				console.log("item.infoType----->"+item.infoType);
-////				console.log("ContactInfoType.Person_TEL----->"+ContactInfoType.Person_TEL);
-//				return item.infoType == ContactInfoType.Person_TEL;
-//			});
-//			this.telephone = telInfo[0].info;//注意返回的是数组
-//			
-//		}
+		if(data.hasOwnProperty(MString.TABLE_RECORD)){
+			var tRecordList = data[MString.TABLE_RECORD];
+  			var i = 0;
+			for(i=0;i<tRecordList.length;i++){
+				var tRecord = new PersonRecord();
+				tRecord.initPersonRecord(tRecordList[i]);
+				this.recordList.push(tRecord);
+				if(tRecord.type == RecordType.HISTORY){
+					this.recordHistoryList.push(tRecord);
+				}else{
+					this.recordPlanList.push(tRecord);
+				}
+			}
+		}
+		
 	}
 	
 	this.getUpdateJSON = function(nowP){
@@ -258,6 +264,16 @@ function Person(){
 		return showName;
 	}
 	
+	this.getRecord = function(id){
+		var nRecord = new PersonRecord();
+		var nRecordList = $.grep(this.recordList,function(item){
+			return item.id == id;
+  		});
+  		if(nRecordList.length > 0){
+  			nRecord = nRecordList[0];
+  		}
+  		return nRecord;
+	}
 }
 
 function PersonEditForm(){
@@ -298,6 +314,15 @@ function PersonEditForm(){
 	
 	this.hopeAddressLabel = "";
 	this.workStatusLabel = "";
+	
+	this.recordTable = $('#recordTable');
+	this.recordPlanTable = $('#recordPlanTable');
+	
+	this.recordTableNew = $('#recordTable_new');
+	this.recordPlanTableNew = $('#recordPlanTable_new');
+	
+	this.recordTableButtonList = [];
+	this.recordPlanTableButtonList = [];
 	
 	this.initAddMode = function(){
       	jQuery.validator.addMethod("isMobile", function(value, element) {
@@ -655,6 +680,11 @@ function PersonEditForm(){
 		}
 		
   		PersonDao.initPersonCreateInfo(person);
+  		PersonRecordDao.initPersonRecordTableData(this.recordTable,nowPerson.recordHistoryList);
+  		PersonRecordDao.initPersonRecordTableData(this.recordPlanTable,nowPerson.recordPlanList);
+  		
+  		PersonDao.initPersonEditForm();
+  		PersonDao.setViewMode();
 	}
 	
 	this.getJSONV = function(){
@@ -663,6 +693,21 @@ function PersonEditForm(){
 		if(nowPersonEditForm.mode == PAGE_MODE.EDIT){
 			data = nowPerson.getUpdateJSON(nowPersonEditForm);
 		}
+		
+		var tRecordList =[];
+		var tRecord = PersonRecordDao.getTableJSON(this.recordTable,RecordType.HISTORY);
+  		if(tRecord.length > 0){
+			tRecordList = tRecordList.concat(tRecord);
+  		}
+  		
+  		var tPlan = PersonRecordDao.getTableJSON(this.recordPlanTable,RecordType.PLAN);
+  		if(tPlan.length > 0){
+			tRecordList = tRecordList.concat(tPlan);
+  		}
+  		
+  		if(tRecordList.length>0){
+  			data[MString.TABLE_PERSON_RECORD] = tRecordList;
+  		}
 		
 		if(!jQuery.isEmptyObject(data)){
 			data[MString.ID] = nowPerson.id;
@@ -677,6 +722,17 @@ function PersonEditForm(){
 		console.log("PersonEditForm---------->"+MStringF.getPostJson(data));
 		
 		return data;
+	}
+	
+	this.initTableButton = function(){
+		var trList = this.recordTable.find("tr");
+		this.recordTableButtonList = trList.find("td:eq(2)");
+		
+//		console.log("trList 			--->  "+trList.html()+"      size   "+trList.length);
+//		console.log("recordTableButtonList 			--->  "+this.recordTableButtonList.length);
+		
+		var trPlanList = this.recordPlanTable.find("tr");
+		this.recordPlanTableButtonList = trPlanList.find("td:eq(2)");
 	}
 }
 
@@ -699,6 +755,8 @@ PersonDao = {
 //	    });
 //		nVitae.wysiwyg('clear');
 //		nVitae.parent().append("<div id='vitae_view' style='font-size: 16px;'></div>"); 
+		
+		nowPersonEditForm.initTableButton();
 		
 		nowPersonEditForm.birthday.birthdaypicker({
 			dateFormat : "bigEndian",
@@ -966,6 +1024,7 @@ PersonDao = {
                 "sZeroRecords": "对不起，查询不到相关数据！",
                 "sEmptyTable": "表中无数据存在！",
                 "sInfo": "当前显示 _START_ 到 _END_ 条，共 _TOTAL_ 条记录",
+                "sInfoEmpty": '数据表为空',
                 "sInfoFiltered": "数据表中共为 _MAX_ 条记录",
                 "sSearch": "搜索",
                 "oPaginate": {
@@ -1039,16 +1098,15 @@ PersonDao = {
 	},
 	
 	initEditPerson: function (){
-//		HRDao.initHrTable();
-//	  	
 		nowPersonEditForm = new PersonEditForm();
 		
   	  	PersonDao.initPersonEditForm();
-//	  	
-//	  	RecordDao.initRecordTable($('#recordTable'),$('#recordTable_new'),$('#recordTable a#remove'),RecordType.HISTORY);
-//	  	
-//	  	RecordDao.initRecordTable($('#recordPlanTable'),$('#recordPlanTable_new'),$('#recordPlanTable a#remove'),RecordType.PLAN);
-	  
+  	  	
+		PersonRecordDao.initPersonRecordTable($('#recordTable'),$('#recordTable_new'),$('#recordTable a#remove'),RecordType.HISTORY);
+	  	
+	  	PersonRecordDao.initPersonRecordTable($('#recordPlanTable'),$('#recordPlanTable_new'),$('#recordPlanTable a#remove'),RecordType.PLAN);
+	  	
+
 	 	var thisUrl = $.url();
 		
 		var personId = thisUrl.param(MString.ID);
@@ -1081,7 +1139,8 @@ PersonDao = {
 		queryData[MString.TABLE_USER] = JSON.stringify(nowUser.getJSONV());
 		
   		$.post(personQueryUrl,queryData,function(data,status){
-  			console.log("edit person------>"+JSON.stringify(data));
+//			console.log("edit person------>"+JSON.stringify(data));
+			console.log("edit person------>"+JSON.stringify(data.person[0].record));
   			if(data == null || data.length <=0){
   				alert("载入人才信息失败~！");
   			}
@@ -1119,6 +1178,12 @@ PersonDao = {
     	
     	nowPersonEditForm.vitae.hide();
 	    nowPersonEditForm.vitaeLabel.show();
+	    
+	    nowPersonEditForm.recordTableNew.hide();
+	    nowPersonEditForm.recordPlanTableNew.hide();
+	    
+		nowPersonEditForm.recordTableButtonList.children().hide();
+		nowPersonEditForm.recordPlanTableButtonList.children().hide();
     	
 //  	console.log("nowPerson.vitae --------- "+nowPerson.vitae);
 //  	var cVitae = nowPerson.vitae.replace(/&quot;/g,'"');
@@ -1134,6 +1199,12 @@ PersonDao = {
 		nowPersonEditForm.mode = PAGE_MODE.EDIT;
 		nowPersonEditForm.vitae.show();
 		nowPersonEditForm.vitaeLabel.hide();
+		
+		nowPersonEditForm.recordTableNew.show();
+	    nowPersonEditForm.recordPlanTableNew.show();
+	    
+		nowPersonEditForm.recordTableButtonList.children().show();
+		nowPersonEditForm.recordPlanTableButtonList.children().show();
 		
 //		var cVitae = nowPerson.vitae.replace(/&quot;/g,'"');
 //		cVitae = cVitae.replace(/&#x27;/g,"'");

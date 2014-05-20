@@ -1,18 +1,12 @@
-RecordType = {
-	HISTORY : 0,
-	PLAN : 1
-}
-
-function Record() {
+function PersonRecord() {
 	this.id = -1;
-	this.companyId = -1;
-	this.type = -1;
+	this.personId = -1;
+	this.userId = -1;
 	this.date = '';
-	this.hrId = -1;
-	this.createUserId = -1;
 	this.content = "";
+	this.type = -1;
 
-	this.initRecord = function(data) {
+	this.initPersonRecord = function(data) {
 		//		console.log("CONTACT------> "+JSON.stringify(data));
 		//		console.log("														");
 		//		console.log("														");
@@ -21,68 +15,38 @@ function Record() {
 			this.id = data.id;
 		}
 
-		if (data.hasOwnProperty(MString.COMPANYID)) {
-			this.companyId = data.companyId;
+		if (data.hasOwnProperty(MString.PERSONID)) {
+			this.companyId = data[MString.PERSONID];
 		}
 
-		if (data.hasOwnProperty(MString.TYPE)) {
-			this.type = data.type;
+		if (data.hasOwnProperty(MString.USERID)) {
+			this.createUserId = data[MString.USERID];
 		}
 
 		if (data.hasOwnProperty(MString.DATE)) {
-			this.date = data.date;
-		}
-
-		if (data.hasOwnProperty(MString.HRID)) {
-			this.hrId = data[MString.HRID];
-		}
-
-		if (data.hasOwnProperty(MString.CREATEUSERID)) {
-			this.createUserId = data.createUserId;
+			this.date = data[MString.DATE];
 		}
 
 		if (data.hasOwnProperty(MString.CONTENT)) {
 			this.content = data.content;
 		}
+		
+		if (data.hasOwnProperty(MString.TYPE)) {
+			this.type = data.type;
+		}
 	}
 
-	this.getHR = function(hrList) {
-		//		console.log("										");
-		//		console.log("hrId--->"+this.hrId);
-		//		console.log("hrList--->"+JSON.stringify(hrList));
-		var result = MString.UNKNOWN;
-		if (hrList == null || hrList.size <= 0) {
-			return result;
-		}
-
-		var i = 0;
-		for ( i = 0; i < hrList.length; i++) {
-			if (this.hrId == hrList[i].id) {
-				result = hrList[i].name;
-				if (result == null || result.length <= 0) {
-					result = hrList[i].EnglishName;
-				}
-				break;
-			}
-		}
-		return result;
-	}
-	
 	this.isChanged = function(nRow){
 		var change = false;
 		var recordItem = {};
 		var nRowObj = $(nRow);
 		
 		var tDate = nRowObj.children().eq(0).find("input").val();
-		var tHRId = nRowObj.children().eq(1).find("select").val();
 		var tContent = nRowObj.children().eq(2).find("textarea").val();
 		
 		if(tDate!=this.date){
 			console.log("tDate--------"+ tDate + "---------------"+this.date);
 			change = true;
-		}else if(tHRId != this.hrId){
-			change = true;
-			console.log("tHRId--------   "+ tHRId + "  ---------------"+this.hrId);
 		}else if(tContent != this.content){
 			change = true;
 			console.log("tContent--------"+ tContent + "---------------"+this.content);
@@ -96,15 +60,10 @@ function Record() {
 		var nRowObj = $(nRow);
 		
 		var tDate = nRowObj.children().eq(0).find("input").val();
-		var tHRId = nRowObj.children().eq(1).find("select").val();
-		var tContent = nRowObj.children().eq(2).find("textarea").val();
+		var tContent = nRowObj.children().eq(1).find("textarea").val();
 		
 		if(tDate!=this.date){
 			recordItem[MString.DATE] = tDate;
-		}
-		
-		if(tHRId!=this.hrId){
-			recordItem[MString.HRID] = tHRId;
 		}
 		
 		if(tContent!=this.content){
@@ -115,8 +74,8 @@ function Record() {
 			recordItem[MString.ID] = this.id;
 			if(this.id <=0){
 				recordItem[MString.TYPE] = type;	
-				recordItem[MString.COMPANYID] = nowCompany.id;	
-				recordItem[MString.CREATEUSERID] = nowUser.id;	
+				recordItem[MString.PERSONID] = nowPerson.id;	
+				recordItem[MString.USERID] = nowUser.id;	
 			}
 		}
 		
@@ -124,7 +83,7 @@ function Record() {
 	}
 }
 
-RecordDao = {
+PersonRecordDao = {
 	editArray:[],
 
 	deleteArray:[],
@@ -132,25 +91,17 @@ RecordDao = {
 	addRow:function(oTable, nRow) {
         var aData = oTable.fnGetData(nRow);
         var jqTds = $('>td', nRow);
-        var nRecord = new Record();
-        var tHRList = nowCompany.hrList;
-
-		var hrHTML = '<select class="m-wrap auto wiki" data-placeholder="Choose a Category" tabindex="1" name="rHR">' + '<option value="-1">请选择</option>';
-		for (var i = 0; i < tHRList.length; i++) {
-			hrHTML += '<option value="' + tHRList[i].id + '">' + tHRList[i].getShowName() + '</option>'
-		}
-		hrHTML += '</select>';
+        var nPersonRecord = new PersonRecord();
 
         jqTds[0].innerHTML = '<input class="m-wrap auto wiki date-picker" size="16" type="text" value=""/>';
-        jqTds[1].innerHTML = hrHTML;
-        jqTds[2].innerHTML = '<textarea class="span10 m-wrap" rows="4" value=""></textarea>';
-        jqTds[3].innerHTML = '<a id="remove" href="-1" class="btn red icn-only"><i class="icon-remove icon-white"></i></a>';
+        jqTds[1].innerHTML = '<textarea class="span10 m-wrap" rows="4" value=""></textarea>';
+        jqTds[2].innerHTML = '<a id="remove" href="-1" class="btn red icn-only"><i class="icon-remove icon-white"></i></a>';
         
-        RecordDao.initRowEvent(oTable,nRow,null);
+        PersonRecordDao.initRowEvent(oTable,nRow,null);
 	},
 	
-	initRecordTable : function(oRecordTable, oRecordTable_New, oRemove, type) {
-		var recordTable = oRecordTable.dataTable({
+	initPersonRecordTable : function(oPersonRecordTable, oPersonRecordTable_New, oRemove, type) {
+		var recordTable = oPersonRecordTable.dataTable({
 			bSort : false,
 			bFilter : false,
 			bLengthChange : false,
@@ -162,10 +113,10 @@ RecordDao = {
 			"oLanguage" : {
 				"sProcessing" : "正在加载中......",
 				"sLengthMenu" : "每页显示 _MENU_ 条记录",
-				"sZeroRecords" : "对不起，查询不到相关数据！",
+				"sZeroPersonRecords" : "对不起，查询不到相关数据！",
 				"sEmptyTable" : "表中无数据存在！",
 				"sInfo" : "当前显示 _START_ 到 _END_ 条，共 _TOTAL_ 条记录",
-			  	"sInfoEmpty": '数据表为空',
+				"sInfoEmpty": '数据表为空',
 				"sInfoFiltered" : "数据表中共为 _MAX_ 条记录",
 				"sSearch" : "搜索",
 				"oPaginate" : {
@@ -181,10 +132,6 @@ RecordDao = {
 				sWidth : '120px',
 				sClass : "table-column-center"
 			}, {
-				sTitle : "HR",
-				sWidth : '100px',
-				sClass : "table-column-center"
-			}, {
 				sTitle : "内容",
 				sWidth : null,
 				sClass : "table-column-center"
@@ -198,35 +145,23 @@ RecordDao = {
 				'aTargets' : [0]
 			}]
 		});
-		oRecordTable.hide();
+		oPersonRecordTable.hide();
 
-		oRecordTable_New.click(function(e) {
+		oPersonRecordTable_New.click(function(e) {
 			e.preventDefault();
-
-			var tHRList = nowCompany.hrList;
-			if (tHRList.length <= 0) {
-				alert("请先添加HR！");
-				return;
-			}
 
 			if (!jQuery().dataTable) {
 				return;
 			}
 
-			if (!oRecordTable.is(":visible")) {
-				oRecordTable.show();
+			if (!oPersonRecordTable.is(":visible")) {
+				oPersonRecordTable.show();
 			}
 
   			var aiNew = recordTable.fnAddData(['', '', '', '']);
   			var nRow = recordTable.fnGetNodes(aiNew[0]);
-//			RecordDao.editRecordRow(recordTable, nRow, tHRList, type);
-            RecordDao.addRow(recordTable, nRow);
+            PersonRecordDao.addRow(recordTable, nRow);
   			nEditing = nRow;
-  			
-//			var aiNew = hrTable.fnAddData(['', '', '','','','','']);
-//      	var nRow = hrTable.fnGetNodes(aiNew[0]);
-//          HRDao.addHRRow(hrTable, nRow);
-//          nEditing = nRow;
 		});
 
 		oRemove.live('click', function(e) {
@@ -235,10 +170,10 @@ RecordDao = {
 			var nRow = $(this).parents('tr')[0];
             var nId = $(this).attr("href");
   			if(nId == -1){
-  				var tRecord = new Record();
-  				var isChanged = tRecord.isChanged(nRow);
+  				var tPersonRecord = new PersonRecord();
+  				var isChanged = tPersonRecord.isChanged(nRow);
   	            if(!isChanged){
-  	            	oRecordTable.fnDeleteRow(nRow);
+  	            	oPersonRecordTable.fnDeleteRow(nRow);
 	  	            return;
   	            }
  			}
@@ -248,42 +183,30 @@ RecordDao = {
        		}	
             
             if(nId == -1){
-            	oRecordTable.fnDeleteRow(nRow);
+            	oPersonRecordTable.fnDeleteRow(nRow);
             }else{
-            	RecordDao.deleteRecordById(oRecordTable,nRow,nId);
+            	PersonRecordDao.deletePersonRecordById(oPersonRecordTable,nRow,nId);
             }
             
-            var nRows = oRecordTable.fnGetNodes();
+            var nRows = oPersonRecordTable.fnGetNodes();
             if(nRows.length <=0){
-            	oRecordTable.hide();
+            	oPersonRecordTable.hide();
             }
-			
-			
-//			if (confirm("是否删除本条记录？") == false) {
-//				return;
-//			}
-//
-//			var nRow = $(this).parents('tr')[0];
-//			recordTable.fnDeleteRow(nRow);
-//			var nRows = recordTable.fnGetNodes();
-//			if (nRows.length <= 0) {
-//				oRecordTable.hide();
-//			}
 		});
 	},
 
-	initRecordTableData : function(recordTable, recordList) {
+	initPersonRecordTableData : function(recordTable, recordList) {
 		if (recordList.length <= 0) {
 			recordTable.hide();
 		} else {
 			recordTable.show();
 			var recordDataTable = recordTable.dataTable();
 			for ( i = 0; i < recordList.length; i++) {
-  				var aiNew = recordDataTable.fnAddData(RecordDao.createTableItemData(recordList[i]));
+  				var aiNew = recordDataTable.fnAddData(PersonRecordDao.createTableItemData(recordList[i]));
 				
 				var nRow = recordDataTable.fnGetNodes(aiNew[0]);
-				RecordDao.initRowData(recordDataTable,nRow,recordList[i]);
-				RecordDao.initRowEvent(recordDataTable,nRow,recordList[i]);
+				PersonRecordDao.initRowData(recordDataTable,nRow,recordList[i]);
+				PersonRecordDao.initRowEvent(recordDataTable,nRow,recordList[i]);
 			};
 		}
 	},
@@ -291,52 +214,39 @@ RecordDao = {
     createTableItemData:function(record){
 		var dataArray =[];
 		
-		var tHRList = nowCompany.hrList;
 		if(nowUser.role == 127){
   			var dateHTML = '<input class="m-wrap auto wiki date-picker" size="16" type="text" value="' + record.date + '"/>'+MStringF.createSpan(record.date);
-			var hrHTML = '<select class="m-wrap auto wiki" data-placeholder="Choose a Category" tabindex="1" name="rHR">' + '<option value="-1">请选择</option>';
-			for (var i = 0; i < tHRList.length; i++) {
-				hrHTML += '<option value="' + tHRList[i].id + '">' + tHRList[i].getShowName() + '</option>'
-			}
-			hrHTML += '</select>';
-			hrHTML += MStringF.createSpan(record.getHR(tHRList));
-			
 			var contentHTML = '<textarea class="span10 m-wrap" rows="4" value="' + record.content + '"></textarea>'+MStringF.createSpan(record.content);
 			
 			var buttonHTML = '<a id="edit" href="'+record.id+'" class="btn green icn-only"><i class="icon-edit icon-white"></i></a>';
   			buttonHTML += '<a id="remove" style="margin-left: 10px;" href="'+record.id+'" class="btn red icn-only"><i class="icon-remove icon-white"></i></a>';
 			
 			dataArray.push(dateHTML);
-			dataArray.push(hrHTML);
 			dataArray.push(contentHTML);
 			dataArray.push(buttonHTML);
 		}else{
 			dataArray.push(MStringF.createSpan(record.date));
-			dataArray.push(MStringF.createSpan(record.getHR(tHRList)));
 			dataArray.push(MStringF.createSpan(record.content));
 			dataArray.push('');
 		}
 		return dataArray;
 	},
 	
-	initRowData:function(nRecordDataTable,nRow,nRecord){
+	initRowData:function(nPersonRecordDataTable,nRow,nPersonRecord){
 		var rowObject = $(nRow);
   		
   		var spanLabel = rowObject.find("span");
   		spanLabel.siblings().not("span").hide();
 		
 		var nDate = rowObject.find("input").eq(0);
-		nDate.val(nRecord.date);
+		nDate.val(nPersonRecord.date);
 		
-		var nHR = rowObject.children().eq(1).find("select");
-		nHR.val(nRecord.hrId);
-		
-		var nContent = rowObject.children().eq(2).find("textarea");
-		nContent.val(nRecord.content);
+		var nContent = rowObject.children().eq(1).find("textarea");
+		nContent.val(nPersonRecord.content);
 		
 	},
 	
-	initRowEvent:function(nRecordDataTable,nRow,nRecord){
+	initRowEvent:function(nPersonRecordDataTable,nRow,nPersonRecord){
 		var rowObject = $(nRow);
 		
 		$('.date-picker',rowObject).datepicker();
@@ -348,25 +258,25 @@ RecordDao = {
   			var trNow = $(this).closest("tr");
   			var nowId = $(this).attr("href");
   			
-  			if(RecordDao.editArray.indexOf(nowId)<0){
-  				RecordDao.editRecordRow(trNow);
-  				RecordDao.editArray.push(nowId);
+  			if(PersonRecordDao.editArray.indexOf(nowId)<0){
+  				PersonRecordDao.editPersonRecordRow(trNow);
+  				PersonRecordDao.editArray.push(nowId);
   			}else{
-  				var isChanged = nRecord.isChanged(trNow);
+  				var isChanged = nPersonRecord.isChanged(trNow);
   				if(isChanged){
   					if (confirm("是否取消修改？") == false) {
   		                return;
   		            }
   				}
   				
-  				RecordDao.restoreRow(nRecordDataTable,nRow,nRecord);
-  				RecordDao.initRowData(nRecordDataTable,nRow,nRecord);
-  				RecordDao.editArray.splice(RecordDao.editArray.indexOf(nowId),1);
+  				PersonRecordDao.restoreRow(nPersonRecordDataTable,nRow,nPersonRecord);
+  				PersonRecordDao.initRowData(nPersonRecordDataTable,nRow,nPersonRecord);
+  				PersonRecordDao.editArray.splice(PersonRecordDao.editArray.indexOf(nowId),1);
   			}
   		});
 	},
 	
-	editRecordRow:function(trNow){
+	editPersonRecordRow:function(trNow){
 		var trNowObj = $(trNow);
 		
 		var spanLabel = trNowObj.find("span");
@@ -374,16 +284,16 @@ RecordDao = {
 		spanLabel.siblings().not("span").show();
   	},
   	
-	restoreRow:function(nRecordDataTable,nRow,nRecord){
+	restoreRow:function(nPersonRecordDataTable,nRow,nPersonRecord){
   		console.log("restoreRow-------------------");
-  		var aData = RecordDao.createTableItemData(nRecord);
+  		var aData = PersonRecordDao.createTableItemData(nPersonRecord);
         var jqTds = $('>td', nRow);
 		
         for (var i = 0, iLen = jqTds.length; i < iLen; i++) {
-            nRecordDataTable.fnUpdate(aData[i], nRow, i, false);
+            nPersonRecordDataTable.fnUpdate(aData[i], nRow, i, false);
         }
 		
-        nRecordDataTable.fnDraw();
+        nPersonRecordDataTable.fnDraw();
 	},
 	
 	getTableJSON : function(recordTable,type){
@@ -396,16 +306,12 @@ RecordDao = {
   			nId = parseInt(nId);
 			var recordItem = {};
 			
-			if(RecordDao.editArray.indexOf(String(nId))>=0 || nId<0){
+			if(PersonRecordDao.editArray.indexOf(String(nId))>=0 || nId<0){
   				console.log("start---------");
 				var jqInputs = $(nRows[i]).find('input,textarea,select');
 				if(jqInputs.length>0){
 					var recordItem = {};
-					if(type == RecordType.HISTORY){
-  	  					recordItem = nowCompany.getRecord(nId).getUpdateJSON(nRows[i],type);
-					}else{
-  	  					recordItem = nowCompany.getRecordPlan(nId).getUpdateJSON(nRows[i],type);
-					}
+  					recordItem = nowPerson.getRecord(nId).getUpdateJSON(nRows[i],type);
 	  			}
 			}
   			if(!jQuery.isEmptyObject(recordItem)){
@@ -417,12 +323,12 @@ RecordDao = {
 		return recordListData;
 	},
 
-	deleteRecordById:function(nTable,nRow,nId){
-		var deleteUrl = MainUrl.DOMAIN + MainUrl.URL_RECORD;
-		var nRecordData = {};
+	deletePersonRecordById:function(nTable,nRow,nId){
+		var deleteUrl = MainUrl.DOMAIN + MainUrl.URL_PERSON_RECORD;
+		var nPersonRecordData = {};
 		var postData = {};
-		nRecordData[MString.ID] = nId;
-		postData[MainUrl.ACTION_DATA] = MStringF.getPostJson(nRecordData);
+		nPersonRecordData[MString.ID] = nId;
+		postData[MainUrl.ACTION_DATA] = MStringF.getPostJson(nPersonRecordData);
 		postData[MainUrl.ACTION] = MainUrl.ACTION_DELETE;
 		postData[MString.TABLE_USER] = MStringF.getPostJson(nowUser);
 		

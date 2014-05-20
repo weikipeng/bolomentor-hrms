@@ -14,26 +14,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.unknown.wiki.bean.W_User;
+import com.unknown.wiki.constant.Constant_Column;
 import com.unknown.wiki.constant.Constant_Servlet;
 import com.unknown.wiki.constant.Constant_Table;
 import com.unknown.wiki.dao.DataBaseDao;
-import com.unknown.wiki.dao.HRDao;
 import com.unknown.wiki.dao.LoginDao;
-import com.unknown.wiki.dao.RecordDao;
+import com.unknown.wiki.dao.PersonRecordDao;
 
 import net.sf.json.JSONObject;
 
 /**
- * Servlet implementation class RecordServer
+ * Servlet implementation class PersonRecordServer
  */
-@WebServlet("/record")
-public class RecordServer extends HttpServlet implements Constant_Servlet,Constant_Table{
+@WebServlet(description = "person record server", urlPatterns = { "/person_record" })
+public class PersonRecordServer extends HttpServlet implements Constant_Column,Constant_Table,Constant_Servlet{
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public RecordServer() {
+    public PersonRecordServer() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -50,7 +50,6 @@ public class RecordServer extends HttpServlet implements Constant_Servlet,Consta
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json;charset=utf-8");
@@ -64,10 +63,10 @@ public class RecordServer extends HttpServlet implements Constant_Servlet,Consta
 			Entry<String, String[]> entry = iterator.next();
 			String key = entry.getKey();
 			String[] value = entry.getValue();
-				int len = value.length;
-				for(int i=0;i<len;i++){
-					System.out.println(key + " ---- " + value[i]);
-				}
+			int len = value.length;
+			for(int i=0;i<len;i++){
+				System.out.println(key + " ---- " + value[i]);
+			}
 			if(!ACTION.equals(key)){
 				parameters.put(key, value[0]);
 			}
@@ -79,12 +78,12 @@ public class RecordServer extends HttpServlet implements Constant_Servlet,Consta
 		System.out.println("返回------>"+resultObject.toString());
 		
 		printWriter.write(resultObject.toString());
-
+		
 		printWriter.flush();
 		printWriter.close();
-	
-	}
 
+	}
+	
 	private JSONObject doActions(Map<String, String[]> requestMap) {
 		JSONObject resultObject = new JSONObject();
 		DataBaseDao dataBaseDao = new DataBaseDao();
@@ -116,7 +115,7 @@ public class RecordServer extends HttpServlet implements Constant_Servlet,Consta
 
 	private void deleteRecord(DataBaseDao dataBaseDao, W_User user,JSONObject parameters, JSONObject resultObject) {
 		if(parameters != null){
-			boolean isSuccess = RecordDao.deleteRecordJSON(user,dataBaseDao,parameters);
+			boolean isSuccess = PersonRecordDao.deleteRecordJSON(user,dataBaseDao,parameters);
 			if(isSuccess){
 				resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);
 				resultObject.put(KEY_MESSAGE,"删除记录成功！");
@@ -129,4 +128,5 @@ public class RecordServer extends HttpServlet implements Constant_Servlet,Consta
 			resultObject.put(KEY_MESSAGE,"传入参数错误！");
 		}
 	}
+
 }

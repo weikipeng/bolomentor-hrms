@@ -287,3 +287,26 @@ div.innerDetails {
 	text-shadow: none;
 	text-align: start;*/
 }
+
+#person_contact{
+	margin: 0;
+	list-style: none
+}
+
+#person_contact li{
+	overflow: hidden;
+}
+
+#person_contact li .wiki-ul-Left {
+	float: left;
+	color: #646464;
+	font-size: 14px;
+	text-transform: uppercase;
+}
+
+#person_contact li .wiki-ul-Right {
+	float: right;
+	color: #169ef4;
+	font-size: 16px;
+	font-weight: 300;
+}
