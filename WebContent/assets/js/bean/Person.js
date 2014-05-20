@@ -31,13 +31,12 @@ function Person(){
 	this.updateUser='';
 	this.updateDate='';
 	
+	this.contactList = [];
 	this.recordList =[];
 	this.recordHistoryList =[];
 	this.recordPlanList =[];
 	
 //	姓名，性别，期望地点，学历，状态（在职，离职），工作年限，人才代码。然后下面是简历 
-	
-	
 	this.initPerson = function(data){
 		
 		if(data.hasOwnProperty(MString.ID)){
@@ -132,6 +131,16 @@ function Person(){
 		if(data.hasOwnProperty(MString.UPDATEDATE)){
 			this.updateDate = data[MString.UPDATEDATE];
 		}
+		
+  		if(data.hasOwnProperty(MString.CONTACT)){
+  			var contactArray = data.contact;
+  			var i = 0;
+  			for(i=0;i<contactArray.length;i++){
+  				var contact = new Contact();
+  				contact.initContact(contactArray[i]);
+  				this.contactList.push(contact);
+  			}
+  		}
 		
 		if(data.hasOwnProperty(MString.TABLE_RECORD)){
 			var tRecordList = data[MString.TABLE_RECORD];
@@ -250,6 +259,31 @@ function Person(){
 //		if(vitaeV != this.vitae){
 //			data[MString.VITAE] = vitaeV;
 //		}
+
+		var tContactList = [];
+  		var contactColList = nowPersonEditForm.contact.find("li");
+  		for(var j=0,iLen = contactColList.length;j<iLen;j++){
+  			var liC = contactColList[j];
+  			var editButton = $(liC).find("#deleteContact");
+  			var contactId = editButton.attr("name");
+  			
+  			var nContact = this.getContact(contactId);
+  			var nContactJSON = nContact.getUpdateJSON(liC);
+  			
+  			if(!jQuery.isEmptyObject(nContactJSON)){
+  				if(contactId == -1){
+	  				nContactJSON[MString.TYPE] = ContactType.PERSON; 
+	  				nContactJSON[MString.TYPEID] = this.id; 
+  				}
+				tContactList.push(nContactJSON);
+			}
+  			
+//			console.log(editContact.eq(0).val()+"   联系方式---------"+editContact.eq(1).val());
+  		}
+  		
+  		if(tContactList.length > 0){
+  			data[MString.CONTACT] = tContactList;
+  		}
   		
   		return data;
 	}
@@ -273,6 +307,123 @@ function Person(){
   			nRecord = nRecordList[0];
   		}
   		return nRecord;
+	}
+	
+	this.getCompanyTel = function(){
+		var telInfo = $.grep(this.contactList,function(item){
+			return item.infoType == ContactInfoType.COMPANY_TEL;
+		});
+		if(telInfo!=null && telInfo.length > 0){
+			return telInfo[0].info;//注意返回的是数组
+		}
+		return "";//注意返回的是数组
+	}
+	
+	this.getMobile = function(){
+		var mobieInfo = $.grep(this.contactList,function(item){
+			return item.infoType == ContactInfoType.MOBILE;
+		});
+		if(mobieInfo!=null && mobieInfo.length > 0){
+			return mobieInfo[0].info;//注意返回的是数组
+		}
+		return "";//注意返回的是数组
+	}
+	
+	this.getQQ = function(){
+		var qqInfo = $.grep(this.contactList,function(item){
+			return item.infoType == ContactInfoType.QQ;
+		});
+		if(qqInfo!=null && qqInfo.length > 0){
+			return qqInfo[0].info;//注意返回的是数组
+		}
+		return "";//注意返回的是数组
+	}
+	
+	this.getEmail = function(){
+		var mailInfo = $.grep(this.contactList,function(item){
+			return item.infoType == ContactInfoType.COMPANY_EMAIL;
+		});
+		if(mailInfo!=null && mailInfo.length > 0){
+			return mailInfo[0].info;//注意返回的是数组
+		}
+		return "";//注意返回的是数组
+	}
+
+	this.getContact = function(id){
+		var nContact = new Contact();
+		
+		var nContactList = $.grep(this.contactList,function(item){
+			return item.id == id;
+  		});
+  		if(nContactList.length > 0){
+  			nContact = nContactList[0];
+  		}
+		
+		return nContact;
+	}
+
+	this.getShowContact = function(){
+		var result = '';
+		var mob = this.getMobile();
+		if(mob!=null && mob.length > 0){
+			result = MString.TEXT_MOBILE + MString.TEXT_MAOHAO+mob;
+		}else{
+			tel = this.getCompanyTel();
+			if(tel!=null && tel.length>0){
+				result = MString.TEXT_COMPANY_TEL + MString.TEXT_MAOHAO+tel;	
+			}else{
+				qq = this.getQQ();
+				if(qq!=null && qq.length > 0){
+					result = MString.TEXT_QQ + MString.TEXT_MAOHAO+qq;
+				}
+			}
+		}
+		return result;
+	}
+
+	this.getContactHtml = function(){
+		var isEditing = (nowUser.role == 127)||(this.id == -1);
+	    var cHtml = '';
+		var cList = this.contactList;
+		if(cList!=null && cList.length>0){
+			var i=0;
+			for(i=0;i<cList.length;i++){
+				var nContact = cList[i];
+				cHtml +='<li style="margin-top: 5px;">';
+				if(isEditing){
+					cHtml += this.getEditContactHtml(nContact);
+				}
+				cHtml += '<span class="wiki-ul-Left">' + nContact.getContactInfoTypeLabel() +'</span>';//<i class="icon-img-up"></i>
+				cHtml += '<span class="wiki-ul-Right">' + nContact.info + '</span>';
+				cHtml +='</li>';	
+			}
+		}
+		return cHtml;
+	}
+	
+	this.getEditContactHtml = function(nContact){
+		var cHtml ='';
+		var selectType = [
+			'<select tabindex="-1" style="width: 95px;" class="wiki-ul-Left">',
+			'<option value="-1">请选择...</option>'
+		];
+		var i=0;
+		var typeList = ContactInfoTypeName;
+  		var selectHtml =' selected="selected"';
+		for(i = 0;i<typeList.length;i++){
+  			var emptyHtml = '';
+  			if(nContact.infoType == i){
+  				emptyHtml = selectHtml;
+  			}
+  			selectType.push('<option '+ emptyHtml +' value="' + i + '">'+ ContactInfoTypeName[i] +'</option>');
+		}
+		
+		selectType.push('</select>');
+		
+		cHtml += selectType.join("");
+		cHtml +='<div class="wiki-ul-Right"><input	name="contactInfo" type="text" style="height: 28px !important;" value="'+ nContact.info +'"/> <button id="deleteContact" name="' + nContact.id +'" class="btn red">删除</button></div>';
+		cHtml +='';
+		return cHtml;
 	}
 }
 
@@ -320,6 +471,10 @@ function PersonEditForm(){
 	
 	this.recordTableNew = $('#recordTable_new');
 	this.recordPlanTableNew = $('#recordPlanTable_new');
+	
+	this.contact = $("#person_contact");
+	this.addContact = $("#add_contact");
+	
 	
 	this.recordTableButtonList = [];
 	this.recordPlanTableButtonList = [];
@@ -546,6 +701,11 @@ function PersonEditForm(){
   	  	
   	  	editButton.live('click',function(e){
   	  		e.preventDefault();
+  	  		
+  	  		if(!PersonDao.isCancelEditContact()){
+  	  			return;
+  	  		}
+  	  		
   	  		var personForm = $('#person_form');
   	  		var controls = personForm.find(".controls");
   	  		this.isEditMode = !this.isEditMode;
@@ -683,8 +843,10 @@ function PersonEditForm(){
   		PersonRecordDao.initPersonRecordTableData(this.recordTable,nowPerson.recordHistoryList);
   		PersonRecordDao.initPersonRecordTableData(this.recordPlanTable,nowPerson.recordPlanList);
   		
-  		PersonDao.initPersonEditForm();
-  		PersonDao.setViewMode();
+  		this.contact.append(person.getContactHtml());
+  		
+		nowPersonEditForm.initTableButton();
+		nowPersonEditForm.initContactView();
 	}
 	
 	this.getJSONV = function(){
@@ -733,6 +895,17 @@ function PersonEditForm(){
 		
 		var trPlanList = this.recordPlanTable.find("tr");
 		this.recordPlanTableButtonList = trPlanList.find("td:eq(2)");
+		
+		//联系记录
+		this.recordTableButtonList.children().hide();
+		this.recordPlanTableButtonList.children().hide();
+	}
+	
+	this.initContactView = function(){
+		var nContact = nowPersonEditForm.contact;
+    	var spanList = nContact.find("span");
+    	spanList.show();
+    	spanList.siblings().not("span").hide();
 	}
 }
 
@@ -756,6 +929,21 @@ PersonDao = {
 //		nVitae.wysiwyg('clear');
 //		nVitae.parent().append("<div id='vitae_view' style='font-size: 16px;'></div>"); 
 		
+		//联系方式
+		var tContact = nowPersonEditForm.contact;
+		tContact.empty();
+		//当点击添加时
+		nowPersonEditForm.addContact.live('click',function(e){
+			e.preventDefault();
+			var ulObj = $(this).prev();
+			console.log("addContact --------------------------------------	 1");
+			ulObj.append(ContactDao.getNewContactHtml());
+			ContactDao.addContactSelectListener($(this).parent());
+		});
+		ContactDao.addContactDeleteListener(tContact);
+		ContactDao.addContactSelectListener(tContact);
+		
+		//联系记录
 		nowPersonEditForm.initTableButton();
 		
 		nowPersonEditForm.birthday.birthdaypicker({
@@ -784,7 +972,7 @@ PersonDao = {
      		}
      		window.location.href='person_index.html';
      	});
-     },
+	},
 	
 	initPerson: function(){
 		MStringF.setPageTitle("人才管理");
@@ -1162,6 +1350,21 @@ PersonDao = {
 	},
 	
 	setViewMode:function(){
+		var nContact = nowPersonEditForm.contact;
+    	var spanList = nContact.find("span");
+    	spanList.show();
+    	spanList.siblings().not("span").hide();
+
+		nowPersonEditForm.addContact.hide();
+		
+		console.log("															!");
+		console.log("															!");
+		console.log("															!");
+		
+		var hrefList = nContact.find("button[href='-1']");
+    	hrefList.closest("li").remove();
+		
+		//改变模式
 		nowPersonEditForm.mode = PAGE_MODE.VIEW;
 		var personForm = $('#person_form');
 		
@@ -1182,6 +1385,7 @@ PersonDao = {
 	    nowPersonEditForm.recordTableNew.hide();
 	    nowPersonEditForm.recordPlanTableNew.hide();
 	    
+	    //联系记录
 		nowPersonEditForm.recordTableButtonList.children().hide();
 		nowPersonEditForm.recordPlanTableButtonList.children().hide();
     	
@@ -1195,6 +1399,57 @@ PersonDao = {
 //		$("#vitae_view").append(cVitae);
 	},
 	
+	isCancelEditContact:function(){
+		//联系方式
+		var nContact = nowPersonEditForm.contact;
+    	
+		var isChanged = false;
+		
+		var contactTagList = nContact.find("span:even");
+		var contactValueList = nContact.find("span:odd");
+		
+		console.log("															!");
+		console.log("															!");
+		console.log("															!");
+		contactTagList.each(function(){
+			var oldValue = $(this).text();
+			var nowSelect = $(this).siblings().filter("select");
+			console.log("oldValue ---> "+oldValue);
+			console.log("nowValue ---> "+nowSelect.children(":selected").text());
+			if(nowSelect !=null && nowSelect.length > 0 && !isChanged){
+				if(oldValue!=(nowSelect.children(":selected").text())){
+					console.log(oldValue + "  !=  "+nowSelect.children(":selected").text());
+					isChanged = true;
+				}
+			}
+		});
+		
+		contactValueList.each(function(){
+			var oldValue = $(this).text();
+			var nowInput = $(this).parent().find("input");
+			
+			console.log("oldValue ---> "+oldValue);
+			console.log("nowInput ---> "+nowInput.val());
+			
+			if(nowInput!=null && nowInput.length > 0 && !isChanged){
+				if(oldValue!=nowInput.val()){
+					console.log(oldValue + "  !=  "+nowInput.val());
+					isChanged = true;
+				}
+			}
+		});
+		
+		if(isChanged){
+			if (!confirm("取消修改联系信息？")) {
+                return false;
+            }
+//			nContact.empty();
+//			nContact.append(nowPerson.getContactHtml());
+		}
+		
+		return true;
+	},
+	
 	setEditMode:function(){
 		nowPersonEditForm.mode = PAGE_MODE.EDIT;
 		nowPersonEditForm.vitae.show();
@@ -1205,6 +1460,13 @@ PersonDao = {
 	    
 		nowPersonEditForm.recordTableButtonList.children().show();
 		nowPersonEditForm.recordPlanTableButtonList.children().show();
+		
+		//联系方式
+		nowPersonEditForm.addContact.show();
+		var nContact = nowPersonEditForm.contact;
+		var spanList = nContact.find("span");
+    	spanList.hide();
+    	spanList.siblings().not("span").show();
 		
 //		var cVitae = nowPerson.vitae.replace(/&quot;/g,'"');
 //		cVitae = cVitae.replace(/&#x27;/g,"'");

@@ -404,112 +404,77 @@ HRDao = {
 
 	deleteArray:[],
 	
-	getNewContactHtml: function(){
-		var cHtml ='<li style="margin-top: 5px;">';
-		var selectType = [
-			'<select tabindex="-1" style="width: 95px;" class="wiki-ul-Left">',
-			'<option value="-1">请选择...</option>'
-		];
-		var i=0;
-		var typeList = ContactInfoTypeName;
-		for(i = 0;i<typeList.length;i++){
-			selectType.push('<option value="' + i + '">'+ ContactInfoTypeName[i] +'</option>');
-		}
-		
-		selectType.push('</select>');
-		
-		cHtml += selectType.join("");
-//		cHtml +='<input	name="contactInfo" type="text" class="wiki-ul-Right" style="height: 28px !important;" disabled="disabled"/>';
-		cHtml +='<div class="wiki-ul-Right"><input	name="contactInfo" type="text" style="height: 28px !important;" disabled="disabled"/> <button id="deleteContact" name="-1" class="btn red">删除</button></div>';
-		cHtml +='<span class="wiki-ul-Left"></span><span class="wiki-ul-Right"></span></li>';
-		return cHtml;
-	},
-	
-	addContactSelectListener:function(contactCol){
-  		//当未选择联系方式的种类时，禁止输入
-  		contactCol.find("select").change(function(){
-  //			console.log("this -----------> "+this.value);
-  			var inputObj = $(this).next().find("input");
-  //			console.log("inputObj -----------> "+inputObj.val());
-  			if(this.value < 0){
-  				inputObj.attr("disabled",true);
-  			}else{
-  				inputObj.attr("disabled",false);
-  			}
-  		});
-	},
-	
-	addContactDeleteListener:function(contactCol){
-  		$("#hrTable").find('* #deleteContact').live('click',function(e){
-  			e.preventDefault();
-  			console.log("deleteContact -----------> ");
-  			var nRow = $(this).closest("li");
-  			var typeSpan = nRow.children("span:first");
-  			var valueSpan = nRow.children("span:last");
-  			
-  			var typeSelect = nRow.children("select");;
-  			var valueInput = $(this).siblings().filter("input");
-  			
-  			console.log("typeSpan -----------> "+typeSpan.text());
-  			console.log("typeSelect -----------> "+typeSelect.val());
-  			console.log("valueSpan -----------> "+valueSpan.text());
-  			console.log("valueInput -----------> "+valueInput.val());
-  			console.log("														");
-  			
-  			if(typeSelect.val() == -1 && typeSpan.text().length==0){
-  				nRow.remove();
-  				return;
-  			}
-  			
-  			if (confirm("是否删除这条联系方式？") == false) {
-                return;
-            }
-  			
-  			var cId = $(this).attr("name");
-  			if(cId == -1){
-				nRow.remove();
-  			}else{
-	  			ContactDao.deleteContactById(nRow,cId);
-  			}
-  			
-//			if(typeSpan!=null && typeSpan.length>0){
-//				
-//			}else{
-//				if(typeSelect.val()!=-1 && valueInput.val().length > 0){
-//					
-//				}
+//	addContactDeleteListener:function(contactCol){
+//		$("#hrTable").find('* #deleteContact').live('click',function(e){
+//			e.preventDefault();
+//			console.log("deleteContact -----------> ");
+//			var nRow = $(this).closest("li");
+//			var typeSpan = nRow.children("span:first");
+//			var valueSpan = nRow.children("span:last");
+//			
+//			var typeSelect = nRow.children("select");;
+//			var valueInput = $(this).siblings().filter("input");
+//			
+//			console.log("typeSpan -----------> "+typeSpan.text());
+//			console.log("typeSelect -----------> "+typeSelect.val());
+//			console.log("valueSpan -----------> "+valueSpan.text());
+//			console.log("valueInput -----------> "+valueInput.val());
+//			console.log("														");
+//			
+//			if(typeSelect.val() == -1 && typeSpan.text().length==0){
+//				nRow.remove();
+//				return;
 //			}
-  		});
-
-//		var temp = contactCol.find("#deleteContact");
-//		if(temp!=null && temp.length>0){
-//			temp.live('click',function(e){
-//				e.preventDefault();
-//				console.log("deleteContact -----------> ");
-////				var typeSpan = $(this).closest("li").children("span:last");
-////				var typeSelect = $(this).closest("li").children("select");;
+//			
+//			if (confirm("是否删除这条联系方式？") == false) {
+//              return;
+//          }
+//			
+//			var cId = $(this).attr("name");
+//			if(cId == -1){
+//				nRow.remove();
+//			}else{
+//	  			ContactDao.deleteContactById(nRow,cId);
+//			}
+//			
+////			if(typeSpan!=null && typeSpan.length>0){
 ////				
-////				var valueSpan = $(this).closest("li").children("span:first");
-////				var valueInput = $(this).filter("input");
-////				
-////				console.log("typeSpan -----------> "+typeSpan.text());
-////				console.log("typeSelect -----------> "+typeSelect.val());
-////				console.log("valueSpan -----------> "+valueSpan.text());
-////				console.log("valueInput -----------> "+valueInput.val());
-////				console.log("														");
-////				
-////				if(typeSelect!=null && typeSelect.length>0){
+////			}else{
+////				if(typeSelect.val()!=-1 && valueInput.val().length > 0){
 ////					
 ////				}
-//			});
-//			temp.live('click',function(e){
-//				e.preventDefault();
-//				console.log("deleteContact -----------> ");				
-//			});
-//			console.log("temp ------> "+temp.html());
-//		}
-  		
-	},
+////			}
+//		});
+//
+////		var temp = contactCol.find("#deleteContact");
+////		if(temp!=null && temp.length>0){
+////			temp.live('click',function(e){
+////				e.preventDefault();
+////				console.log("deleteContact -----------> ");
+//////				var typeSpan = $(this).closest("li").children("span:last");
+//////				var typeSelect = $(this).closest("li").children("select");;
+//////				
+//////				var valueSpan = $(this).closest("li").children("span:first");
+//////				var valueInput = $(this).filter("input");
+//////				
+//////				console.log("typeSpan -----------> "+typeSpan.text());
+//////				console.log("typeSelect -----------> "+typeSelect.val());
+//////				console.log("valueSpan -----------> "+valueSpan.text());
+//////				console.log("valueInput -----------> "+valueInput.val());
+//////				console.log("														");
+//////				
+//////				if(typeSelect!=null && typeSelect.length>0){
+//////					
+//////				}
+////			});
+////			temp.live('click',function(e){
+////				e.preventDefault();
+////				console.log("deleteContact -----------> ");				
+////			});
+////			console.log("temp ------> "+temp.html());
+////		}
+//		
+//	},
 		 
 	initHrTable:function () {
 	 	var aoColumnsV = [
@@ -624,7 +589,7 @@ HRDao = {
 				HRDao.initRowEvent(hrDataTable,nRow,hrList[i]);
 			};
 			
-			HRDao.addContactDeleteListener(null);
+			ContactDao.addContactDeleteListener($('#hrTable'));
 		}
 	},
     
@@ -685,20 +650,19 @@ HRDao = {
 		var contactCol = rowObject.find("td").eq(4);
 		
 		contactCol.find("#add").hide();
-		
 	},
 	
 	initRowEvent:function(nHRDataTable,nRow,nHR){
 		var rowObject = $(nRow);
 		
 		var contactCol = rowObject.find("td").eq(4);
-		HRDao.addContactSelectListener(contactCol);
+		ContactDao.addContactSelectListener(contactCol);
 		//当点击添加时
 		rowObject.find('#add').live('click',function(e){
 			e.preventDefault();
 			var ulObj = $(this).prev();
-			ulObj.append(HRDao.getNewContactHtml());
-			HRDao.addContactSelectListener($(this).parent());
+			ulObj.append(ContactDao.getNewContactHtml());
+			ContactDao.addContactSelectListener($(this).parent());
 		});
 		
 		rowObject.find('#edit').live('click',function(e){
@@ -826,12 +790,12 @@ HRDao = {
 		$(jqTds[4]).find('#add').live('click',function(e){
 			e.preventDefault();
 			var ulObj = $(this).prev();
-			ulObj.append(HRDao.getNewContactHtml());
-			HRDao.addContactSelectListener($(this).parent());
+			ulObj.append(ContactDao.getNewContactHtml());
+			ContactDao.addContactSelectListener($(this).parent());
 //			HRDao.addContactDeleteListener(nRow);
 		});
-		HRDao.addContactDeleteListener(null);
-		HRDao.addContactSelectListener($(this).parent());
+		ContactDao.addContactDeleteListener('#hrTable');
+		ContactDao.addContactSelectListener($(this).parent());
 	},
 	
 	editHRRow:function(trNow){
