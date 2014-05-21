@@ -1033,7 +1033,7 @@ PersonDao = {
 					columnEditHtml
 				];
 				if(nowUser.role == 127){
-					var tUser = UserDao.getUserById(tPerson.createUserId);
+					var tUser = UserDao.getUserById(tPerson.updateUserId);
 					var checkBoxH = '<input type="checkbox" value="'+tPerson.id+'" />';
 					addData = [
   						checkBoxH,
@@ -1112,7 +1112,7 @@ PersonDao = {
 			    { "sTitle": "学历",sWidth: '134px',sClass:"table-column-center"}, 
 			    { "sTitle": "年限",sWidth: '134px',sClass:"table-column-center"}, 
 		        { "sTitle": "更新时间",sWidth: '170px',sClass:"table-column-center" },
-		        { "sTitle": "添加者",sWidth: '72px',sClass:"table-column-center" }, 
+		        { "sTitle": "更新人",sWidth: '72px',sClass:"table-column-center" }, 
 		        { "sTitle": "",sWidth: '146px',sClass:"table-column-center" }//添加按钮
 	    	];
 		 	aoColumnDefsV = [
