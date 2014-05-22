@@ -253,7 +253,7 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 			jsonArray.add(person.toJsonString());
 		}
 		
-		if(ROLE_ADMIN_VALUE == user.getRole()){
+//		if(ROLE_ADMIN_VALUE == user.getRole()){
 			System.out.println("												");
 			System.out.println("ROLE_ADMIN_VALUE												"+ROLE_ADMIN_VALUE);
 			System.out.println("user.getRole()												"+user.getRole());
@@ -266,7 +266,7 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 				}
 			}
 			resultObject.put(TABLE_USER,userArray);
-		}
+//		}
 		
 		resultObject.put(Constant_Table.TABLE_PERSON, jsonArray);
 		resultObject.put(KEY_STATUS, RESULT_CODE_SUCCESS);

@@ -382,7 +382,8 @@ function Person(){
 	}
 
 	this.getContactHtml = function(){
-		var isEditing = (nowUser.role == 127)||(this.id == -1);
+//		var isEditing = (nowUser.role == 127)||(this.id == -1);
+		var isEditing = true;
 	    var cHtml = '';
 		var cList = this.contactList;
 		if(cList!=null && cList.length>0){
@@ -1025,11 +1026,15 @@ PersonDao = {
 //		        { "sTitle": "更新时间",sWidth: '60px',sClass:"table-column-center" },
 //		        { "sTitle": "",sWidth: '42px',sClass:"table-column-center" }//查看按钮
 //		    ];
+
+				var tUser = UserDao.getUserById(tPerson.updateUserId);
+				
 				var addData = [
   					column1Html,
   					MStringF.getEducation(tPerson.education),
   					tPerson.workYear,
   					tPerson.updateDate,
+  					tUser.getShowName(),
 					columnEditHtml
 				];
 				if(nowUser.role == 127){
@@ -1181,12 +1186,13 @@ PersonDao = {
 			   	{ "sTitle": "人才名称",sWidth: '60px',sClass:"table-column-center" }, 
 			   	{ "sTitle": "学历",sWidth: '134px',sClass:"table-column-center"}, 
 			    { "sTitle": "年限",sWidth: '134px',sClass:"table-column-center"}, 
-		        { "sTitle": "更新时间",sWidth: '60px',sClass:"table-column-center" },
+		        { "sTitle": "更新时间",sWidth: null,sClass:"table-column-center" },
+		        { "sTitle": "更新人",sWidth: '130px',sClass:"table-column-center" }, 
 		        { "sTitle": "",sWidth: '42px',sClass:"table-column-center" }//查看按钮
 		    ];
 			aoColumnDefsV = [
 				{'bSortable': false,'aTargets': [0]},
-				{'bSortable': false,'aTargets': [4]}
+				{'bSortable': false,'aTargets': [5]}
 			];
 			
 			aaSortingV = [[ 3, "desc" ]], //更新时间排序
@@ -1265,24 +1271,24 @@ PersonDao = {
   		if(person.createDate!=null && person.createDate.length > 0){
   			personInfo.append('<h6 style="display:inline-block;margin-left: 20px;">创建日期：<span>'+person.createDate+'</span></h6>');
   		}
-  		if(nowUser.role == 127){
+//		if(nowUser.role == 127){
   			var createUser = UserDao.getUserById(person.createUserId).getShowName();
   			console.log("createUser ----------> "+createUser);
   			
   			if(createUser!=null && createUser.length >0){
   				personInfo.append('<h6 style="display:inline-block;margin-left: 20px;">创建人：<span>'+createUser+'</span></h6>');
   			}
-  		}
+//		}
   		
   		if(person.updateDate!=null && person.updateDate.length > 0){
   			personInfo.append('<h6 style="display:inline-block;margin-left: 20px;">更新日期：<span>'+person.updateDate+'</span></h6>');
   		}
-  		if(nowUser.role == 127){
+//		if(nowUser.role == 127){
   			var updateUser = UserDao.getUserById(person.updateUserId).getShowName();
   			if(updateUser!=null && updateUser.length >0){
   				personInfo.append('<h6 style="display:inline-block;margin-left: 20px;">更新人：<span>'+updateUser+'</span></h6>');	
   			}
-  		}
+//		}
 	},
 	
 	initEditPerson: function (){

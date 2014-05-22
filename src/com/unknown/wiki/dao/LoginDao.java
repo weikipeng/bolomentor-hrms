@@ -198,7 +198,8 @@ public class LoginDao implements Constant_Column,Constant_Servlet,Constant_SQL,C
 	public static ArrayList<W_User> queryUser(DataBaseDao dataBaseDao,W_User user) {
 		ArrayList<W_User> result = new ArrayList<W_User>();
 		
-		if(dataBaseDao != null&&user!=null&&user.getId()>0 &&ROLE_ADMIN_VALUE == user.getRole()){
+//		if(dataBaseDao != null&&user!=null&&user.getId()>0 &&ROLE_ADMIN_VALUE == user.getRole()){
+		if(dataBaseDao != null&&user!=null&&user.getId()>0 ){
 			Connection connection = dataBaseDao.getConnection();
 			
 			StringBuffer sb = new StringBuffer();
