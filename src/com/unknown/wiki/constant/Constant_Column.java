@@ -74,6 +74,11 @@ public interface Constant_Column {
 	public static final String COLUMN_HRID = "HRId";
 	public static final String COLUMN_JOBID = "jobId";
 	public static final String COLUMN_JOBNAME = "jobName";
+	public static final String COLUMN_JOBTITLE = "jobTitle";
+	public static final String COLUMN_JOBLEVEL = "jobLevel";
+	public static final String COLUMN_JOBINFO = "jobInfo";
+	public static final String COLUMN_STARTTIME = "startTime";
+	public static final String COLUMN_ENDTIME = "endTime";
 	public static final String COLUMN_BELONGUSERID = "belongUserId";
 	public static final String COLUMN_BELONGUSER = "belongUser";
 	

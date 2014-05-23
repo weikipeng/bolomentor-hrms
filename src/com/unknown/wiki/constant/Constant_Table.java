@@ -14,5 +14,5 @@ public interface Constant_Table {
 	public static final String TABLE_JOB = "job";
 	public static final String TABLE_PROJECT = "project";
 	public static final String TABLE_USER = "user";
-	public static final String TABLE_WORKHISTORY = "work_history";
+	public static final String TABLE_WORK_EXPERIENCE = "work_experience";
 }

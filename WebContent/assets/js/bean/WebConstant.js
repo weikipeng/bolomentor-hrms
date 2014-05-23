@@ -3,7 +3,7 @@ $.ajaxSetup({
 });
 WebConstant = function(){
 	this.COPYRIGHT = "2014 &copy; 伯乐通版权所有.";
-	this.TITLE = "伯乐通工作管理系统V0.61";
+	this.TITLE = "伯乐通工作管理系统V0.62";
 //	this.COPYRIGHT = "2014 © 伯乐通版权所有.";
 	
 	var initHtml = function(){

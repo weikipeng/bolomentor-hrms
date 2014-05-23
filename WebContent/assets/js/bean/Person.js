@@ -1007,28 +1007,23 @@ PersonDao = {
 					columnEditHtml += '<a id="edit" style="margin-left: 10px;" href="'+tPerson.id+'" class="btn green icn-only"><i class="icon-edit icon-white"></i></a>';
 				}
 				
-//  		 aoColumnsV= [ 
+//				aoColumnsV= [ 
 //			    { "sTitle": checkBoxH,sWidth: '10px',sClass:"table-column-center",'aTargets': [0]}, 
-//			    { "sTitle": "人才名称",sWidth: '134px',sClass:"table-column-center"}, 
+//			    { "sTitle": "姓名",sWidth: '134px',sClass:"table-column-center"}, 
+//			    { "sTitle": "网站ID",sWidth: '134px',sClass:"table-column-center"}, 
+//			    { "sTitle": "联系方式",sWidth: '134px',sClass:"table-column-center"}, 
 //			    { "sTitle": "学历",sWidth: '134px',sClass:"table-column-center"}, 
 //			    { "sTitle": "年限",sWidth: '134px',sClass:"table-column-center"}, 
 //		        { "sTitle": "更新时间",sWidth: '170px',sClass:"table-column-center" },
-//		        { "sTitle": "添加者",sWidth: '72px',sClass:"table-column-center" }, 
+//		        { "sTitle": "更新人",sWidth: '72px',sClass:"table-column-center" }, 
 //		        { "sTitle": "",sWidth: '146px',sClass:"table-column-center" }//添加按钮
 //	    	];
-				
-//  		aoColumnsV = [ 
-//			   	{ "sTitle": "人才名称",sWidth: '60px',sClass:"table-column-center" }, 
-//			   	{ "sTitle": "学历",sWidth: '134px',sClass:"table-column-center"}, 
-//			    { "sTitle": "年限",sWidth: '134px',sClass:"table-column-center"}, 
-//		        { "sTitle": "更新时间",sWidth: '60px',sClass:"table-column-center" },
-//		        { "sTitle": "",sWidth: '42px',sClass:"table-column-center" }//查看按钮
-//		    ];
-
 				var tUser = UserDao.getUserById(tPerson.updateUserId);
 				
 				var addData = [
   					column1Html,
+  					tPerson.netId,
+  					tPerson.getShowContact(),
   					MStringF.getEducation(tPerson.education),
   					tPerson.workYear,
   					tPerson.updateDate,
@@ -1041,6 +1036,8 @@ PersonDao = {
 					addData = [
   						checkBoxH,
   						tPerson.getShowName(),
+  						tPerson.netId,
+  						tPerson.getShowContact(),
   						MStringF.getEducation(tPerson.education),
   						tPerson.workYear,
   						tPerson.updateDate,
@@ -1111,7 +1108,9 @@ PersonDao = {
 			var checkBoxH = '<input type="checkbox" value="" />';
     		 aoColumnsV= [ 
 			    { "sTitle": checkBoxH,sWidth: '10px',sClass:"table-column-center",'aTargets': [0]}, 
-			    { "sTitle": "人才名称",sWidth: '134px',sClass:"table-column-center"}, 
+			    { "sTitle": "姓名",sWidth: '134px',sClass:"table-column-center"}, 
+			    { "sTitle": "网站ID",sWidth: '134px',sClass:"table-column-center"}, 
+			    { "sTitle": "联系方式",sWidth: '134px',sClass:"table-column-center"}, 
 			    { "sTitle": "学历",sWidth: '134px',sClass:"table-column-center"}, 
 			    { "sTitle": "年限",sWidth: '134px',sClass:"table-column-center"}, 
 		        { "sTitle": "更新时间",sWidth: '170px',sClass:"table-column-center" },
@@ -1120,10 +1119,10 @@ PersonDao = {
 	    	];
 		 	aoColumnDefsV = [
 		 		{'bSortable': false,'aTargets': [0]},
-		 		{'bSortable': false,'aTargets': [6]}
+		 		{'bSortable': false,'aTargets': [8]}
 		 	];
 		 	
-		 	aaSortingV = [[ 4, "desc" ]], //更新时间排序
+		 	aaSortingV = [[ 6, "desc" ]], //更新时间排序
 		 	
 	    	toolBarHtml = ['<p style="width: auto;margin: 0px;">',	
 				'<a id="newPerson" href="#" class="btn green"><i class="icon-plus"></i>添加人才</a>',
@@ -1181,7 +1180,9 @@ PersonDao = {
 	  		});
     	}else{
     		aoColumnsV = [ 
-			   	{ "sTitle": "人才名称",sWidth: '60px',sClass:"table-column-center" }, 
+			   	{ "sTitle": "姓名",sWidth: '60px',sClass:"table-column-center" },
+			   	{ "sTitle": "网站ID",sWidth: '134px',sClass:"table-column-center"}, 
+			    { "sTitle": "联系方式",sWidth: '134px',sClass:"table-column-center"},
 			   	{ "sTitle": "学历",sWidth: '134px',sClass:"table-column-center"}, 
 			    { "sTitle": "年限",sWidth: '134px',sClass:"table-column-center"}, 
 		        { "sTitle": "更新时间",sWidth: null,sClass:"table-column-center" },
@@ -1190,10 +1191,10 @@ PersonDao = {
 		    ];
 			aoColumnDefsV = [
 				{'bSortable': false,'aTargets': [0]},
-				{'bSortable': false,'aTargets': [5]}
+				{'bSortable': false,'aTargets': [7]}
 			];
 			
-			aaSortingV = [[ 3, "desc" ]], //更新时间排序
+			aaSortingV = [[ 5, "desc" ]], //更新时间排序
 			
 			toolBarHtml = ['<p style="width: auto;margin: 0px;">',	
 				'<a id="newPerson" href="#" class="btn green"><i class="icon-plus"></i>添加人才</a>',

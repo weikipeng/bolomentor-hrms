@@ -28,7 +28,7 @@ public class WorkHistoryDao implements Constant_Column,Constant_SQL{
 			//插入
 			StringBuffer sb = new StringBuffer();
 			sb.append(SQL_INSERT);
-			sb.append(Constant_Table.TABLE_WORKHISTORY);
+			sb.append(Constant_Table.TABLE_WORK_EXPERIENCE);
 			sb.append(" set ");
 			Iterator<Entry<String, String>> iterator = parameters.entrySet().iterator();
 			while (iterator.hasNext()) {
@@ -55,7 +55,7 @@ public class WorkHistoryDao implements Constant_Column,Constant_SQL{
 						long id = resultSet.getLong(1);
 						sb = new StringBuffer();
 						sb.append(SQL_QUERY);
-						sb.append(Constant_Table.TABLE_WORKHISTORY);
+						sb.append(Constant_Table.TABLE_WORK_EXPERIENCE);
 						sb.append(SQL_WHERE);
 						sb.append(COLUMN_ID);
 						sb.append(" = ");
@@ -85,7 +85,7 @@ public class WorkHistoryDao implements Constant_Column,Constant_SQL{
 			//删除
 			StringBuffer sb = new StringBuffer();
 			sb.append("delete from ");
-			sb.append(Constant_Table.TABLE_WORKHISTORY);
+			sb.append(Constant_Table.TABLE_WORK_EXPERIENCE);
 			sb.append(SQL_WHERE);
 			Iterator<Entry<String, String>> iterator = parameters.entrySet().iterator();
 			int count = 0;
@@ -126,7 +126,7 @@ public class WorkHistoryDao implements Constant_Column,Constant_SQL{
 			
 			StringBuffer sb = new StringBuffer();
 			sb.append(SQL_QUERY);
-			sb.append(Constant_Table.TABLE_WORKHISTORY);
+			sb.append(Constant_Table.TABLE_WORK_EXPERIENCE);
 			Iterator<Entry<String, String>> iterator = parameters.entrySet().iterator();
 			int count = 0;
 			while (iterator.hasNext()) {
@@ -171,7 +171,7 @@ public class WorkHistoryDao implements Constant_Column,Constant_SQL{
 			//插入
 			StringBuffer sb = new StringBuffer();
 			sb.append("update ");
-			sb.append(Constant_Table.TABLE_WORKHISTORY);
+			sb.append(Constant_Table.TABLE_WORK_EXPERIENCE);
 			sb.append(" set ");
 			Iterator<Entry<String, String>> iterator = values.entrySet().iterator();
 			while (iterator.hasNext()) {
