@@ -288,6 +288,42 @@ div.innerDetails {
 	text-align: start;*/
 }
 
+#introduction{
+	min-height: 400px;
+}
+
+#introduction_view{
+	min-height: 400px;
+	width:65.81196581196582%;
+	-webkit-appearance: none !important;
+	color: #333333;
+	outline: 0;
+	/*height: 20px;*/
+	padding: 6px 6px !important;
+	line-height: 20px;
+	font-size: 14px;
+	font-weight: normal;
+	vertical-align: top;
+	background-color: #ffffff;
+	background-image: none !important;
+	filter: none !important;
+	-webkit-box-shadow: none !important;
+	-moz-box-shadow: none !important;
+	box-shadow: none !important;
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+	background: transparent;   
+	
+	/*font: -webkit-small-control;
+	letter-spacing: normal;
+	word-spacing: normal;
+	text-transform: none;
+	text-indent: 0px;
+	text-shadow: none;
+	text-align: start;*/
+}
+
 #person_contact{
 	margin: 0;
 	list-style: none

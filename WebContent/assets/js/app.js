@@ -3357,7 +3357,8 @@ var App = function () {
   						status = parseInt(status);
   						if(status == MainUrl.RESULT_CODE_SUCCESS){
   							alert("更新客户信息成功！");
-  							window.location.href="company_detail.html?id="+nowCompany.id;
+//							window.location.href="company_detail.html?id="+nowCompany.id;
+							MainUrl.goToCompanyEdit(nowCompany.id);
   						}else{
   							alert(data[MainUrl.KEY_MESSAGE]);
 //							window.location.href="company_index.html";
@@ -3441,10 +3442,10 @@ var App = function () {
 				CompanyDao.initEditCompany();
             }
             
-            if (App.isPage("company_detail")) {
-            	handleCompanyDetailValidation(); // handles companyIndex tables
-				CompanyDao.initCompanyDetailView();
-            }
+//          if (App.isPage("company_detail")) {
+//          	handleCompanyDetailValidation(); // handles companyIndex tables
+//				CompanyDao.initCompanyDetailView();
+//          }
             
             if(App.isPage("person_edit")){
             	PersonDao.initEditPerson();

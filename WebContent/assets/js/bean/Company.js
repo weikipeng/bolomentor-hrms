@@ -248,6 +248,9 @@ function Company(){
   		}
   		
 		var introductionV = nowC.introduction.val();
+		introductionV = introductionV.replace(htmlEscaper,function(match){
+			return htmlEscapes[match];
+		});
   		if(introductionV!=this.introduction){
   			data[MString.INTRODUCTION] = introductionV;
   		}
@@ -308,76 +311,76 @@ function Company(){
 	}
 }
 
-function CompanyDetailForm(){
-	this.name = $('[name="name"]');
-	this.EnglishName = $('[name="EnglishName"]');
-	this.nature = $('[name="nature"]');
-	this.number = $('[name="number"]');
-	this.intent= $('[name="intent"]');
-	this.headhunter = $('[name="headhunter"]');
-	this.isListing = $('[name="isListing"]');
-	this.telephone = $('[name="telephone"]');
-	this.address = $('[name="address"]');
-	this.introduction = $('[name="introduction"]');
-	this.hrTable = $('#hrTable');
-	this.recordTable = $('#recordTable');
-	this.recordPlanTable = $('#recordPlanTable');
-
-	this.setCompany = function(company){
-		this.name.text(company.name);
-		this.EnglishName.text(company.EnglishName);
-		this.nature.text(MStringF.getCompanyNature(company.nature));
-  		this.number.text(MStringF.getCompanyNumber(company.number));
-		this.intent.text(MStringF.getIntent(company.intent));
-		this.headhunter.text(MStringF.getYesNo(company.headhunter));
-		this.isListing.text(MStringF.getYesNo(company.isListing));
-		this.telephone.text(company.telephone);		
-		this.address.text(company.address);
-		this.introduction.text(company.introduction);
-		
-		CompanyDao.initCompanyCreateInfo(company);
-		
-		HRDao.initHrTableData(this.hrTable,company.hrList);
-		RecordDao.initRecordTableData(this.recordTable,company.recordList);
-		RecordDao.initRecordTableData(this.recordPlanTable,company.recordPlanList);
-	}
-	
-	this.getJSONV = function(){
-		var data = {};
-//		data[MString.TABLE_HR] = HRDao.getHRTableJSON(this.hrTable);
-//		data[MString.TABLE_HR] = HRDao.getHRTableUpdateJSON(this.hrTable);
-//		data[MString.TABLE_RECORD] = CompanyDao.getTableJSON(this.recordTable);
-//		data[MString.TABLE_RECORDPLAN] = CompanyDao.getTableJSON(this.recordPlanTable);
-		
-//		var tHRJSON = HRDao.getHRTableUpdateJSON(this.hrTable);
-		
-		var hrTableJSON = HRDao.getHRTableUpdateJSON(this.hrTable);
-		
-		if(hrTableJSON.length > 0){
-			data[MString.TABLE_HR] = hrTableJSON;
-		}
-		
-  		var tRecord = RecordDao.getTableJSON(this.recordTable,RecordType.HISTORY);
-  		if(tRecord.length > 0){
-  			data[MString.TABLE_RECORD] = tRecord;
-  		}
-  		
-  		var tPlan = RecordDao.getTableJSON(this.recordPlanTable,RecordType.PLAN);
-  		if(tPlan.length > 0){
-  			data[MString.TABLE_RECORDPLAN] = tPlan;
-  		}
-  		
-  		if(!jQuery.isEmptyObject(data)){
-  			data[MString.ID] = nowCompany.id;
-  		}
-		
-  		console.log("566------>"+JSON.stringify(data));
-		return data;
-	}
-}
+//function CompanyDetailForm(){
+//	this.name = $('[name="name"]');
+//	this.EnglishName = $('[name="EnglishName"]');
+//	this.nature = $('[name="nature"]');
+//	this.number = $('[name="number"]');
+//	this.intent= $('[name="intent"]');
+//	this.headhunter = $('[name="headhunter"]');
+//	this.isListing = $('[name="isListing"]');
+//	this.telephone = $('[name="telephone"]');
+//	this.address = $('[name="address"]');
+//	this.introduction = $('[name="introduction"]');
+//	this.hrTable = $('#hrTable');
+//	this.recordTable = $('#recordTable');
+//	this.recordPlanTable = $('#recordPlanTable');
+//
+//	this.setCompany = function(company){
+//		this.name.text(company.name);
+//		this.EnglishName.text(company.EnglishName);
+//		this.nature.text(MStringF.getCompanyNature(company.nature));
+//		this.number.text(MStringF.getCompanyNumber(company.number));
+//		this.intent.text(MStringF.getIntent(company.intent));
+//		this.headhunter.text(MStringF.getYesNo(company.headhunter));
+//		this.isListing.text(MStringF.getYesNo(company.isListing));
+//		this.telephone.text(company.telephone);		
+//		this.address.text(company.address);
+//		this.introduction.text(company.introduction);
+//		
+//		CompanyDao.initCompanyCreateInfo(company);
+//		
+//		HRDao.initHrTableData(this.hrTable,company.hrList);
+//		RecordDao.initRecordTableData(this.recordTable,company.recordList);
+//		RecordDao.initRecordTableData(this.recordPlanTable,company.recordPlanList);
+//	}
+//	
+//	this.getJSONV = function(){
+//		var data = {};
+////		data[MString.TABLE_HR] = HRDao.getHRTableJSON(this.hrTable);
+////		data[MString.TABLE_HR] = HRDao.getHRTableUpdateJSON(this.hrTable);
+////		data[MString.TABLE_RECORD] = CompanyDao.getTableJSON(this.recordTable);
+////		data[MString.TABLE_RECORDPLAN] = CompanyDao.getTableJSON(this.recordPlanTable);
+//		
+////		var tHRJSON = HRDao.getHRTableUpdateJSON(this.hrTable);
+//		
+//		var hrTableJSON = HRDao.getHRTableUpdateJSON(this.hrTable);
+//		
+//		if(hrTableJSON.length > 0){
+//			data[MString.TABLE_HR] = hrTableJSON;
+//		}
+//		
+//		var tRecord = RecordDao.getTableJSON(this.recordTable,RecordType.HISTORY);
+//		if(tRecord.length > 0){
+//			data[MString.TABLE_RECORD] = tRecord;
+//		}
+//		
+//		var tPlan = RecordDao.getTableJSON(this.recordPlanTable,RecordType.PLAN);
+//		if(tPlan.length > 0){
+//			data[MString.TABLE_RECORDPLAN] = tPlan;
+//		}
+//		
+//		if(!jQuery.isEmptyObject(data)){
+//			data[MString.ID] = nowCompany.id;
+//		}
+//		
+//		console.log("566------>"+JSON.stringify(data));
+//		return data;
+//	}
+//}
 
 function CompanyEditForm(){
-	this.isEditMode = false;
+	this.mode = PAGE_MODE.VIEW;
 	this.existName = false;
 	this.existEnglishName = false;
 //	this.existEnglishName = false;
@@ -404,7 +407,7 @@ function CompanyEditForm(){
 	this.isListingLabel = "";
 	this.telephoneLabel = "";
 	this.addressLabel = "";
-	this.introductionLabel = "";
+	this.introductionLabel = $("#introduction_view");
 	
 	this.setCompany = function(company){
 //		console.log("company----->"+JSON.stringify(company));
@@ -424,7 +427,12 @@ function CompanyEditForm(){
 		
 		this.telephone.val(company.telephone);		
 		this.address.val(company.address);
-		this.introduction.val(company.introduction);
+		
+		var cIntroduction = company.introduction.replace(/&quot;/g,'"');
+		cIntroduction = cIntroduction.replace(/&#x27;/g,"'");
+		this.introduction.val(cIntroduction);
+		this.introduction.hide();
+		this.introductionLabel.html(cIntroduction);
 		
 		//Label
 		this.nameLabel = MStringF.createLabel(this.name,MStringF.getLabelName(MString.NAME),company.name);
@@ -436,7 +444,7 @@ function CompanyEditForm(){
   		this.isListingLabel = MStringF.createLabel(this.isListing,MStringF.getLabelName(MString.ISLISTING),MStringF.getYesNo(company.isListing));
 		this.telephoneLabel = MStringF.createLabel(this.telephone,MStringF.getLabelName(MString.TELEPHONE),company.telephone);
 		this.addressLabel = MStringF.createLabel(this.address,MStringF.getLabelName(MString.ADDRESS),company.address);
-		this.introductionLabel = MStringF.createLabel(this.introduction,MStringF.getLabelName(MString.INTRODUCTION),company.introduction);
+//		this.introductionLabel = MStringF.createLabel(this.introduction,MStringF.getLabelName(MString.INTRODUCTION),company.introduction);
 		
 		CompanyDao.initCompanyCreateInfo(company);
 		RecordDao.initRecordTableData(this.recordTable,company.recordList);
@@ -458,13 +466,17 @@ function CompanyEditForm(){
 	  	var layout = $("#companyInfoTitleLayout");
 	  	layout.append(editButtonHtml);
 	  	var editButton = $('#edit_company');
+	  	
+	  	if(nowUser.role!=127){
+	  		editButton.hide();
+	  	}
+	  	
 	  	editButton.live('click',function(e){
 	  		e.preventDefault();
 	  		var companyForm = $('#company_form');
 	  		var controls = companyForm.find(".controls");
-//	  		abc = $('#company_form').find(".controls")
-	  		this.isEditMode = !this.isEditMode;
-	  		if(this.isEditMode){
+
+	  		if(nowCompanyEditForm.mode == PAGE_MODE.VIEW){
 		  		console.log("editButton----------------");
 		  		editButton.html('取消<i class="icon-remove"></i>');
 		  		editButton.removeClass("green");
@@ -809,18 +821,19 @@ function CompanyEditForm(){
   						if(status == MainUrl.RESULT_CODE_SUCCESS){
   							if(nowCompany.id > 0){
   								alert("修改客户信息成功！");
-								if(nowUser.role == 127){
+//								if(nowUser.role == 127){
 	  								window.location.href="company_edit.html?id="+nowCompany.id;
-								}else{
-									window.location.href="company_detail.html?id="+nowCompany.id;
-								}
+//								}else{
+//									window.location.href="company_detail.html?id="+nowCompany.id;
+//								}
   							}else{
   	  							alert("添加客户信息成功！");
   	  							if (confirm("是否继续添加客户？") == true) {
   									window.location.href="company_edit.html";
 //					                return;
   					            }else{
-					            	window.location.href="company_detail.html?id="+data[MString.TABLE_COMPANY][MString.ID];
+//					            	window.location.href="company_detail.html?id="+data[MString.TABLE_COMPANY][MString.ID];
+					            	window.location.href="company_edit.html?id="+data[MString.TABLE_COMPANY][MString.ID];
 //					            	console.log("id------"+data[MString.TABLE_COMPANY][MString.ID]);
 //					            	console.log("id------"+data.company.id);
   					            }
@@ -845,7 +858,7 @@ function CompanyEditForm(){
 	this.getJSONV = function(){
 		var data = {};
 		
-		if(this.name.is(":visible")){
+		if(nowCompanyEditForm.mode == PAGE_MODE.EDIT){
 			data = nowCompany.getUpdateJSON(nowCompanyEditForm);
 		}
 		
@@ -1082,13 +1095,13 @@ CompanyDao = {
 				rowObject.find('#edit').live('click',function(e){
 					e.preventDefault();
 					var nowId = $(this).attr("href");
-					if(nowUser.role == 127){
+//					if(nowUser.role == 127){
 //							window.open("company_edit.html?id="+nowId);
 						MainUrl.openNewCompanyEdit(nowId);
-					}else{
-						MainUrl.openNewCompanyView(nowId);
-//							window.open("company_detail.html?id="+nowId);
-					}
+//					}else{
+//						MainUrl.openNewCompanyView(nowId);
+////							window.open("company_detail.html?id="+nowId);
+//					}
 				});
 				
 				//当点击删除时
@@ -1335,62 +1348,68 @@ CompanyDao = {
 		}
 	},
 	
-	initCompanyDetailView:function(){
-	  
-		HRDao.initHrTable();
-	  	
-	  	RecordDao.initRecordTable($('#recordTable'),$('#recordTable_new'),$('#recordTable a#remove'),RecordType.HISTORY);
-	  	
-	  	RecordDao.initRecordTable($('#recordPlanTable'),$('#recordPlanTable_new'),$('#recordPlanTable a#remove'),RecordType.PLAN);
-	  
-	 	thisUrl = $.url();
-		
-		companyId = thisUrl.param(MString.ID);
-		
-		if(companyId!=null&&companyId.length>0){
-			App.wiki_action = MainUrl.ACTION_UPDATE;
-			nowCompany.id = companyId;
-		}else{
-			alert("未找到客户信息！");
-//				window.location.href = "company_index.html"
-			window.self.close();
-			return;
-		}
-		
-		companyQueryUrl = MainUrl.DOMAIN + MainUrl.URL_COMPANY;
-		queryActionData = {};
-		queryActionData[MString.ID] = companyId;
-		queryData = {};
-		queryData[MainUrl.ACTION] = MainUrl.ACTION_QUERY;
-		queryData[MainUrl.ACTION_DATA] = JSON.stringify(queryActionData);
-		queryData[MString.TABLE_USER] = JSON.stringify(nowUser.getJSONV());
-		
-		$.post(companyQueryUrl,queryData,function(data,status){
-			if(data == null || data.length <=0){
-				alert("载入客户信息失败~！");
-			}
-			
-			if(data.hasOwnProperty(MString.TABLE_USER)){
-				UserDao.setUserList(data[MString.TABLE_USER]);
-			}
-			
-			queryCompanyList = data[MString.TABLE_COMPANY];
-			if(queryCompanyList.length > 0){
-				nowCompany.initCompany(queryCompanyList[0]);
-			}else{
-				alert("载入客户信息失败~！");
-//					window.location.href = "company_index.html";
-				window.self.close();
-				return;
-			}
-			
-			var nowForm = new CompanyDetailForm();			
-			
-			nowForm.setCompany(nowCompany);
-		});
-	},
+//	initCompanyDetailView:function(){
+//	  
+//		HRDao.initHrTable();
+//	  	
+//	  	RecordDao.initRecordTable($('#recordTable'),$('#recordTable_new'),$('#recordTable a#remove'),RecordType.HISTORY);
+//	  	
+//	  	RecordDao.initRecordTable($('#recordPlanTable'),$('#recordPlanTable_new'),$('#recordPlanTable a#remove'),RecordType.PLAN);
+//	  
+//	 	thisUrl = $.url();
+//		
+//		companyId = thisUrl.param(MString.ID);
+//		
+//		if(companyId!=null&&companyId.length>0){
+//			App.wiki_action = MainUrl.ACTION_UPDATE;
+//			nowCompany.id = companyId;
+//		}else{
+//			alert("未找到客户信息！");
+////				window.location.href = "company_index.html"
+//			window.self.close();
+//			return;
+//		}
+//		
+//		companyQueryUrl = MainUrl.DOMAIN + MainUrl.URL_COMPANY;
+//		queryActionData = {};
+//		queryActionData[MString.ID] = companyId;
+//		queryData = {};
+//		queryData[MainUrl.ACTION] = MainUrl.ACTION_QUERY;
+//		queryData[MainUrl.ACTION_DATA] = JSON.stringify(queryActionData);
+//		queryData[MString.TABLE_USER] = JSON.stringify(nowUser.getJSONV());
+//		
+//		$.post(companyQueryUrl,queryData,function(data,status){
+//			if(data == null || data.length <=0){
+//				alert("载入客户信息失败~！");
+//			}
+//			
+//			if(data.hasOwnProperty(MString.TABLE_USER)){
+//				UserDao.setUserList(data[MString.TABLE_USER]);
+//			}
+//			
+//			queryCompanyList = data[MString.TABLE_COMPANY];
+//			if(queryCompanyList.length > 0){
+//				nowCompany.initCompany(queryCompanyList[0]);
+//			}else{
+//				alert("载入客户信息失败~！");
+////					window.location.href = "company_index.html";
+//				window.self.close();
+//				return;
+//			}
+//			
+//			var nowForm = new CompanyDetailForm();			
+//			
+//			nowForm.setCompany(nowCompany);
+//		});
+//	},
 	
 	setViewMode:function(){
+		nowCompanyEditForm.mode = PAGE_MODE.VIEW;
+		
+		var nowForm = nowCompanyEditForm;
+		nowForm.introduction.hide();
+		nowForm.introductionLabel.show();
+		
 		var companyForm = $('#company_form');
 		
 		this.removeEditRule();
@@ -1406,6 +1425,11 @@ CompanyDao = {
 	},
 	
 	setEditMode:function(){
+		nowCompanyEditForm.mode = PAGE_MODE.EDIT;
+		var nowForm = nowCompanyEditForm;
+		nowForm.introduction.show();
+		nowForm.introductionLabel.hide();
+		
 		var companyForm = $('#company_form');
 		this.addEditRule();
 	},
@@ -1477,9 +1501,11 @@ CompanyDao = {
 	},
 	
 	initEditCompany: function (){
-	  	HRDao.initHrTable();
-	  	
+		nowCompanyEditForm = new CompanyEditForm();
+		
 	  	CompanyDao.initCompanyEditForm();
+	  	
+	  	HRDao.initHrTable();
 	  	
 	  	RecordDao.initRecordTable($('#recordTable'),$('#recordTable_new'),$('#recordTable a#remove'),RecordType.HISTORY);
 	  	
@@ -1489,25 +1515,17 @@ CompanyDao = {
 		
 		var companyId = thisUrl.param(MString.ID);
 
-		nowCompanyEditForm = new CompanyEditForm();
 		
 		var nowForm = nowCompanyEditForm;
 		
 		if(companyId!=null&&companyId.length>0){
-//				console.log("thisUrl---id--->"+companyId);	
 			App.wiki_action = MainUrl.ACTION_UPDATE;
 			nowCompany.id = companyId;
 			MStringF.setPageTitle("编辑客户");
 			$('#wiki_new_company_menu_title').removeClass("active");
 			$('#wiki_edit_company_menu_title').show();
-			if(nowUser.role != 127){
-				nowCompany = new Company();
-	  			alert("您没有权限进入编辑界面");
-//		  			window.location.href = "company_index.html";
-				window.self.close();
-	  			return;
-	  		}
 		}else{
+			MStringF.setPageTitle("新增客户");
 			nowCompany = new Company();
 			App.wiki_action = MainUrl.ACTION_ADD;
 			nowForm.initAddMode();

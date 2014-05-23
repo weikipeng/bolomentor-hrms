@@ -703,14 +703,9 @@ function PersonEditForm(){
   	  	editButton.live('click',function(e){
   	  		e.preventDefault();
   	  		
-  	  		if(!PersonDao.isCancelEditContact()){
-  	  			return;
-  	  		}
-  	  		
   	  		var personForm = $('#person_form');
   	  		var controls = personForm.find(".controls");
-  	  		this.isEditMode = !this.isEditMode;
-  	  		if(this.isEditMode){
+  	  		if(this.mode == PAGE_MODE.VIEW){
   		  		editButton.html('取消<i class="icon-remove"></i>');
   		  		editButton.removeClass("green");
   		  		editButton.addClass("red");
@@ -721,6 +716,9 @@ function PersonEditForm(){
   		  		$("#ok").show();
   		  		PersonDao.setEditMode();
   	  		}else{
+	  	  		if(!PersonDao.isCancelEditContact()){
+	  	  			return;
+  		  		}
   		  		editButton.html('编辑 <i class="icon-edit"></i>');
   		  		editButton.removeClass("red");
   		  		editButton.addClass("green");
