@@ -705,7 +705,7 @@ function PersonEditForm(){
   	  		
   	  		var personForm = $('#person_form');
   	  		var controls = personForm.find(".controls");
-  	  		if(this.mode == PAGE_MODE.VIEW){
+  	  		if(nowPersonEditForm.mode == PAGE_MODE.VIEW){
   		  		editButton.html('取消<i class="icon-remove"></i>');
   		  		editButton.removeClass("green");
   		  		editButton.addClass("red");
