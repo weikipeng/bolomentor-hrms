@@ -27,6 +27,7 @@ import com.unknown.wiki.dao.DataBaseDao;
 import com.unknown.wiki.dao.LoginDao;
 import com.unknown.wiki.dao.PersonDao;
 import com.unknown.wiki.dao.PersonRecordDao;
+import com.unknown.wiki.dao.WorkExperienceDao;
 import com.unknown.wiki.tool.TimeUtil;
 import com.unknown.wiki.w_enum.ContactType;
 import com.unknown.wiki.w_enum.RecordType;
@@ -151,6 +152,12 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 					personObject.remove(TABLE_PERSON_RECORD);
 				}
 				
+				JSONArray workExperienceArray = null;
+				if(personObject.containsKey(TABLE_WORK_EXPERIENCE)){
+					workExperienceArray = personObject.getJSONArray(TABLE_WORK_EXPERIENCE);
+					personObject.remove(TABLE_WORK_EXPERIENCE);
+				}
+				
 				
 				personObject.put(COLUMN_CREATEUSERID, user.getId());
 				personObject.put(COLUMN_UPDATEUSERID, user.getId());
@@ -159,11 +166,12 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 				personObject.put(COLUMN_UPDATEDATE, timeStamp);
 				Person person = PersonDao.insertPersonJSONObject(dataBaseDao, personObject);
 				if(person!=null){
+					long personId = person.getId();
 					//contact
 					if(contactArray!=null && contactArray.size()>0){
 						for(int i=0;i<contactArray.size();i++){
 							JSONObject contactObject = contactArray.optJSONObject(i);
-							contactObject.put(COLUMN_TYPEID, person.getId());
+							contactObject.put(COLUMN_TYPEID, personId);
 							ContactDao.insertOrUpdateContact(dataBaseDao, contactObject);
 						}
 						
@@ -174,8 +182,15 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 					if(recordArray!=null){
 						for(int i=0;i<recordArray.size();i++){
 							JSONObject recordObject =  recordArray.optJSONObject(i);
-							recordObject.put(COLUMN_PERSONID, person.getId());
+							recordObject.put(COLUMN_PERSONID, personId);
 							PersonRecordDao.insertOrUpdateRecord(dataBaseDao,recordObject);
+						}
+					}
+					
+					if(workExperienceArray!=null){
+						for(int i=0;i<workExperienceArray.size();i++){
+							JSONObject workObject = workExperienceArray.optJSONObject(i);
+							workObject.put(COLUMN_PERSONID, personId);
 						}
 					}
 					
@@ -234,6 +249,7 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 		int size = arrayList.size();
 		HashMap<String , String> contactMeters = new HashMap<String, String>();
 		HashMap<String , String> recordMeters = new HashMap<String, String>();
+		
 		for(int i=0;i<size;i++){
 			Person person = arrayList.get(i);
 			contactMeters.clear();
@@ -249,6 +265,9 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 			recordMeters.put(COLUMN_PERSONID, String.valueOf(person.getId()));
 			recordMeters.put(COLUMN_VISIBLE, String.valueOf(Visible.VISIBLE.ordinal()));
 			person.setRecordList(PersonRecordDao.queryPersonRecord(dataBaseDao, recordMeters));
+			
+			//工作经历
+			person.setWorkExperienceList(WorkExperienceDao.queryWorkExperience(dataBaseDao, recordMeters));
 			
 			jsonArray.add(person.toJsonString());
 		}
@@ -315,6 +334,15 @@ public class PersonServer extends HttpServlet implements Constant_Servlet,Consta
 					personObject.remove(TABLE_CONTACT);
 					for(int i=0;i<contactArray.size();i++){
 						ContactDao.insertOrUpdateContact(dataBaseDao, contactArray.optJSONObject(i));
+					}
+				}
+				
+				if(personObject.containsKey(TABLE_WORK_EXPERIENCE)){
+					JSONArray workExperienceArray = personObject.getJSONArray(TABLE_WORK_EXPERIENCE);
+					personObject.remove(TABLE_WORK_EXPERIENCE);
+					int size = workExperienceArray.size();
+					for(int i=0;i<size;i++){
+						WorkExperienceDao.insertOrUpdateWorkExperience(dataBaseDao, workExperienceArray.optJSONObject(i));
 					}
 				}
 				

@@ -41,8 +41,78 @@ public class Person implements Constant_Column,Constant_Table{
 	private String updateDate;
 	private ArrayList<Contact> contactList;
 	private ArrayList<PersonRecord> recordList;
+	private ArrayList<WorkExperience> workExperienceList;
 	
-	
+	public String toJsonString() {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put(COLUMN_ID, id);
+		jsonObject.put(COLUMN_NETID, netId);
+		jsonObject.put(COLUMN_NAME, name);
+		jsonObject.put(COLUMN_ENGLISHNAME, EnglishName);
+		jsonObject.put(COLUMN_BIRTHDAY, birthday);
+		jsonObject.put(COLUMN_GENDER, gender.ordinal());
+		jsonObject.put(COLUMN_AGE, age);
+		jsonObject.put(COLUMN_EDUCATION, education);
+		jsonObject.put(COLUMN_MARITALSTATUS, maritalStatus);
+		jsonObject.put(COLUMN_WORKYEAR, workYear);
+		jsonObject.put(COLUMN_LIVEADDRESS, liveAddress);
+		jsonObject.put(COLUMN_BELONGADDRESS, belongAddress);
+		jsonObject.put(COLUMN_OTHERLANGUAGE, otherLanguage);
+		jsonObject.put(COLUMN_SALARY, salary);
+		jsonObject.put(COLUMN_COMPANYNATURE, companyNature);
+		jsonObject.put(COLUMN_WORKSTATUS, workStatus);
+		jsonObject.put(COLUMN_HOPEADDRESS, hopeAddress);
+		jsonObject.put(COLUMN_HOPEJOB, hopeJob);
+		jsonObject.put(COLUMN_HOPEVOCATION, hopeVocation);
+		jsonObject.put(COLUMN_HOPESALARY, hopeSalary);
+		jsonObject.put(COLUMN_ISHOPE, isHope);
+		jsonObject.put(COLUMN_VITAE, vitae);
+		jsonObject.put(COLUMN_CREATEUSERID, createUserId);
+		jsonObject.put(COLUMN_CREATEUSER, createUser);
+		jsonObject.put(COLUMN_CREATEDATE, createDate);
+		jsonObject.put(COLUMN_UPDATEUSERID, updateUserId);
+		jsonObject.put(COLUMN_UPDATEUSER, updateUser);
+		jsonObject.put(COLUMN_UPDATEDATE, updateDate);
+		
+		
+		if(contactList!=null){
+			int size = contactList.size();
+			if(size > 0){
+				JSONArray jsonArray = new JSONArray();
+				for(int i=0;i<size;i++){
+					jsonArray.add(contactList.get(i).toJsonString());
+				}
+				
+				jsonObject.put(COLUMN_CONTACT, jsonArray);
+			}
+		}
+		
+		if(recordList!=null){
+			int size = recordList.size();
+			if(size > 0){
+				JSONArray jsonArray = new JSONArray();
+				for(int i=0;i<size;i++){
+					jsonArray.add(recordList.get(i).toJsonString());
+				}
+				
+				jsonObject.put(TABLE_RECORD, jsonArray);
+			}
+		}
+		
+		if(workExperienceList!=null){
+			int size = workExperienceList.size();
+			if(size>0){
+				JSONArray jsonArray = new JSONArray();
+				for(int i=0;i<size;i++){
+					jsonArray.add(workExperienceList.get(i).toJsonString());
+				}
+				
+				jsonObject.put(TABLE_WORK_EXPERIENCE, jsonArray);
+			}
+		}
+		
+		return jsonObject.toString();
+	}
 	
 	public long getId() {
 		return id;
@@ -360,66 +430,6 @@ public class Person implements Constant_Column,Constant_Table{
 		this.workStatus = workStatus;
 	}
 
-	public String toJsonString() {
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put(COLUMN_ID, id);
-		jsonObject.put(COLUMN_NETID, netId);
-		jsonObject.put(COLUMN_NAME, name);
-		jsonObject.put(COLUMN_ENGLISHNAME, EnglishName);
-		jsonObject.put(COLUMN_BIRTHDAY, birthday);
-		jsonObject.put(COLUMN_GENDER, gender.ordinal());
-		jsonObject.put(COLUMN_AGE, age);
-		jsonObject.put(COLUMN_EDUCATION, education);
-		jsonObject.put(COLUMN_MARITALSTATUS, maritalStatus);
-		jsonObject.put(COLUMN_WORKYEAR, workYear);
-		jsonObject.put(COLUMN_LIVEADDRESS, liveAddress);
-		jsonObject.put(COLUMN_BELONGADDRESS, belongAddress);
-		jsonObject.put(COLUMN_OTHERLANGUAGE, otherLanguage);
-		jsonObject.put(COLUMN_SALARY, salary);
-		jsonObject.put(COLUMN_COMPANYNATURE, companyNature);
-		jsonObject.put(COLUMN_WORKSTATUS, workStatus);
-		jsonObject.put(COLUMN_HOPEADDRESS, hopeAddress);
-		jsonObject.put(COLUMN_HOPEJOB, hopeJob);
-		jsonObject.put(COLUMN_HOPEVOCATION, hopeVocation);
-		jsonObject.put(COLUMN_HOPESALARY, hopeSalary);
-		jsonObject.put(COLUMN_ISHOPE, isHope);
-		jsonObject.put(COLUMN_VITAE, vitae);
-		jsonObject.put(COLUMN_CREATEUSERID, createUserId);
-		jsonObject.put(COLUMN_CREATEUSER, createUser);
-		jsonObject.put(COLUMN_CREATEDATE, createDate);
-		jsonObject.put(COLUMN_UPDATEUSERID, updateUserId);
-		jsonObject.put(COLUMN_UPDATEUSER, updateUser);
-		jsonObject.put(COLUMN_UPDATEDATE, updateDate);
-		
-		
-		if(contactList!=null){
-			int size = contactList.size();
-			if(size > 0){
-				JSONArray jsonArray = new JSONArray();
-				for(int i=0;i<size;i++){
-					jsonArray.add(contactList.get(i).toJsonString());
-				}
-				
-				jsonObject.put(COLUMN_CONTACT, jsonArray);
-			}
-		}
-		
-		if(recordList!=null){
-			int size = recordList.size();
-			if(size > 0){
-				JSONArray jsonArray = new JSONArray();
-				for(int i=0;i<size;i++){
-					jsonArray.add(recordList.get(i).toJsonString());
-				}
-				
-				jsonObject.put(TABLE_RECORD, jsonArray);
-			}
-		}
-		return jsonObject.toString();
-	}
-
-
-
 	public String getVitae() {
 		return vitae;
 	}
@@ -452,6 +462,18 @@ public class Person implements Constant_Column,Constant_Table{
 
 	public void setRecordList(ArrayList<PersonRecord> recordList) {
 		this.recordList = recordList;
+	}
+
+
+
+	public ArrayList<WorkExperience> getWorkExperienceList() {
+		return workExperienceList;
+	}
+
+
+
+	public void setWorkExperienceList(ArrayList<WorkExperience> workExperienceList) {
+		this.workExperienceList = workExperienceList;
 	}
 	
 	

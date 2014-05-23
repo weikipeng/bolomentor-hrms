@@ -72,7 +72,13 @@ MString ={
 	
 	//Job
 	STATUS : "status",
-	
+	//WorkExperience
+	JOBTITLE:"jobTitle",
+	JOBLEVEL:"jobLevel",
+	JOBINFO:"jobInfo",
+	STARTDATE:"startDate",
+	ENDDATE:"endDate",
+	LEVELREASON:"levelReason",
 	
 	
 	TABLE_COMPANY : "company",

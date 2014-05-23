@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import com.unknown.wiki.bean.PersonRecord;
 import com.unknown.wiki.bean.WorkExperience;
 import com.unknown.wiki.bean.W_User;
 import com.unknown.wiki.constant.Constant_Column;
@@ -137,6 +138,44 @@ public class WorkExperienceDao implements Constant_Column,Constant_SQL,Constant_
 			}
 		}
 		return workExperience;
+	}
+	
+	public static boolean insertOrUpdateWorkExperience(DataBaseDao dataBaseDao,JSONObject recordObject) {
+		boolean isSuccess = false;
+		if(dataBaseDao != null){
+			HashMap<String, String> queryMap = new HashMap<String, String>();
+			HashMap<String, String> values = new HashMap<String, String>();
+			
+			long id = -1;
+			if(recordObject.containsKey(COLUMN_ID)){
+				id = recordObject.optLong(COLUMN_ID,-1);
+				recordObject.remove(COLUMN_ID);
+			}
+			
+			Iterator<String> iterator = recordObject.keys();
+			while(iterator.hasNext()){
+				String key = iterator.next();
+				values.put(key, recordObject.getString(key));
+			}
+			
+			WorkExperience record = null;
+			
+			if(id <0){
+				record = insertWorkExperience(dataBaseDao, values);
+			}else{
+				queryMap.put(COLUMN_ID, String.valueOf(id));
+				ArrayList<WorkExperience> recordList = queryWorkExperience(dataBaseDao,queryMap);
+				if(recordList.size()>0){
+					record = recordList.get(0);
+					updateWorkExperience(dataBaseDao, queryMap, values);
+				}else{
+					record = insertWorkExperience(dataBaseDao, values);
+				}
+			}
+			
+			isSuccess = record != null;
+		}
+		return isSuccess;
 	}
 	
 	/**删除工作记录*/
@@ -328,9 +367,9 @@ public class WorkExperienceDao implements Constant_Column,Constant_SQL,Constant_
 			
 			//插入
 			StringBuffer sb = new StringBuffer();
-			sb.append("update ");
+			sb.append(SQL_UPDATE);
 			sb.append(Constant_Table.TABLE_WORK_EXPERIENCE);
-			sb.append(" set ");
+			sb.append(SQL_SET);
 			Iterator<Entry<String, String>> iterator = values.entrySet().iterator();
 			while (iterator.hasNext()) {
 				Entry<String, String> entry = iterator.next();
@@ -357,6 +396,8 @@ public class WorkExperienceDao implements Constant_Column,Constant_SQL,Constant_
 				sb.append(SQL_SINGLE_QUOTES);
 				count ++;
 			}
+			
+			if(count == 0) return false;
 			
 			sb.append(SQL_SEMICOLON);
 			

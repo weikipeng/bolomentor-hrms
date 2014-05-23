@@ -17,6 +17,7 @@ public class WorkExperience implements Constant_Column,Constant_Table{
 	private String endDate;
 	private String leaveReason;
 	
+	
 	public String toJsonString() {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put(COLUMN_ID, id);
