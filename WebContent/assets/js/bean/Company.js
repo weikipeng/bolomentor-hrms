@@ -582,106 +582,6 @@ function CompanyEditForm(){
     		onfocusout: function(element) {
         		$(element).valid();
     		},
-//  		rules: {
-//  			name: {    				
-//					onfocusout:function(element){
-//						var name = $('input[name="name"]').val();
-////						return isSingle(MString.NAME,name);
-//			    		if(name!=null && name.length > 0){
-//			  				var companyData = {};
-//			  				companyData[MString.NAME] = name;
-//			  				var queryData = {};
-//			  				queryData[MString.TABLE_COMPANY] = companyData;
-//			  				
-//			  				var url = MainUrl.DOMAIN + MainUrl.URL_COMPANY;
-//			  				var data = {};
-//			  				data[MainUrl.ACTION] = MainUrl.ACTION_SINGLE;
-//			  				data[MString.TABLE_USER] = MStringF.getPostJson(nowUser);
-//			  				data[MainUrl.ACTION_DATA] = MStringF.getPostJson(queryData);
-//			  				$.post(url,data,function(data,status){
-//			  					if(data!=null){
-//			  						var rStatus = data.status;
-//			  						rStatus = parseInt(rStatus);
-//			  						if(rStatus == MainUrl.RESULT_CODE_FAILED){
-//			  							alert("该客户已存在！");
-//			  							return false;
-//			  						}else{
-//			  							return true;
-//			  						}
-//			  					}
-//			  				});
-//			  			}else{
-//			  				return true;
-//			  			}
-//					},
-//					
-//					required:function(element){
-//						var EnglishName = $('input[name="EnglishName"]').val();
-//						if(EnglishName.length > 0){
-//							return false;
-//						}else{
-//							return true;
-//						}						
-//					}
-//  			},
-//				EnglishName: {
-////					onfocusout:function(element){
-////						var name = $('input[name="EnglishName"]').val();
-//////						return isSingle(MString.ENGLISHNAME,name);
-////						if(name!=null && name.length > 0){
-////			  				var companyData = {};
-////			  				companyData[MString.ENGLISHNAME] = name;
-////			  				var queryData = {};
-////			  				queryData[MString.TABLE_COMPANY] = companyData;
-////			  				
-////			  				var url = MainUrl.DOMAIN + MainUrl.URL_COMPANY;
-////			  				var data = {};
-////			  				data[MainUrl.ACTION] = MainUrl.ACTION_SINGLE;
-////			  				data[MString.TABLE_USER] = MStringF.getPostJson(nowUser);
-////			  				data[MainUrl.ACTION_DATA] = MStringF.getPostJson(queryData);
-////			  				$.post(url,data,function(data,status){
-////			  					if(data!=null){
-////			  						var rStatus = data.status;
-////			  						rStatus = parseInt(rStatus);
-////			  						if(rStatus == MainUrl.RESULT_CODE_FAILED){
-////			  							alert("该客户已存在！");
-////			  							return false;
-////			  						}else{
-////			  							return true;
-////			  						}
-////			  					}
-////			  				});
-////			  			}else{
-////			  				return true;
-////			  			}
-////					},
-//					required:function(element){
-//						var cname = $('input[name="name"]').val();
-//						if(cname.length > 0){
-//							return false;
-//						}else{
-//							return true;
-//						}						
-//					}
-//				},
-//				
-//				telephone: {
-////					number:true
-//					isMobile:true
-//				},
-//				
-//				headhunter:{
-//                  required:true
-//              },
-//              isListing:{
-//                  required:true
-//              },
-//				
-//				intent: {
-//  				required: true
-//  			}
-//  			
-//  		},
             
             messages: {
                 name: {
@@ -821,27 +721,17 @@ function CompanyEditForm(){
   						if(status == MainUrl.RESULT_CODE_SUCCESS){
   							if(nowCompany.id > 0){
   								alert("修改客户信息成功！");
-//								if(nowUser.role == 127){
-	  								window.location.href="company_edit.html?id="+nowCompany.id;
-//								}else{
-//									window.location.href="company_detail.html?id="+nowCompany.id;
-//								}
+	  							window.location.href="company_edit.html?id="+nowCompany.id;
   							}else{
   	  							alert("添加客户信息成功！");
   	  							if (confirm("是否继续添加客户？") == true) {
   									window.location.href="company_edit.html";
-//					                return;
   					            }else{
-//					            	window.location.href="company_detail.html?id="+data[MString.TABLE_COMPANY][MString.ID];
 					            	window.location.href="company_edit.html?id="+data[MString.TABLE_COMPANY][MString.ID];
-//					            	console.log("id------"+data[MString.TABLE_COMPANY][MString.ID]);
-//					            	console.log("id------"+data.company.id);
   					            }
-//	  							window.self.close();
   							}
   						}else{
   							alert(data[MainUrl.KEY_MESSAGE]);
-//							window.location.href="company_index.html";
 							window.self.close();
   						}
   					}else{
